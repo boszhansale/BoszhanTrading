@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/providers/session_data_provider.dart';
@@ -97,7 +99,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 customTextButton(
                   () {
-                    print(123);
+                    js.context
+                        .callMethod('open', ['http://salesrep.boszhan.kz']);
                   },
                   title: 'Заказ товара',
                 ),

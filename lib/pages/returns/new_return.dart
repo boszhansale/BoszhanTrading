@@ -1,6 +1,7 @@
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
+import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -208,7 +209,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
                           ),
                           const Spacer(),
                           Text(
-                            'НДС: ${sum * 0.12} тг',
+                            'НДС: ${calculateNDS(sum)} тг',
                             style: ProjectStyles.textStyle_14Bold,
                           ),
                           const Spacer(),
@@ -362,8 +363,8 @@ class _NewReturnPageState extends State<NewReturnPage> {
     }
 
     try {
-      var response = await MainApiService()
-          .createReturnOrder(1, 1, sendBasketList, counteragentId);
+      var response = await MainApiService().createReturnOrder(
+          selectedOrderId, 1, sendBasketList, counteragentId);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 3))

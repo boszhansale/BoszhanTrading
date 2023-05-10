@@ -13,6 +13,7 @@ class MainApiService {
       Uri.parse('$baseUrl/brand'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -30,6 +31,7 @@ class MainApiService {
       Uri.parse('$baseUrl/category'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -47,6 +49,7 @@ class MainApiService {
       Uri.parse('$baseUrl/product'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -77,6 +80,7 @@ class MainApiService {
       Uri.parse('$baseUrl/order'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
       body: jsonEncode(body),
@@ -95,6 +99,7 @@ class MainApiService {
       Uri.parse('$baseUrl/order/history'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -112,6 +117,7 @@ class MainApiService {
       Uri.parse('$baseUrl/order/$id'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -142,6 +148,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
       body: jsonEncode(body),
@@ -160,6 +167,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund/history'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -177,6 +185,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund/$id'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -208,6 +217,7 @@ class MainApiService {
       Uri.parse('$baseUrl/receipt'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
       body: jsonEncode(body),
@@ -226,6 +236,7 @@ class MainApiService {
       Uri.parse('$baseUrl/receipt/history'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -243,6 +254,7 @@ class MainApiService {
       Uri.parse('$baseUrl/receipt/$id'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -268,6 +280,7 @@ class MainApiService {
       Uri.parse('$baseUrl/reject'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
       body: jsonEncode(body),
@@ -286,6 +299,7 @@ class MainApiService {
       Uri.parse('$baseUrl/reject/history'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -303,6 +317,7 @@ class MainApiService {
       Uri.parse('$baseUrl/reject/$id'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -328,6 +343,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund-producer'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
       body: jsonEncode(body),
@@ -346,6 +362,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund-producer/history'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -363,6 +380,7 @@ class MainApiService {
       Uri.parse('$baseUrl/refund-producer/$id'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );
@@ -382,6 +400,7 @@ class MainApiService {
       Uri.parse('$baseUrl/counteragent'),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
       },
     );

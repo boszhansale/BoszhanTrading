@@ -40,13 +40,13 @@ class _SelectOrderForReturnWidgetState
   Widget build(BuildContext context) {
     return SizedBox(
       width: 600,
-      height: 600,
+      height: 450,
       child: Column(
         children: [
           const Divider(),
           const Text('Заказы:', style: ProjectStyles.textStyle_18Bold),
           SizedBox(
-            height: 360,
+            height: 400,
             child: ListView.builder(
               itemCount: dataList.length,
               itemBuilder: (BuildContext context, int index) => ListTile(

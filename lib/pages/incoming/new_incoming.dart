@@ -1,6 +1,7 @@
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
+import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -212,7 +213,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
                           ),
                           const Spacer(),
                           Text(
-                            'НДС: ${sum * 0.12} тг',
+                            'НДС: ${calculateNDS(sum)} тг',
                             style: ProjectStyles.textStyle_14Bold,
                           ),
                           const Spacer(),

@@ -18,7 +18,7 @@ class WriteOffOrderHistoryModel {
   factory WriteOffOrderHistoryModel.fromJson(Map<String, dynamic> json) {
     return WriteOffOrderHistoryModel(
         id: json['id'],
-        storeName: json['store']['name'],
+        storeName: json['store'] != null ? json['store']['name'] ?? '' : '',
         productsCount: json['products'].length ?? 0,
         totalPrice: double.tryParse(json['total_price'] ?? '0') ?? 0,
         products: (json['products'] as List<dynamic>)
