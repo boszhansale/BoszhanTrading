@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 customTextButton(
                   () {
-                    print(123);
+                    _showSimpleDialogForKKM(context);
                   },
                   title: 'ККМ',
                 ),
@@ -278,6 +278,44 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pushNamed('/return-producer/history');
               },
               child: const Text('Журнал вовратов поставщику',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSimpleDialogForKKM(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите действие',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/kkm/money');
+              },
+              child: const Text('Внесение/Изъятие денег',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/kkm/x-report');
+              },
+              child: const Text('X отчёт',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/kkm/z-report');
+              },
+              child: const Text('Z отчёт',
                   style: ProjectStyles.textStyle_18Medium),
             ),
           ],

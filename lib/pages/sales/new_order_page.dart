@@ -8,6 +8,7 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/payment_calculator_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -334,8 +335,16 @@ class _NewOrderPageState extends State<NewOrderPage> {
           isOnlineSale ? 1 : 0, 1, sendBasketList, counteragentId);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
-      Future.delayed(const Duration(seconds: 3))
-          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+      Future.delayed(const Duration(seconds: 2))
+          .whenComplete(() => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PaymentCalculatorWidget(
+                          orderId: int.parse(response['id'].toString()),
+                          totalPrice:
+                              double.parse(response['total_price'].toString()),
+                        )),
+              ));
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());

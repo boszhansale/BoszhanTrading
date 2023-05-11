@@ -1,3 +1,6 @@
+import 'package:boszhan_trading/pages/KKM/deposits_or_withdrawals_page.dart';
+import 'package:boszhan_trading/pages/KKM/x_report_page.dart';
+import 'package:boszhan_trading/pages/KKM/z_report_page.dart';
 import 'package:boszhan_trading/pages/auth/auth_page.dart';
 import 'package:boszhan_trading/pages/home_page/home_page.dart';
 import 'package:boszhan_trading/pages/incoming/incoming_history.dart';
@@ -39,6 +42,9 @@ class App extends StatelessWidget {
         '/return-producer/new': (context) => const NewReturnProducerPage(),
         '/return-producer/history': (context) =>
             const ReturnProducerHistoryPage(),
+        '/kkm/money': (context) => const DepositsOrWithdrawalsPage(),
+        '/kkm/x-report': (context) => const XReportPage(),
+        '/kkm/z-report': (context) => const ZReportPage(),
       },
     );
   }

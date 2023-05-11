@@ -412,4 +412,109 @@ class MainApiService {
       throw Exception(responseJson['message']);
     }
   }
+
+  // TODO: Чек продажи
+
+  Future<Map<String, dynamic>> sendDataToCheck(
+    int orderId,
+    int paymentType,
+    double cash,
+    double card,
+  ) async {
+    Map<String, dynamic> body = {};
+
+    if (paymentType == 1) {
+      body['payments'] = [
+        {"Sum": cash, "PaymentType": 0},
+      ];
+    } else if (paymentType == 2) {
+      body['payments'] = [
+        {"Sum": card, "PaymentType": 1},
+      ];
+    } else {
+      body['payments'] = [
+        {"Sum": cash, "PaymentType": 0},
+        {"Sum": card, "PaymentType": 1},
+      ];
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/order/check/$orderId'),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Money operation
+
+  Future<Map<String, dynamic>> sendMoneyOperationRequest(
+      double sum, int operationType) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/webkassa/money-operation'),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode({'sum': sum, 'operation_type': operationType}),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: X отчет
+
+  Future<Map<String, dynamic>> requestXReport() async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/webkassa/x-report'),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Z отчет
+
+  Future<Map<String, dynamic>> requestZReport() async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/webkassa/z-report'),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
 }

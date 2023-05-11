@@ -360,7 +360,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
           counteragentId);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
-      Future.delayed(const Duration(seconds: 3))
+      Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
     } catch (e) {
       isButtonActive = true;

@@ -288,7 +288,7 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
           await MainApiService().createReturnProducerOrder(sendBasketList);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
-      Future.delayed(const Duration(seconds: 3))
+      Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
     } catch (e) {
       isButtonActive = true;

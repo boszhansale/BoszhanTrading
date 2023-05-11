@@ -287,7 +287,7 @@ class _NewWriteOffPageState extends State<NewWriteOffPage> {
       var response = await MainApiService().createWriteOffOrder(sendBasketList);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
-      Future.delayed(const Duration(seconds: 3))
+      Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
     } catch (e) {
       isButtonActive = true;
