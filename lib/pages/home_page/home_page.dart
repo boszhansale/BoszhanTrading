@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: 350,
                   height: 350,
-                  child: Image.asset('../assets/images/logo.png'),
+                  child: Image.asset('assets/images/logo.png'),
                 ),
                 customTextButton(
                   () {

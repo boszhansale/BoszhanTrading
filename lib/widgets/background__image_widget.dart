@@ -4,6 +4,6 @@ Widget setBackgroundImage() {
   return SizedBox(
     width: double.infinity,
     height: double.infinity,
-    child: Image.asset('../assets/images/bg.png', fit: BoxFit.cover),
+    child: Image.asset('assets/images/bg.png', fit: BoxFit.cover),
   );
 }
