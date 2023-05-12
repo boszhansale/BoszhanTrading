@@ -4,7 +4,7 @@ import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 
 class MainApiService {
-  final String baseUrl = 'http://back_shop.boszhan.kz/api';
+  final String baseUrl = 'http://backshop.boszhan.kz';
 
   // TODO: Brands, Categories, Products
 
