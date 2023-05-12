@@ -41,7 +41,7 @@ class _AuthPageState extends State<AuthPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset('../assets/images/logo.png'),
+                        Image.asset('assets/assets/images/logo.png'),
                         const SizedBox(height: 10),
                         const Center(
                           child: Text('Авторизация',
