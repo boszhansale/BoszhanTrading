@@ -80,13 +80,9 @@ class _AuthPageState extends State<AuthPage> {
     try {
       final loginResponse =
           await repository.login(loginController.text, passwordController.text);
-      print(1);
       await repository.setUserId(loginResponse.user.id);
-      print(2);
       await repository.setUserToken(loginResponse.accessToken);
-      print(3);
       await repository.setUserToCache(loginResponse.user);
-      print(4);
 
       if (mounted) {
         Navigator.of(context)
