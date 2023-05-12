@@ -4,7 +4,7 @@ import 'package:boszhan_trading/models/response_models/login_response_model.dart
 import 'package:http/http.dart' as http;
 
 class AuthProvider {
-  final String baseUrl = 'http://backshop.boszhan.kz';
+  final String baseUrl = 'https://backshop.boszhan.kz';
   final Map<String, String> baseHeader = {
     "Accept": "application/json",
     "Content-Type": "application/json; charset=UTF-8",
