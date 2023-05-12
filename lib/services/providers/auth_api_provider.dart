@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 class AuthProvider {
   final String baseUrl = 'https://backshop.boszhan.kz';
   final Map<String, String> baseHeader = {
+    "Access-Control-Allow-Origin": "*",
     "Accept": "application/json",
     "Content-Type": "application/json; charset=UTF-8",
   };
