@@ -4,7 +4,7 @@ import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 
 class MainApiService {
-  final String baseUrl = 'http://backshop.boszhan.kz';
+  final String baseUrl = 'https://backshop.boszhan.kz';
 
   // TODO: Brands, Categories, Products
 
@@ -12,7 +12,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/brand'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -31,7 +30,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/category'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -50,7 +48,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/product'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -82,7 +79,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/order'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -102,7 +98,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/order/history'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -121,7 +116,6 @@ class MainApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/order/$id'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -153,7 +147,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/refund'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -173,7 +166,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/refund/history'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -192,7 +184,6 @@ class MainApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/refund/$id'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -225,7 +216,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/receipt'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -245,7 +235,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/receipt/history'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -264,7 +253,6 @@ class MainApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/receipt/$id'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -291,7 +279,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/reject'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -311,7 +298,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/reject/history'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -330,7 +316,6 @@ class MainApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/reject/$id'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -357,7 +342,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/refund-producer'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -377,7 +361,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/refund-producer/history'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -396,7 +379,6 @@ class MainApiService {
     final response = await http.delete(
       Uri.parse('$baseUrl/refund-producer/$id'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -417,7 +399,6 @@ class MainApiService {
     final response = await http.get(
       Uri.parse('$baseUrl/counteragent'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -460,7 +441,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/order/check/$orderId'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -483,7 +463,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/webkassa/money-operation'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -505,7 +484,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/webkassa/x-report'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
@@ -526,7 +504,6 @@ class MainApiService {
     final response = await http.post(
       Uri.parse('$baseUrl/webkassa/z-report'),
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
         "Accept": "application/json",
         "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
