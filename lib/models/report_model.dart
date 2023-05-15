@@ -14,12 +14,12 @@ class ReportModel {
   int? cashierCode;
   int? shiftNumber;
   int? documentCount;
-  int? putMoneySum;
-  int? takeMoneySum;
-  int? controlSum;
+  double? putMoneySum;
+  double? takeMoneySum;
+  double? controlSum;
   bool? offlineMode;
   bool? cashboxOfflineMode;
-  int? sumInCashbox;
+  double? sumInCashbox;
   Sell? sell;
   Sell? buy;
   Sell? returnSell;
@@ -74,12 +74,12 @@ class ReportModel {
     cashierCode = json['CashierCode'];
     shiftNumber = json['ShiftNumber'];
     documentCount = json['DocumentCount'];
-    putMoneySum = json['PutMoneySum'];
-    takeMoneySum = json['TakeMoneySum'];
-    controlSum = json['ControlSum'];
+    putMoneySum = double.parse(json['PutMoneySum'].toString());
+    takeMoneySum = double.parse(json['TakeMoneySum'].toString());
+    controlSum = double.parse(json['ControlSum'].toString());
     offlineMode = json['OfflineMode'];
     cashboxOfflineMode = json['CashboxOfflineMode'];
-    sumInCashbox = json['SumInCashbox'];
+    sumInCashbox = double.parse(json['SumInCashbox'].toString());
     sell = json['Sell'] != null ? new Sell.fromJson(json['Sell']) : null;
     buy = json['Buy'] != null ? new Sell.fromJson(json['Buy']) : null;
     returnSell = json['ReturnSell'] != null
@@ -147,12 +147,12 @@ class ReportModel {
 class Sell {
   List<Null>? paymentsByTypesApiModel;
   int? discount;
-  int? markup;
-  int? taken;
-  int? change;
+  double? markup;
+  double? taken;
+  double? change;
   int? count;
   int? totalCount;
-  int? vAT;
+  double? vAT;
 
   Sell(
       {this.paymentsByTypesApiModel,
@@ -198,10 +198,10 @@ class Sell {
 }
 
 class EndNonNullable {
-  int? sell;
-  int? buy;
-  int? returnSell;
-  int? returnBuy;
+  double? sell;
+  double? buy;
+  double? returnSell;
+  double? returnBuy;
 
   EndNonNullable({this.sell, this.buy, this.returnSell, this.returnBuy});
 

@@ -117,6 +117,40 @@ class MainApiService {
     }
   }
 
+  Future<dynamic> getSalesOrderHistoryForReturnWithSearch(
+      String search, String dateFrom, String dateTo) async {
+    String url = '$baseUrl/order/history';
+
+    if (search != '') {
+      url += '?search=${Uri.encodeComponent(search)}';
+
+      if (dateFrom != '' && dateTo != '') {
+        url += '&date_from=$dateFrom&date_to=$dateTo';
+      }
+    } else {
+      if (dateFrom != '' && dateTo != '') {
+        url += '?date_from=$dateFrom&date_to=$dateTo';
+      }
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   Future<dynamic> deleteSalesOrderFromHistory(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/order/$id'),
@@ -139,8 +173,9 @@ class MainApiService {
   // TODO: Returns
 
   Future<Map<String, dynamic>> createReturnOrder(int orderId, int paymentType,
-      List<dynamic> products, int counteragentId) async {
+      List<dynamic> products, int counteragentId, int dayType) async {
     Map<String, dynamic> body = {
+      "type": dayType,
       "order_id": orderId,
       "payment_type": paymentType,
       "products": products,

@@ -24,8 +24,7 @@ class NewReturnPage extends StatefulWidget {
 
 class _NewReturnPageState extends State<NewReturnPage> {
   String createdTime = '';
-  Object buyerSelectedValue = 0;
-  Object returnSelectedValue = 0;
+  Object dayTypeSelectedValue = 1;
 
   String name = '';
   String storeName = '';
@@ -166,7 +165,31 @@ class _NewReturnPageState extends State<NewReturnPage> {
                                       onPressed: () {
                                         showCounteragentDialog();
                                       },
-                                      icon: const Icon(Icons.edit))
+                                      icon: const Icon(Icons.edit)),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Операция:',
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  DropdownButton(
+                                    value: dayTypeSelectedValue,
+                                    items: const [
+                                      DropdownMenuItem(
+                                          child: Text("День в день"), value: 1),
+                                      DropdownMenuItem(
+                                          child: Text("Не день в день"),
+                                          value: 2),
+                                    ],
+                                    onChanged: (Object? newValue) {
+                                      setState(() {
+                                        dayTypeSelectedValue = newValue!;
+                                      });
+                                    },
+                                  )
                                 ],
                               ),
                             ],
@@ -364,7 +387,11 @@ class _NewReturnPageState extends State<NewReturnPage> {
 
     try {
       var response = await MainApiService().createReturnOrder(
-          selectedOrderId, 1, sendBasketList, counteragentId);
+          selectedOrderId,
+          1,
+          sendBasketList,
+          counteragentId,
+          int.parse(dayTypeSelectedValue.toString()));
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

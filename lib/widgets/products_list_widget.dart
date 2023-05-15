@@ -110,17 +110,17 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                       ),
                       children: [
                         for (var product in item['products'])
-                          ListTile(
-                            title: Text(
-                              product['name'],
-                              style: ProjectStyles.textStyle_14Regular,
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.add_circle),
-                              onPressed: () {
-                                selectedProduct = product;
-                                showCountDialog();
-                              },
+                          GestureDetector(
+                            onTap: () {
+                              selectedProduct = product;
+                              showCountDialog();
+                            },
+                            child: ListTile(
+                              title: Text(
+                                product['name'],
+                                style: ProjectStyles.textStyle_14Regular,
+                              ),
+                              trailing: const Icon(Icons.add_circle),
                             ),
                           )
                       ],
