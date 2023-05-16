@@ -300,6 +300,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
           title: const Text('Выберите заказ'),
           content: SelectOrderForReturnWidget(
             selectOrder: selectOrder,
+            isShowTodaysOrders: dayTypeSelectedValue == 1 ? true : false,
           ),
         );
       },

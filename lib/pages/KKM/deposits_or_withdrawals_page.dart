@@ -53,6 +53,7 @@ class _DepositsOrWithdrawalsPageState extends State<DepositsOrWithdrawalsPage> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorPalette.main,
+                              disabledBackgroundColor: ColorPalette.green,
                             ),
                             onPressed: selectedOperation == 0
                                 ? null
@@ -69,6 +70,7 @@ class _DepositsOrWithdrawalsPageState extends State<DepositsOrWithdrawalsPage> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorPalette.main,
+                              disabledBackgroundColor: ColorPalette.green,
                             ),
                             onPressed: selectedOperation == 1
                                 ? null
@@ -111,7 +113,9 @@ class _DepositsOrWithdrawalsPageState extends State<DepositsOrWithdrawalsPage> {
                           backgroundColor: ColorPalette.main,
                         ),
                         onPressed: () {
-                          isButtonActive ? sendData() : null;
+                          if (isButtonActive && sumController.text != '') {
+                            sendData();
+                          }
                         },
                         child: const Text(
                           'Сохранить',
@@ -133,15 +137,20 @@ class _DepositsOrWithdrawalsPageState extends State<DepositsOrWithdrawalsPage> {
   void sendData() async {
     isButtonActive = false;
     try {
-      await MainApiService().sendMoneyOperationRequest(
-        double.tryParse(sumController.text) ?? 0,
-        selectedOperation,
-      );
+      if (double.tryParse(sumController.text) == null) {
+        showCustomSnackBar(context, 'Введите корректное вначение!');
+        isButtonActive = true;
+      } else {
+        await MainApiService().sendMoneyOperationRequest(
+          double.tryParse(sumController.text) ?? 0,
+          selectedOperation,
+        );
 
-      showCustomSnackBar(context, 'Операция успешно выполнена!');
+        showCustomSnackBar(context, 'Операция успешно выполнена!');
 
-      Future.delayed(const Duration(seconds: 2))
-          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+        Future.delayed(const Duration(seconds: 2))
+            .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+      }
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());

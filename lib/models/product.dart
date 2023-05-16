@@ -7,6 +7,7 @@ class Product {
   final double count;
   final double price;
   final String measure;
+  final String? returnReasonTitle;
 
   Product({
     required this.id,
@@ -17,6 +18,7 @@ class Product {
     required this.count,
     required this.price,
     required this.measure,
+    this.returnReasonTitle,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,8 @@ class Product {
       count: double.tryParse(json['count']) ?? 0,
       price: double.tryParse(json['price']) ?? 0,
       measure: json['measure'] == 1 ? "шт" : "кг",
+      returnReasonTitle:
+          json['reason_refund'] != null ? json['reason_refund']['title'] : null,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 class ReturnOrderHistoryModel {
   final int id;
+  final int orderId;
   final String? storeName;
   final int productsCount;
   final double totalPrice;
@@ -11,6 +12,7 @@ class ReturnOrderHistoryModel {
 
   ReturnOrderHistoryModel({
     required this.id,
+    required this.orderId,
     this.storeName,
     required this.productsCount,
     required this.totalPrice,
@@ -21,6 +23,7 @@ class ReturnOrderHistoryModel {
   factory ReturnOrderHistoryModel.fromJson(Map<String, dynamic> json) {
     return ReturnOrderHistoryModel(
       id: json['id'],
+      orderId: json['order_id'],
       storeName: json['store'] != null ? json['store']['name'] ?? '' : '',
       productsCount: json['products'].length ?? 0,
       totalPrice: double.tryParse(json['total_price'] ?? '0') ?? 0,

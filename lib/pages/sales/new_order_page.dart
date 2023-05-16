@@ -64,6 +64,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
     organizationName = user?.organizationName ?? '';
 
     setState(() {});
+
+    Future.delayed(const Duration(milliseconds: 500))
+        .whenComplete(() => mounted ? showProductDialog() : null);
   }
 
   @override

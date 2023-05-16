@@ -86,6 +86,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
     return [
       const DataColumn(label: Text('№')),
       const DataColumn(label: Text('ID')),
+      const DataColumn(label: Text('ID заказа')),
       const DataColumn(label: Text('Тор. точка')),
       const DataColumn(label: Text('Дата')),
       const DataColumn(label: Text('Колл. продуктов')),
@@ -101,6 +102,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
         DataRow(cells: [
           DataCell(Text('${i + 1}')),
           DataCell(Text(orders[i].id.toString())),
+          DataCell(Text(orders[i].orderId.toString())),
           DataCell(Text(orders[i].storeName ?? '')),
           DataCell(Text(orders[i].createdAt ?? '')),
           DataCell(Text(orders[i].productsCount.toString())),

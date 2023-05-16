@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SelectOrderForReturnWidget extends StatefulWidget {
-  const SelectOrderForReturnWidget({Key? key, required this.selectOrder})
-      : super(key: key);
+  const SelectOrderForReturnWidget({
+    Key? key,
+    required this.selectOrder,
+    required this.isShowTodaysOrders,
+  }) : super(key: key);
 
   final Function(int) selectOrder;
+  final isShowTodaysOrders;
 
   @override
   State<SelectOrderForReturnWidget> createState() =>
@@ -31,8 +35,13 @@ class _SelectOrderForReturnWidgetState
   }
 
   _init() async {
+    if (widget.isShowTodaysOrders == true) {
+      dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    }
+
     var response = await MainApiService()
-        .getSalesOrderHistoryForReturnWithSearch('', '', '');
+        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
 
     dataList = [];
 
@@ -59,72 +68,77 @@ class _SelectOrderForReturnWidgetState
                   searchOrder();
                 },
               )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Дата: ', style: ProjectStyles.textStyle_14Bold),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+          widget.isShowTodaysOrders
+              ? const SizedBox.shrink()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('с ', style: ProjectStyles.textStyle_14Bold),
-                    GestureDetector(
-                      onTap: () {
-                        showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2020),
-                                lastDate: DateTime.now())
-                            .then((pickedDate) {
-                          if (pickedDate == null) {
-                            return;
-                          }
-                          setState(() {
-                            dateFrom =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                          });
-                          if (dateFrom != '' && dateTo != '') {
-                            searchOrder();
-                          }
-                        });
-                      },
-                      child: Text(dateFrom == '' ? 'выбрать' : dateFrom,
-                          style: ProjectStyles.textStyle_14Bold
-                              .copyWith(color: ColorPalette.main)),
+                    const Text('Дата: ', style: ProjectStyles.textStyle_14Bold),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          const Text('с ',
+                              style: ProjectStyles.textStyle_14Bold),
+                          GestureDetector(
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2020),
+                                      lastDate: DateTime.now())
+                                  .then((pickedDate) {
+                                if (pickedDate == null) {
+                                  return;
+                                }
+                                setState(() {
+                                  dateFrom = DateFormat('yyyy-MM-dd')
+                                      .format(pickedDate);
+                                });
+                                if (dateFrom != '' && dateTo != '') {
+                                  searchOrder();
+                                }
+                              });
+                            },
+                            child: Text(dateFrom == '' ? 'выбрать' : dateFrom,
+                                style: ProjectStyles.textStyle_14Bold
+                                    .copyWith(color: ColorPalette.main)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Text(' по ',
+                            style: ProjectStyles.textStyle_14Bold),
+                        GestureDetector(
+                          onTap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2020),
+                                    lastDate: DateTime.now())
+                                .then((pickedDate) {
+                              if (pickedDate == null) {
+                                return;
+                              }
+                              setState(() {
+                                dateTo =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                              });
+                              if (dateFrom != '' && dateTo != '') {
+                                searchOrder();
+                              }
+                            });
+                          },
+                          child: Text(dateTo == '' ? 'выбрать' : dateTo,
+                              style: ProjectStyles.textStyle_14Bold
+                                  .copyWith(color: ColorPalette.main)),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              Row(
-                children: [
-                  const Text(' по ', style: ProjectStyles.textStyle_14Bold),
-                  GestureDetector(
-                    onTap: () {
-                      showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2020),
-                              lastDate: DateTime.now())
-                          .then((pickedDate) {
-                        if (pickedDate == null) {
-                          return;
-                        }
-                        setState(() {
-                          dateTo = DateFormat('yyyy-MM-dd').format(pickedDate);
-                        });
-                        if (dateFrom != '' && dateTo != '') {
-                          searchOrder();
-                        }
-                      });
-                    },
-                    child: Text(dateTo == '' ? 'выбрать' : dateTo,
-                        style: ProjectStyles.textStyle_14Bold
-                            .copyWith(color: ColorPalette.main)),
-                  ),
-                ],
-              ),
-            ],
-          ),
           const Divider(),
           const Text('Заказы:', style: ProjectStyles.textStyle_18Bold),
           SizedBox(

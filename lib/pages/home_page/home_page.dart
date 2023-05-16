@@ -313,10 +313,37 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/kkm/z-report');
+                _showAlertOnKKM(context);
               },
               child: const Text('Z отчёт',
                   style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAlertOnKKM(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title:
+              const Text('Вы уверены?', style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/kkm/z-report');
+              },
+              child: const Text('Да', style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Нет', style: ProjectStyles.textStyle_18Medium),
             ),
           ],
         );

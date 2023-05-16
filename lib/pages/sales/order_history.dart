@@ -7,6 +7,7 @@ import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({Key? key}) : super(key: key);
@@ -17,6 +18,9 @@ class OrderHistoryPage extends StatefulWidget {
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
   List<SalesOrderHistoryModel> orders = [];
+
+  String dateFrom = '';
+  String dateTo = '';
 
   @override
   void initState() {
@@ -52,6 +56,78 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                     children: [
                       const Text("Журнал продаж",
                           style: ProjectStyles.textStyle_30Bold),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Дата: ',
+                              style: ProjectStyles.textStyle_14Bold),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                const Text('с ',
+                                    style: ProjectStyles.textStyle_14Bold),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime.now())
+                                        .then((pickedDate) {
+                                      if (pickedDate == null) {
+                                        return;
+                                      }
+                                      setState(() {
+                                        dateFrom = DateFormat('yyyy-MM-dd')
+                                            .format(pickedDate);
+                                      });
+                                      if (dateFrom != '' && dateTo != '') {
+                                        searchOrder();
+                                      }
+                                    });
+                                  },
+                                  child: Text(
+                                      dateFrom == '' ? 'выбрать' : dateFrom,
+                                      style: ProjectStyles.textStyle_14Bold
+                                          .copyWith(color: ColorPalette.main)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Text(' по ',
+                                  style: ProjectStyles.textStyle_14Bold),
+                              GestureDetector(
+                                onTap: () {
+                                  showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2020),
+                                          lastDate: DateTime.now())
+                                      .then((pickedDate) {
+                                    if (pickedDate == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      dateTo = DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                    });
+                                    if (dateFrom != '' && dateTo != '') {
+                                      searchOrder();
+                                    }
+                                  });
+                                },
+                                child: Text(dateTo == '' ? 'выбрать' : dateTo,
+                                    style: ProjectStyles.textStyle_14Bold
+                                        .copyWith(color: ColorPalette.main)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
@@ -89,6 +165,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('Дата')),
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
+      const DataColumn(label: Text('Чек')),
       const DataColumn(label: Text('Показать')),
       const DataColumn(label: Text('Удалить')),
     ];
@@ -104,6 +181,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           DataCell(Text(orders[i].createdAt ?? '')),
           DataCell(Text(orders[i].productsCount.toString())),
           DataCell(Text(orders[i].totalPrice.toString())),
+          DataCell(
+            IconButton(
+              onPressed: () {
+                // TODO: I must add print report;
+              },
+              icon: const Icon(Icons.print),
+            ),
+          ),
           DataCell(
             IconButton(
               onPressed: () {
@@ -143,6 +228,19 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void searchOrder() async {
+    var response = await MainApiService()
+        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
+
+    orders = [];
+
+    for (var item in response) {
+      orders.add(SalesOrderHistoryModel.fromJson(item));
+    }
+
+    setState(() {});
   }
 
   void deleteOrderFromHistory(int id) async {
