@@ -1,3 +1,4 @@
+import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -12,6 +13,7 @@ import 'package:boszhan_trading/widgets/payment_calculator_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class NewOrderPage extends StatefulWidget {
@@ -38,10 +40,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
   List<dynamic> basket = [];
 
+  String scannedBarcode = '';
+  List<ProductMain> products = [];
+
   @override
   void initState() {
     _init();
     checkLogin();
+    getProducts();
     super.initState();
   }
 
@@ -69,6 +75,18 @@ class _NewOrderPageState extends State<NewOrderPage> {
         .whenComplete(() => mounted ? showProductDialog() : null);
   }
 
+  void getProducts() async {
+    try {
+      var responseProducts = await MainApiService().getProducts();
+
+      for (var i in responseProducts) {
+        products.add(ProductMain.fromJson(i));
+      }
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -83,159 +101,173 @@ class _NewOrderPageState extends State<NewOrderPage> {
       return ColorPalette.main;
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          setBackgroundImage(),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CustomAppBar(),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text("Новый заказ",
-                              style: ProjectStyles.textStyle_30Bold),
-                          const Spacer(),
-                          customTextButton(
-                            () {
-                              if (basket.isNotEmpty && isButtonActive) {
-                                createOrder();
-                              }
-                            },
-                            title: 'Сохранить',
-                            width: 200,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Магазин: $storeName',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Склад: $storageName',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Организация: $organizationName',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Продавец: $name',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'От: $createdTime',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Онлайн продажа:',
-                                    style: ProjectStyles.textStyle_14Medium,
-                                  ),
-                                  Checkbox(
-                                    checkColor: Colors.white,
-                                    fillColor:
-                                        MaterialStateProperty.resolveWith(
-                                            getColor),
-                                    value: isOnlineSale,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isOnlineSale = value!;
-                                      });
-                                    },
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Контрагент: $counteragentName',
-                                    style: ProjectStyles.textStyle_14Medium,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  IconButton(
-                                      onPressed: () {
-                                        showCounteragentDialog();
-                                      },
-                                      icon: const Icon(Icons.edit))
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Text("Товары:",
-                              style: ProjectStyles.textStyle_22Bold),
-                          IconButton(
-                              onPressed: () {
-                                showProductDialog();
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (event) {
+        if (event is RawKeyDownEvent) {
+          if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+            addProductFromScanner(scannedBarcode);
+            scannedBarcode = '';
+          } else {
+            scannedBarcode += event.data.keyLabel;
+          }
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            setBackgroundImage(),
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomAppBar(),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text("Новый заказ",
+                                style: ProjectStyles.textStyle_30Bold),
+                            const Spacer(),
+                            customTextButton(
+                              () {
+                                if (basket.isNotEmpty && isButtonActive) {
+                                  createOrder();
+                                }
                               },
-                              icon: const Icon(Icons.add_circle))
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 600,
-                        child: SingleChildScrollView(
-                          child: Material(
-                            elevation: 3,
-                            child: Container(
-                              color: ColorPalette.white,
-                              width: double.infinity,
-                              child: _createDataTable(),
+                              title: 'Сохранить',
+                              width: 200,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Магазин: $storeName',
+                                  style: ProjectStyles.textStyle_14Medium,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Склад: $storageName',
+                                  style: ProjectStyles.textStyle_14Medium,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Организация: $organizationName',
+                                  style: ProjectStyles.textStyle_14Medium,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Продавец: $name',
+                                  style: ProjectStyles.textStyle_14Medium,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'От: $createdTime',
+                                  style: ProjectStyles.textStyle_14Medium,
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Онлайн продажа:',
+                                      style: ProjectStyles.textStyle_14Medium,
+                                    ),
+                                    Checkbox(
+                                      checkColor: Colors.white,
+                                      fillColor:
+                                          MaterialStateProperty.resolveWith(
+                                              getColor),
+                                      value: isOnlineSale,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          isOnlineSale = value!;
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Контрагент: $counteragentName',
+                                      style: ProjectStyles.textStyle_14Medium,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    IconButton(
+                                        onPressed: () {
+                                          showCounteragentDialog();
+                                        },
+                                        icon: const Icon(Icons.edit))
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Text("Товары:",
+                                style: ProjectStyles.textStyle_22Bold),
+                            IconButton(
+                                onPressed: () {
+                                  showProductDialog();
+                                },
+                                icon: const Icon(Icons.add_circle))
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 600,
+                          child: SingleChildScrollView(
+                            child: Material(
+                              elevation: 3,
+                              child: Container(
+                                color: ColorPalette.white,
+                                width: double.infinity,
+                                child: _createDataTable(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: $sum тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${calculateNDS(sum)} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
-                    ],
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Spacer(),
+                            Text(
+                              'Сумма с НДС: $sum тг',
+                              style: ProjectStyles.textStyle_14Bold,
+                            ),
+                            const Spacer(),
+                            Text(
+                              'НДС: ${calculateNDS(sum)} тг',
+                              style: ProjectStyles.textStyle_14Bold,
+                            ),
+                            const Spacer(),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -281,6 +313,40 @@ class _NewOrderPageState extends State<NewOrderPage> {
           )
         ]),
     ];
+  }
+
+  void addProductFromScanner(String barcode) async {
+    for (var product in products) {
+      if (product.barcode == barcode) {
+        bool inBasket = false;
+        int index = 0;
+        for (int j = 0; j < basket.length; j++) {
+          if (basket[j]['id'] == product.id) {
+            inBasket = true;
+            index = j;
+          }
+        }
+        if (inBasket) {
+          basket[index]['count'] = basket[index]['count'] + 1;
+        } else {
+          basket.add({
+            "id": product.id,
+            "name": product.name,
+            "id_1c": product.id_1c,
+            "article": product.article,
+            "price": product.price,
+            "measure": product.measure,
+            "count": 1
+          });
+        }
+      }
+    }
+
+    sum = 0;
+    for (var item in basket) {
+      sum += item['count'] * item['price'];
+    }
+    setState(() {});
   }
 
   void showProductDialog() async {
