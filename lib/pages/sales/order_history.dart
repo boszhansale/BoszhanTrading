@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
 import 'package:boszhan_trading/pages/sales/sales_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
@@ -6,6 +8,7 @@ import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
+import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -184,7 +187,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           DataCell(
             IconButton(
               onPressed: () {
-                // TODO: I must add print report;
+                orders[i].printUrl != null
+                    ? js.context.callMethod('open', [orders[i].printUrl])
+                    : showCustomSnackBar(context, 'Чек отсутствует!');
               },
               icon: const Icon(Icons.print),
             ),
