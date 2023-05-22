@@ -316,8 +316,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addProductFromScanner(String barcode) async {
+    bool isExist = false;
     for (var product in products) {
       if (product.barcode == barcode) {
+        isExist = true;
         bool inBasket = false;
         int index = 0;
         for (int j = 0; j < basket.length; j++) {
@@ -340,6 +342,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
           });
         }
       }
+    }
+
+    if (isExist == false) {
+      showCustomSnackBar(context, 'Данный продукт не найден...');
     }
 
     sum = 0;
