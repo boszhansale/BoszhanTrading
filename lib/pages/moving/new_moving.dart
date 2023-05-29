@@ -1,4 +1,3 @@
-import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -6,35 +5,28 @@ import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
-import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
-import 'package:boszhan_trading/widgets/order_products_selection.dart';
-import 'package:boszhan_trading/widgets/refund_reason_selection_widget.dart';
-import 'package:boszhan_trading/widgets/select_order_for_return_widget.dart';
+import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class NewReturnPage extends StatefulWidget {
-  const NewReturnPage({Key? key}) : super(key: key);
+class NewMovingPage extends StatefulWidget {
+  const NewMovingPage({Key? key}) : super(key: key);
 
   @override
-  State<NewReturnPage> createState() => _NewReturnPageState();
+  State<NewMovingPage> createState() => _NewMovingPageState();
 }
 
-class _NewReturnPageState extends State<NewReturnPage> {
+class _NewMovingPageState extends State<NewMovingPage> {
   String createdTime = '';
-  Object dayTypeSelectedValue = 1;
+  Object operationSelectedValue = 1;
 
   String name = '';
   String storeName = '';
   String storageName = '';
   String organizationName = '';
-  String counteragentName = '';
-  int counteragentId = 0;
-  int selectedOrderId = 0;
-  List<Product> selectedOrderProducts = [];
 
   dynamic selectedProduct;
 
@@ -68,6 +60,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
     storeName = user?.storeName ?? '';
     storageName = user?.storageName ?? '';
     organizationName = user?.organizationName ?? '';
+
     setState(() {});
   }
 
@@ -89,14 +82,12 @@ class _NewReturnPageState extends State<NewReturnPage> {
                     children: [
                       Row(
                         children: [
-                          const Text("Новое поступление",
+                          const Text("Новый документ перемещения",
                               style: ProjectStyles.textStyle_30Bold),
                           const Spacer(),
                           customTextButton(
                             () {
-                              if (basket.isNotEmpty &&
-                                  isButtonActive &&
-                                  selectedOrderId != 0) {
+                              if (basket.isNotEmpty && isButtonActive) {
                                 createOrder();
                               }
                             },
@@ -126,31 +117,11 @@ class _NewReturnPageState extends State<NewReturnPage> {
                                 'Организация: $organizationName',
                                 style: ProjectStyles.textStyle_14Medium,
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Продавец: $name',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
                             ],
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Заказ №: ${selectedOrderId != 0 ? selectedOrderId : ''}',
-                                    style: ProjectStyles.textStyle_14Medium,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  IconButton(
-                                      onPressed: () {
-                                        showOrderSelectionDialog();
-                                      },
-                                      icon: const Icon(Icons.edit))
-                                ],
-                              ),
-                              const SizedBox(height: 10),
                               Text(
                                 'От: $createdTime',
                                 style: ProjectStyles.textStyle_14Medium,
@@ -158,37 +129,22 @@ class _NewReturnPageState extends State<NewReturnPage> {
                               const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  Text(
-                                    'Контрагент: $counteragentName',
-                                    style: ProjectStyles.textStyle_14Medium,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  IconButton(
-                                      onPressed: () {
-                                        showCounteragentDialog();
-                                      },
-                                      icon: const Icon(Icons.edit)),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
+                                  const Text(
                                     'Операция:',
                                     style: ProjectStyles.textStyle_14Medium,
                                   ),
                                   const SizedBox(width: 10),
                                   DropdownButton(
-                                    value: dayTypeSelectedValue,
+                                    value: operationSelectedValue,
                                     items: const [
                                       DropdownMenuItem(
-                                          child: Text("День в день"), value: 1),
+                                          child: Text("Со склада"), value: 1),
                                       DropdownMenuItem(
-                                          child: Text("Не день в день"),
-                                          value: 2),
+                                          child: Text("На склад"), value: 2),
                                     ],
                                     onChanged: (Object? newValue) {
                                       setState(() {
-                                        dayTypeSelectedValue = newValue!;
+                                        operationSelectedValue = newValue!;
                                       });
                                     },
                                   )
@@ -205,12 +161,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
                               style: ProjectStyles.textStyle_22Bold),
                           IconButton(
                               onPressed: () {
-                                if (selectedOrderId != 0) {
-                                  showProductDialog();
-                                } else {
-                                  showCustomSnackBar(
-                                      context, 'Выберите заказ.');
-                                }
+                                showProductDialog();
                               },
                               icon: const Icon(Icons.add_circle))
                         ],
@@ -299,60 +250,14 @@ class _NewReturnPageState extends State<NewReturnPage> {
     ];
   }
 
-  void showOrderSelectionDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Выберите заказ'),
-          content: SelectOrderForReturnWidget(
-            selectOrder: selectOrder,
-            isShowTodaysOrders: dayTypeSelectedValue == 1 ? true : false,
-          ),
-        );
-      },
-    );
-  }
-
-  void selectOrder(int index, List<Product> products) async {
-    selectedOrderId = index;
-    selectedOrderProducts = products;
-    setState(() {});
-  }
-
-  void showReasonDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Причина возврата'),
-          content: RefundReasonSelectionWidget(
-            selectReason: selectReason,
-          ),
-        );
-      },
-    );
-  }
-
-  void selectReason(int index) async {
-    selectedProduct['reason_refund_id'] = index;
-    basket.add(selectedProduct);
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
-    }
-    setState(() {});
-  }
-
   void showProductDialog() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Добавление продукта'),
-          content: OrderProductsSelectionWidget(
+          content: ProductsListWidget(
             addToBasket: addToBasket,
-            products: selectedOrderProducts,
           ),
         );
       },
@@ -361,26 +266,12 @@ class _NewReturnPageState extends State<NewReturnPage> {
 
   void addToBasket(dynamic product) async {
     selectedProduct = product;
-    showReasonDialog();
-  }
 
-  void showCounteragentDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Выберите контрагента:'),
-          content: CounteragentSelectionWidget(
-            selectCounteragent: selectCounteragent,
-          ),
-        );
-      },
-    );
-  }
-
-  void selectCounteragent(int id, String name) async {
-    counteragentId = id;
-    counteragentName = name;
+    basket.add(selectedProduct);
+    sum = 0;
+    for (var item in basket) {
+      sum += item['count'] * item['price'];
+    }
     setState(() {});
   }
 
@@ -391,17 +282,13 @@ class _NewReturnPageState extends State<NewReturnPage> {
       sendBasketList.add({
         'product_id': item['id'],
         'count': item['count'],
-        'reason_refund_id': item['reason_refund_id']
+        'price': item['price'],
       });
     }
 
     try {
-      var response = await MainApiService().createReturnOrder(
-          selectedOrderId,
-          1,
-          sendBasketList,
-          counteragentId,
-          int.parse(dayTypeSelectedValue.toString()));
+      var response = await MainApiService().createMovingOrder(
+          int.parse(operationSelectedValue.toString()), sendBasketList);
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

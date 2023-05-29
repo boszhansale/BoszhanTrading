@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
@@ -15,6 +17,7 @@ import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewOrderPage extends StatefulWidget {
   const NewOrderPage({Key? key}) : super(key: key);
@@ -24,6 +27,7 @@ class NewOrderPage extends StatefulWidget {
 }
 
 class _NewOrderPageState extends State<NewOrderPage> {
+  TextEditingController phoneController = TextEditingController();
   String createdTime = '';
 
   String name = '';
@@ -51,6 +55,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void checkLogin() async {
     final bool isAuth = await AuthRepository().isAuth();
     if (!isAuth) {
@@ -69,6 +78,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
     storageName = user?.storageName ?? '';
     organizationName = user?.organizationName ?? '';
 
+    loadBasket();
+
     setState(() {});
 
     Future.delayed(const Duration(milliseconds: 500))
@@ -84,6 +95,23 @@ class _NewOrderPageState extends State<NewOrderPage> {
       }
     } catch (error) {
       showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  void saveBasket() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (basket.isNotEmpty) {
+      prefs.setString('SalesBasket', jsonEncode(basket));
+    }
+  }
+
+  void loadBasket() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String basketString = prefs.getString('SalesBasket') ?? '[]';
+
+    if (basketString != '[]') {
+      basket = jsonDecode(basketString);
     }
   }
 
@@ -214,6 +242,31 @@ class _NewOrderPageState extends State<NewOrderPage> {
                                         icon: const Icon(Icons.edit))
                                   ],
                                 ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Дисконтная карта (тел.): +7',
+                                      style: ProjectStyles.textStyle_14Medium,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 25),
+                                      child: SizedBox(
+                                        width: 150,
+                                        child: TextField(
+                                          controller: phoneController,
+                                          maxLength: 10,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Номер',
+                                          ),
+                                          style:
+                                              ProjectStyles.textStyle_14Regular,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             )
                           ],
@@ -250,12 +303,12 @@ class _NewOrderPageState extends State<NewOrderPage> {
                             const Spacer(),
                             Text(
                               'Сумма с НДС: $sum тг',
-                              style: ProjectStyles.textStyle_14Bold,
+                              style: ProjectStyles.textStyle_30Bold,
                             ),
                             const Spacer(),
                             Text(
                               'НДС: ${calculateNDS(sum)} тг',
-                              style: ProjectStyles.textStyle_14Bold,
+                              style: ProjectStyles.textStyle_30Bold,
                             ),
                             const Spacer(),
                           ],
@@ -352,6 +405,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
     for (var item in basket) {
       sum += item['count'] * item['price'];
     }
+    saveBasket();
     setState(() {});
   }
 
@@ -375,6 +429,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
     for (var item in basket) {
       sum += item['count'] * item['price'];
     }
+
+    saveBasket();
     setState(() {});
   }
 
@@ -407,7 +463,11 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
     try {
       var response = await MainApiService().createSalesOrder(
-          isOnlineSale ? 1 : 0, 1, sendBasketList, counteragentId);
+          isOnlineSale ? 1 : 0,
+          1,
+          sendBasketList,
+          counteragentId,
+          phoneController.text);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

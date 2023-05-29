@@ -148,6 +148,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                 TextField(
                   controller: countController,
                   decoration: const InputDecoration(hintText: 'Колличество'),
+                  autofocus: true,
                 ),
                 const SizedBox(
                   height: 30,

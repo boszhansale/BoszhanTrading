@@ -1,3 +1,4 @@
+import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -12,7 +13,7 @@ class SelectOrderForReturnWidget extends StatefulWidget {
     required this.isShowTodaysOrders,
   }) : super(key: key);
 
-  final Function(int) selectOrder;
+  final Function(int, List<Product>) selectOrder;
   final isShowTodaysOrders;
 
   @override
@@ -155,7 +156,8 @@ class _SelectOrderForReturnWidgetState
                 trailing: IconButton(
                   icon: const Icon(Icons.check_circle),
                   onPressed: () {
-                    widget.selectOrder(dataList[index].id);
+                    widget.selectOrder(
+                        dataList[index].id, dataList[index].products);
                     Navigator.of(context).pop();
                   },
                 ),

@@ -1,5 +1,5 @@
-import 'package:boszhan_trading/models/return_order_history_model.dart';
-import 'package:boszhan_trading/pages/returns/return_order_history_products.dart';
+import 'package:boszhan_trading/models/moving_history_model.dart';
+import 'package:boszhan_trading/pages/moving/moving_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -8,15 +8,15 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
-class ReturnHistoryPage extends StatefulWidget {
-  const ReturnHistoryPage({Key? key}) : super(key: key);
+class MovingHistoryPage extends StatefulWidget {
+  const MovingHistoryPage({Key? key}) : super(key: key);
 
   @override
-  State<ReturnHistoryPage> createState() => _ReturnHistoryPageState();
+  State<MovingHistoryPage> createState() => _MovingHistoryPageState();
 }
 
-class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
-  List<ReturnOrderHistoryModel> orders = [];
+class _MovingHistoryPageState extends State<MovingHistoryPage> {
+  List<MovingOrderHistoryModel> orders = [];
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      const Text("Список моих заказов",
+                      const Text("Журнал перемещения",
                           style: ProjectStyles.textStyle_30Bold),
                       const SizedBox(height: 20),
                       SizedBox(
@@ -66,7 +66,6 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -86,9 +85,9 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
     return [
       const DataColumn(label: Text('№')),
       const DataColumn(label: Text('ID')),
-      const DataColumn(label: Text('ID заказа')),
       const DataColumn(label: Text('Тор. точка')),
       const DataColumn(label: Text('Дата')),
+      const DataColumn(label: Text('Операция')),
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Показать')),
@@ -102,9 +101,9 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
         DataRow(cells: [
           DataCell(Text('${i + 1}')),
           DataCell(Text(orders[i].id.toString())),
-          DataCell(Text(orders[i].orderId.toString())),
           DataCell(Text(orders[i].storeName ?? '')),
           DataCell(Text(orders[i].createdAt ?? '')),
+          DataCell(Text(orders[i].operation == 1 ? "Со склада" : "На склад")),
           DataCell(Text(orders[i].productsCount.toString())),
           DataCell(Text(orders[i].totalPrice.toString())),
           DataCell(
@@ -114,7 +113,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          ReturnOrderHistoryProductsPage(order: orders[i])),
+                          MovingOrderHistoryProductsPage(order: orders[i])),
                 );
               },
               icon: const Icon(Icons.list),
@@ -134,12 +133,12 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
 
   void getHistory() async {
     try {
-      var response = await MainApiService().getReturnOrderHistory();
+      var response = await MainApiService().getMovingOrderHistory();
 
       orders = [];
 
       for (var item in response) {
-        orders.add(ReturnOrderHistoryModel.fromJson(item));
+        orders.add(MovingOrderHistoryModel.fromJson(item));
       }
 
       setState(() {});
@@ -150,7 +149,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
 
   void deleteOrderFromHistory(int id) async {
     try {
-      await MainApiService().deleteReturnsOrderFromHistory(id);
+      await MainApiService().deleteMovingOrderFromHistory(id);
       getHistory();
     } catch (e) {
       print(e);

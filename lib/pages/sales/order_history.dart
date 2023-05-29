@@ -170,7 +170,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Чек')),
       const DataColumn(label: Text('Показать')),
-      const DataColumn(label: Text('Удалить')),
+      // const DataColumn(label: Text('Удалить')),
     ];
   }
 
@@ -207,14 +207,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               icon: const Icon(Icons.list),
             ),
           ),
-          DataCell(
-            IconButton(
-              onPressed: () {
-                deleteOrderFromHistory(orders[i].id);
-              },
-              icon: const Icon(Icons.delete),
-            ),
-          )
+          // DataCell(
+          //   IconButton(
+          //     onPressed: () {
+          //       deleteOrderFromHistory(orders[i].id);
+          //     },
+          //     icon: const Icon(Icons.delete),
+          //   ),
+          // )
         ]),
     ];
   }

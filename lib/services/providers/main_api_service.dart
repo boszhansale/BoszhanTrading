@@ -68,11 +68,12 @@ class MainApiService {
   // TODO: Sales
 
   Future<Map<String, dynamic>> createSalesOrder(int onlineSale, int paymentType,
-      List<dynamic> products, int counteragentId) async {
+      List<dynamic> products, int counteragentId, String phone) async {
     Map<String, dynamic> body = {
       "online_sale": onlineSale,
       "payment_type": paymentType,
       "products": products,
+      "phone": phone,
     };
 
     if (counteragentId != 0) {
@@ -430,6 +431,73 @@ class MainApiService {
   Future<dynamic> deleteReturnProducerOrderFromHistory(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/refund-producer/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Moving
+
+  Future<Map<String, dynamic>> createMovingOrder(
+      int operation, List<dynamic> products) async {
+    Map<String, dynamic> body = {
+      "payment_type": 1,
+      "operation": operation,
+      "products": products,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/moving'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getMovingOrderHistory() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/moving/history'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> deleteMovingOrderFromHistory(int id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/moving/$id'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",

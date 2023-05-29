@@ -9,6 +9,7 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -112,6 +113,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 customTextButton(
                   () {
+                    _showSimpleDialogForMoving(context);
+                  },
+                  title: 'Перемещение',
+                ),
+                customTextButton(
+                  () {
                     _showSimpleDialogForKKM(context);
                   },
                   title: 'ККМ',
@@ -147,7 +154,7 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/sales/new');
+                checkBasketType();
               },
               child: const Text('Новая продажа',
                   style: ProjectStyles.textStyle_18Medium),
@@ -158,6 +165,53 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pushNamed('/sales/history');
               },
               child: const Text('Журнал продаж',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void checkBasketType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var basketString = prefs.getString('SalesBasket');
+
+    if (basketString == '[]') {
+      Navigator.of(context).pushNamed('/sales/new');
+    } else {
+      _showAlertOnSales(context);
+    }
+  }
+
+  void deleteBasket() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('SalesBasket', '[]');
+  }
+
+  Future<void> _showAlertOnSales(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите действие',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/sales/new');
+              },
+              child: const Text('Продолжить заказ',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                deleteBasket();
+                Navigator.of(context).pushNamed('/sales/new');
+              },
+              child: const Text('Новый заказ',
                   style: ProjectStyles.textStyle_18Medium),
             ),
           ],
@@ -344,6 +398,36 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
               },
               child: const Text('Нет', style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSimpleDialogForMoving(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите действие',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/moving/new');
+              },
+              child: const Text('Новый документ перемещения',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/moving/history');
+              },
+              child: const Text('Журнал перемещения',
+                  style: ProjectStyles.textStyle_18Medium),
             ),
           ],
         );

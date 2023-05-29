@@ -358,7 +358,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
           bank,
           sendBasketList,
           counteragentId);
-      print(response);
+      // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));

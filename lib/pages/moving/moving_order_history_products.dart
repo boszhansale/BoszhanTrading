@@ -1,4 +1,4 @@
-import 'package:boszhan_trading/models/sales_order_history_model.dart';
+import 'package:boszhan_trading/models/moving_history_model.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
@@ -6,19 +6,19 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
-class SalesOrderHistoryProductsPage extends StatefulWidget {
-  const SalesOrderHistoryProductsPage({Key? key, required this.order})
+class MovingOrderHistoryProductsPage extends StatefulWidget {
+  const MovingOrderHistoryProductsPage({Key? key, required this.order})
       : super(key: key);
 
-  final SalesOrderHistoryModel order;
+  final MovingOrderHistoryModel order;
 
   @override
-  State<SalesOrderHistoryProductsPage> createState() =>
-      _SalesOrderHistoryProductsPageState();
+  State<MovingOrderHistoryProductsPage> createState() =>
+      MovingrOrderHistoryProductsPageState();
 }
 
-class _SalesOrderHistoryProductsPageState
-    extends State<SalesOrderHistoryProductsPage> {
+class MovingrOrderHistoryProductsPageState
+    extends State<MovingOrderHistoryProductsPage> {
   @override
   void initState() {
     checkLogin();
@@ -66,13 +66,6 @@ class _SalesOrderHistoryProductsPageState
                               style: ProjectStyles.textStyle_30Bold),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      Text("Заказ №${widget.order.id}",
-                          style: ProjectStyles.textStyle_14Medium),
-                      Text("Дата создания: ${widget.order.createdAt}",
-                          style: ProjectStyles.textStyle_14Medium),
-                      Text("Торговая точка: ${widget.order.storeName}",
-                          style: ProjectStyles.textStyle_14Medium),
                       const SizedBox(height: 20),
                       SizedBox(
                         height: 600,

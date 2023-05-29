@@ -5,6 +5,8 @@ import 'package:boszhan_trading/pages/auth/auth_page.dart';
 import 'package:boszhan_trading/pages/home_page/home_page.dart';
 import 'package:boszhan_trading/pages/incoming/incoming_history.dart';
 import 'package:boszhan_trading/pages/incoming/new_incoming.dart';
+import 'package:boszhan_trading/pages/moving/moving_history.dart';
+import 'package:boszhan_trading/pages/moving/new_moving.dart';
 import 'package:boszhan_trading/pages/return_producer/new_return_producer.dart';
 import 'package:boszhan_trading/pages/return_producer/return_producer_history.dart';
 import 'package:boszhan_trading/pages/returns/new_return.dart';
@@ -45,6 +47,8 @@ class App extends StatelessWidget {
         '/kkm/money': (context) => const DepositsOrWithdrawalsPage(),
         '/kkm/x-report': (context) => const XReportPage(),
         '/kkm/z-report': (context) => const ZReportPage(),
+        '/moving/new': (context) => const NewMovingPage(),
+        '/moving/history': (context) => const MovingHistoryPage(),
       },
     );
   }

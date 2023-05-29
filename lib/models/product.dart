@@ -35,4 +35,16 @@ class Product {
           json['reason_refund'] != null ? json['reason_refund']['title'] : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['id_1c'] = id_1c;
+    data['article'] = article;
+    data['price'] = price;
+    data['measure'] = measure;
+
+    return data;
+  }
 }

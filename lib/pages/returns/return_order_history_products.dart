@@ -67,6 +67,13 @@ class _ReturnOrderHistoryProductsPageState
                         ],
                       ),
                       const SizedBox(height: 20),
+                      Text("Заказ №${widget.order.id}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      Text("Дата создания: ${widget.order.createdAt}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      Text("Торговая точка: ${widget.order.storeName}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
                         child: SingleChildScrollView(

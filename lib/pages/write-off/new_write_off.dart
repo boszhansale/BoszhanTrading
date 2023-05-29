@@ -1,4 +1,5 @@
 import 'package:boszhan_trading/models/user.dart';
+import 'package:boszhan_trading/pages/write-off/refund_reason_write_off_widget.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/calculateNDS.dart';
@@ -8,7 +9,6 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
-import 'package:boszhan_trading/widgets/refund_reason_selection_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -234,8 +234,8 @@ class _NewWriteOffPageState extends State<NewWriteOffPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Причина возврата'),
-          content: RefundReasonSelectionWidget(
+          title: const Text('Причина списания'),
+          content: RefundReasonWriteOffWidget(
             selectReason: selectReason,
           ),
         );
@@ -243,8 +243,8 @@ class _NewWriteOffPageState extends State<NewWriteOffPage> {
     );
   }
 
-  void selectReason(int index) async {
-    selectedProduct['reason_refund_id'] = index;
+  void selectReason(String comment) async {
+    selectedProduct['reason_refund_comment'] = comment;
     basket.add(selectedProduct);
     sum = 0;
     for (var item in basket) {
@@ -279,13 +279,13 @@ class _NewWriteOffPageState extends State<NewWriteOffPage> {
       sendBasketList.add({
         'product_id': item['id'],
         'count': item['count'],
-        'reason_refund_id': item['reason_refund_id'],
+        'comment': item['reason_refund_comment'],
       });
     }
 
     try {
       var response = await MainApiService().createWriteOffOrder(sendBasketList);
-      print(response);
+      // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
