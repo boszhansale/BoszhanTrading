@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 customTextButton(
                   () {
-                    print(123);
+                    _showSimpleDialogForInventory(context);
                   },
                   title: 'Инвентаризация',
                 ),
@@ -427,6 +427,36 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pushNamed('/moving/history');
               },
               child: const Text('Журнал перемещения',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSimpleDialogForInventory(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите действие',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/inventory/new');
+              },
+              child: const Text('Новый документ инвентаризации',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/inventory/history');
+              },
+              child: const Text('Журнал инвентаризации',
                   style: ProjectStyles.textStyle_18Medium),
             ),
           ],

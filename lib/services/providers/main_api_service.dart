@@ -320,7 +320,6 @@ class MainApiService {
   Future<Map<String, dynamic>> createWriteOffOrder(
       List<dynamic> products) async {
     Map<String, dynamic> body = {
-      "payment_type": 1,
       "products": products,
     };
 
@@ -498,6 +497,71 @@ class MainApiService {
   Future<dynamic> deleteMovingOrderFromHistory(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/moving/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Inventory
+
+  Future<dynamic> getInventoryProducts() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/inventory'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<Map<String, dynamic>> createInventoryOrder(
+      List<dynamic> products) async {
+    Map<String, dynamic> body = {
+      "products": products,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/inventory'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getInventoryOrderHistory() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/inventory/history'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
