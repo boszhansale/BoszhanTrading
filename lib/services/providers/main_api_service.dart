@@ -578,6 +578,32 @@ class MainApiService {
     }
   }
 
+  Future<Map<String, dynamic>> addProductToInventoryOrder(
+      int productId, double count) async {
+    Map<String, dynamic> body = {
+      "product_id": productId,
+      "count": count,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/inventory/add-receipt'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   // TODO: Counteragents
 
   Future<dynamic> getCounteragents() async {

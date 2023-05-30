@@ -99,11 +99,10 @@ class MovingrOrderHistoryProductsPageState
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('№')),
-      // const DataColumn(label: Text('Код')),
-      // const DataColumn(label: Text('Артикуль')),
-      // const DataColumn(label: Text('Название')),
-      // const DataColumn(label: Text('Ед.')),
-      // const DataColumn(label: Text('Цена')),
+      const DataColumn(label: Text('Код')),
+      const DataColumn(label: Text('Артикуль')),
+      const DataColumn(label: Text('Название')),
+      const DataColumn(label: Text('Ед.')),
       const DataColumn(label: Text('Колличество')),
       const DataColumn(label: Text('Поступление')),
       const DataColumn(label: Text('Продажа')),
@@ -117,11 +116,10 @@ class MovingrOrderHistoryProductsPageState
       for (int i = 0; i < widget.order.products.length; i++)
         DataRow(cells: [
           DataCell(Text('${i + 1}')),
-          // DataCell(Text(widget.order.products[i].id_1c ?? '')),
-          // DataCell(Text(widget.order.products[i].article ?? '')),
-          // DataCell(Text(widget.order.products[i].name ?? '')),
-          // DataCell(Text(widget.order.products[i].measure)),
-          // DataCell(Text('${widget.order.products[i].price.toString()} тг')),
+          DataCell(Text(widget.order.products[i].id_1c ?? '')),
+          DataCell(Text(widget.order.products[i].article ?? '')),
+          DataCell(Text(widget.order.products[i].name ?? '')),
+          DataCell(Text(widget.order.products[i].measure)),
           DataCell(Text(widget.order.products[i].count.toString())),
           DataCell(Text(widget.order.products[i].receipt.toString())),
           DataCell(Text(widget.order.products[i].sale.toString())),

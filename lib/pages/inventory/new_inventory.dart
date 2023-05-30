@@ -1,3 +1,4 @@
+import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -31,11 +32,15 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   List<dynamic> basket = [];
 
+  List<ProductMain> products = [];
+  String scannedBarcode = '';
+
   List<TextEditingController> basketTextFields = [];
 
   @override
   void initState() {
     getInventoryProducts();
+    getProducts();
     checkLogin();
     super.initState();
   }
@@ -52,70 +57,84 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          setBackgroundImage(),
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CustomAppBar(),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text("Новый документ инвентаризации",
-                              style: ProjectStyles.textStyle_30Bold),
-                          const Spacer(),
-                          customTextButton(
-                            () {
-                              if (isButtonActive) {
-                                createOrder();
-                              }
-                            },
-                            title: 'Сохранить',
-                            width: 200,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Text("Товары:",
-                              style: ProjectStyles.textStyle_22Bold),
-                          // IconButton(
-                          //     onPressed: () {
-                          //       showProductDialog();
-                          //     },
-                          //     icon: const Icon(Icons.add_circle))
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 600,
-                        child: SingleChildScrollView(
-                          child: Material(
-                            elevation: 3,
-                            child: Container(
-                              color: ColorPalette.white,
-                              width: double.infinity,
-                              child: _createDataTable(),
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (event) {
+        if (event is RawKeyDownEvent) {
+          if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+            addProductFromScanner(scannedBarcode);
+            scannedBarcode = '';
+          } else {
+            scannedBarcode += event.data.keyLabel;
+          }
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            setBackgroundImage(),
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomAppBar(),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text("Новый документ инвентаризации",
+                                style: ProjectStyles.textStyle_30Bold),
+                            const Spacer(),
+                            customTextButton(
+                              () {
+                                if (isButtonActive) {
+                                  createOrder();
+                                }
+                              },
+                              title: 'Сохранить',
+                              width: 200,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Text("Товары:",
+                                style: ProjectStyles.textStyle_22Bold),
+                            IconButton(
+                                onPressed: () {
+                                  showProductDialog();
+                                },
+                                icon: const Icon(Icons.add_circle))
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 600,
+                          child: SingleChildScrollView(
+                            child: Material(
+                              elevation: 3,
+                              child: Container(
+                                color: ColorPalette.white,
+                                width: double.infinity,
+                                child: _createDataTable(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -147,7 +166,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       for (int i = 0; i < basket.length; i++)
         DataRow(cells: [
           DataCell(Text('${i + 1}')),
-          DataCell(Text(basket[i]['id_1c'] ?? '')),
+          DataCell(Text(basket[i]['product_id'].toString() ?? '')),
           DataCell(Text(basket[i]['article'] ?? '')),
           DataCell(Text(basket[i]['name'] ?? '')),
           // DataCell(Text(basket[i]['measure'])),
@@ -200,8 +219,20 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   void addToBasket(dynamic product) async {
     selectedProduct = product;
 
-    basket.add(selectedProduct);
-    setState(() {});
+    addProduct(selectedProduct['id'], selectedProduct['count']);
+  }
+
+  void addProduct(int productId, double count) async {
+    try {
+      var response =
+          await MainApiService().addProductToInventoryOrder(productId, count);
+
+      getInventoryProducts();
+    } catch (e) {
+      isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
   }
 
   void createOrder() async {
@@ -215,7 +246,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     List<dynamic> sendBasketList = [];
     for (int i = 0; i < basket.length; i++) {
       var tempMap = basket[i];
-      tempMap['count'] = basketTextFields[i];
+      tempMap['count'] = basketTextFields[i].text;
       sendBasketList.add(tempMap);
     }
 
@@ -237,6 +268,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     try {
       var response = await MainApiService().getInventoryProducts();
       basket = response;
+      basketTextFields = [];
       setState(() {});
       for (var i in response) {
         basketTextFields.add(TextEditingController());
@@ -244,6 +276,45 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
+    }
+  }
+
+  void getProducts() async {
+    try {
+      var responseProducts = await MainApiService().getProducts();
+
+      for (var i in responseProducts) {
+        products.add(ProductMain.fromJson(i));
+      }
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  void addProductFromScanner(String barcode) async {
+    bool isExist = false;
+    for (var product in products) {
+      if (product.barcode == barcode) {
+        isExist = true;
+        bool inBasket = false;
+        // int index = 0;
+        // for (int j = 0; j < basket.length; j++) {
+        //   if (basket[j]['id'] == product.id) {
+        //     inBasket = true;
+        //     index = j;
+        //   }
+        // }
+        if (inBasket) {
+          showCustomSnackBar(context, 'Данный продукт уже добавлен...');
+          // basket[index]['count'] = basket[index]['count'] + 1;
+        } else {
+          addProduct(product.id, 1);
+        }
+      }
+    }
+
+    if (isExist == false) {
+      showCustomSnackBar(context, 'Данный продукт не найден...');
     }
   }
 }
