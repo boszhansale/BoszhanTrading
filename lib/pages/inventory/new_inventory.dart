@@ -331,6 +331,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                             : basketTextFields[index].text) +
                     1)
                 .toString();
+            setState(() {});
           } else {
             showCustomSnackBar(
                 context, 'Данный продукт не находится в списке поступлении.');
