@@ -35,6 +35,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   List<ProductMain> products = [];
   String scannedBarcode = '';
 
+  bool dialogIsActive = false;
+
   List<TextEditingController> basketTextFields = [];
 
   @override
@@ -156,6 +158,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       const DataColumn(label: Text('Продажа')),
       const DataColumn(label: Text('Остатки')),
       const DataColumn(label: Text('Колличество')),
+      const DataColumn(label: Text('Разница')),
       // const DataColumn(label: Text('Сумма')),
       // const DataColumn(label: Text('Удалить')),
     ];
@@ -184,10 +187,22 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                 decoration: const InputDecoration(hintText: 'кл.'),
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
-                ], // Only numbers can be entered
+                ],
+                onChanged: (value) {
+                  setState(() {});
+                },
               ),
             ),
           )),
+          DataCell(
+            Text(
+              (double.parse(basket[i]['remains'].toString()) -
+                      double.parse(basketTextFields[i].text == ''
+                          ? '0'
+                          : basketTextFields[i].text))
+                  .toString(),
+            ),
+          ),
           // DataCell(Text('${basket[i]['price'] * basket[i]['count']} тг')),
           // DataCell(
           //   IconButton(
@@ -203,6 +218,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void showProductDialog() async {
+    dialogIsActive = true;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -213,7 +230,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           ),
         );
       },
-    );
+    ).whenComplete(() => dialogIsActive = false);
   }
 
   void addToBasket(dynamic product) async {
@@ -297,18 +314,28 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       if (product.barcode == barcode) {
         isExist = true;
         bool inBasket = false;
-        // int index = 0;
-        // for (int j = 0; j < basket.length; j++) {
-        //   if (basket[j]['id'] == product.id) {
-        //     inBasket = true;
-        //     index = j;
-        //   }
-        // }
-        if (inBasket) {
-          showCustomSnackBar(context, 'Данный продукт уже добавлен...');
-          // basket[index]['count'] = basket[index]['count'] + 1;
-        } else {
+        int index = 0;
+        for (int j = 0; j < basket.length; j++) {
+          if (basket[j]['product_id'] == product.id) {
+            inBasket = true;
+            index = j;
+          }
+        }
+        if (dialogIsActive) {
           addProduct(product.id, 1);
+        } else {
+          if (inBasket) {
+            basketTextFields[index].text = (double.parse(
+                        basketTextFields[index].text == ''
+                            ? '0'
+                            : basketTextFields[index].text) +
+                    1)
+                .toString();
+          } else {
+            showCustomSnackBar(
+                context, 'Данный продукт не находится в списке поступлении.');
+            // addProduct(product.id, 1);
+          }
         }
       }
     }
