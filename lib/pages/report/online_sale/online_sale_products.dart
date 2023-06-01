@@ -1,4 +1,4 @@
-import 'package:boszhan_trading/models/inventory_order_history_model.dart';
+import 'package:boszhan_trading/models/online_sale_model.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
@@ -6,19 +6,17 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
-class InventoryOrderHistoryProductsPage extends StatefulWidget {
-  const InventoryOrderHistoryProductsPage({Key? key, required this.order})
+class OnlineSaleProductsPage extends StatefulWidget {
+  const OnlineSaleProductsPage({Key? key, required this.order})
       : super(key: key);
 
-  final InventoryOrderHistoryModel order;
+  final OnlineSaleOrderModel order;
 
   @override
-  State<InventoryOrderHistoryProductsPage> createState() =>
-      MovingrOrderHistoryProductsPageState();
+  State<OnlineSaleProductsPage> createState() => _OnlineSaleProductsPageState();
 }
 
-class MovingrOrderHistoryProductsPageState
-    extends State<InventoryOrderHistoryProductsPage> {
+class _OnlineSaleProductsPageState extends State<OnlineSaleProductsPage> {
   @override
   void initState() {
     checkLogin();
@@ -67,6 +65,11 @@ class MovingrOrderHistoryProductsPageState
                         ],
                       ),
                       const SizedBox(height: 20),
+                      Text("Дата создания: ${widget.order.createdAt}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      Text("Дисконтная карта №${widget.order.discountPhone}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
                         child: SingleChildScrollView(
@@ -81,6 +84,21 @@ class MovingrOrderHistoryProductsPageState
                         ),
                       ),
                       const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          Text(
+                            'Сумма с НДС: ${widget.order.totalPrice} тг',
+                            style: ProjectStyles.textStyle_14Bold,
+                          ),
+                          const Spacer(),
+                          Text(
+                            'НДС: ${widget.order.totalPrice * 0.12} тг',
+                            style: ProjectStyles.textStyle_14Bold,
+                          ),
+                          const Spacer(),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -103,11 +121,9 @@ class MovingrOrderHistoryProductsPageState
       const DataColumn(label: Text('Артикуль')),
       const DataColumn(label: Text('Название')),
       const DataColumn(label: Text('Ед.')),
+      const DataColumn(label: Text('Цена')),
       const DataColumn(label: Text('Колличество')),
-      const DataColumn(label: Text('Кол-во факт')),
-      const DataColumn(label: Text('Недостачи')),
-      const DataColumn(label: Text('Остатки')),
-      const DataColumn(label: Text('Сумма остат.')),
+      const DataColumn(label: Text('Сумма')),
     ];
   }
 
@@ -120,11 +136,9 @@ class MovingrOrderHistoryProductsPageState
           DataCell(Text(widget.order.products[i].article ?? '')),
           DataCell(Text(widget.order.products[i].name ?? '')),
           DataCell(Text(widget.order.products[i].measure)),
+          DataCell(Text('${widget.order.products[i].price.toString()} тг')),
           DataCell(Text(widget.order.products[i].count.toString())),
-          DataCell(Text(widget.order.products[i].remains.toString())),
-          DataCell(Text(widget.order.products[i].sale.toString())),
-          DataCell(Text(widget.order.products[i].shortage.toString())),
-          DataCell(Text(widget.order.products[i].shortagePrice.toString())),
+          DataCell(Text(widget.order.products[i].allPrice.toString())),
         ]),
     ];
   }

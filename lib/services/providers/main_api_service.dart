@@ -733,4 +733,89 @@ class MainApiService {
       throw Exception(responseJson['message']);
     }
   }
+
+  // TODO: Report
+
+  Future<dynamic> getRemainProducts() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/report/remains'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getDiscountCardReport(String phone) async {
+    String url = '$baseUrl/report/discount-card';
+    if (phone != '') {
+      url += '?search=$phone';
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getOnlineSaleReport() async {
+    String url = '$baseUrl/report/order';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getProductsReport(String dateFrom, String dateTo) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/report/product?date_from=$dateFrom&date_to=$dateTo'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
 }

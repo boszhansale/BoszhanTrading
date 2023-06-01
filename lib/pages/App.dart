@@ -9,6 +9,10 @@ import 'package:boszhan_trading/pages/inventory/inventory_history.dart';
 import 'package:boszhan_trading/pages/inventory/new_inventory.dart';
 import 'package:boszhan_trading/pages/moving/moving_history.dart';
 import 'package:boszhan_trading/pages/moving/new_moving.dart';
+import 'package:boszhan_trading/pages/report/discount_card/discount_card_report.dart';
+import 'package:boszhan_trading/pages/report/online_sale/online_sale_report.dart';
+import 'package:boszhan_trading/pages/report/product_report_page.dart';
+import 'package:boszhan_trading/pages/report/remains_report_page.dart';
 import 'package:boszhan_trading/pages/return_producer/new_return_producer.dart';
 import 'package:boszhan_trading/pages/return_producer/return_producer_history.dart';
 import 'package:boszhan_trading/pages/returns/new_return.dart';
@@ -53,6 +57,10 @@ class App extends StatelessWidget {
         '/moving/history': (context) => const MovingHistoryPage(),
         '/inventory/new': (context) => const NewInventoryPage(),
         '/inventory/history': (context) => const InventoryHistoryPage(),
+        '/report/remains': (context) => const RemainsReportPage(),
+        '/report/discount-card': (context) => const DiscountCardReportPage(),
+        '/report/online-sale': (context) => const OnlineSaleReportReportPage(),
+        '/report/product': (context) => const ProductReportPage(),
       },
     );
   }

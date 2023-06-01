@@ -18,6 +18,21 @@ class ProjectStyles {
     fontSize: 10,
     color: ColorPalette.black,
   );
+  static const TextStyle textStyle_12Regular = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    color: ColorPalette.black,
+  );
+  static const TextStyle textStyle_12Medium = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    color: ColorPalette.black,
+  );
+  static const TextStyle textStyle_12Bold = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 12,
+    color: ColorPalette.black,
+  );
   static const TextStyle textStyle_14Regular = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 14,

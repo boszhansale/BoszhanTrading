@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 customTextButton(
                   () {
-                    print(123);
+                    _showSimpleDialogForReport(context);
                   },
                   title: 'Отчеты',
                 ),
@@ -457,6 +457,68 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pushNamed('/inventory/history');
               },
               child: const Text('Журнал инвентаризации',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSimpleDialogForReport(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите действие',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/report/remains');
+              },
+              child: const Text('Остатки товаров',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/report/discount-card');
+              },
+              child: const Text('Продажи по дисконтным картам',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/report/online-sale');
+              },
+              child: const Text('Онлайн продажи',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/inventory/history');
+              },
+              child: const Text('Отчет инвентаризации',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/sales/history');
+              },
+              child: const Text('Отчет по продажам',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/report/product');
+              },
+              child: const Text('Товарный отчет в разрезе',
                   style: ProjectStyles.textStyle_18Medium),
             ),
           ],
