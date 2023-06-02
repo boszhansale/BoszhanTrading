@@ -3,7 +3,10 @@ class ProductReportModel {
   final double remainsStart;
   final double remainsEnd;
   final double receipt;
+  final double receiptAll;
   final double refund;
+  final double reject;
+  final double rejectAll;
   final double refundProducer;
   final double order;
   final double movingFrom;
@@ -16,7 +19,10 @@ class ProductReportModel {
     required this.remainsStart,
     required this.remainsEnd,
     required this.receipt,
+    required this.receiptAll,
     required this.refund,
+    required this.reject,
+    required this.rejectAll,
     required this.refundProducer,
     required this.order,
     required this.movingFrom,
@@ -31,7 +37,10 @@ class ProductReportModel {
       remainsStart: double.tryParse(json['remains_start'].toString()) ?? 0,
       remainsEnd: double.tryParse(json['remains_end'].toString()) ?? 0,
       receipt: double.tryParse(json['receipt'].toString()) ?? 0,
+      receiptAll: double.tryParse(json['receipt_all'].toString()) ?? 0,
       refund: double.tryParse(json['refund'].toString()) ?? 0,
+      reject: double.tryParse(json['reject'].toString()) ?? 0,
+      rejectAll: double.tryParse(json['reject_all'].toString()) ?? 0,
       refundProducer: double.tryParse(json['refund_producer'].toString()) ?? 0,
       order: double.tryParse(json['order'].toString()) ?? 0,
       movingFrom: double.tryParse(json['moving_from'].toString()) ?? 0,

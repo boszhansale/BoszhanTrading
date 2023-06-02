@@ -204,22 +204,25 @@ class ProductReportPageState extends State<ProductReportPage> {
     return [
       for (int i = 0; i < products.length; i++)
         DataRow(cells: [
-          DataCell(Text(products[i].name.substring(
-                  0,
-                  products[i].name.length > 20
-                      ? 20
-                      : products[i].name.length) ??
-              '')),
+          DataCell(SizedBox(
+            width: 100,
+            child: Text(products[i].name.substring(
+                    0,
+                    products[i].name.length > 30
+                        ? 30
+                        : products[i].name.length) ??
+                ''),
+          )),
           DataCell(Text(products[i].remainsStart.toString())),
-          DataCell(Text(products[i].receipt.toString())),
+          DataCell(Text(products[i].receiptAll.toString())),
           DataCell(Text(products[i].refund.toString())),
-          DataCell(Text(products[i].refundProducer.toString())),
-          DataCell(Text(products[i].refundProducer.toString())),
+          DataCell(Text(products[i].receipt.toString())),
+          DataCell(Text(products[i].overage.toString())),
           DataCell(Text(products[i].movingFrom.toString())),
-          DataCell(Text(products[i].totalReceipt.toString())),
+          DataCell(Text(products[i].reject.toString())),
+          DataCell(Text(products[i].rejectAll.toString())),
           DataCell(Text(products[i].refundProducer.toString())),
-          DataCell(Text(products[i].refundProducer.toString())),
-          DataCell(Text(products[i].refundProducer.toString())),
+          DataCell(Text(products[i].order.toString())),
           DataCell(Text(products[i].movingTo.toString())),
           DataCell(Text(products[i].remainsEnd.toString())),
         ]),
