@@ -9,6 +9,7 @@ class SalesOrderHistoryModel {
   final List<Product> products;
   final String createdAt;
   final String? printUrl;
+  final String? checkNumber;
 
   SalesOrderHistoryModel({
     required this.id,
@@ -18,6 +19,7 @@ class SalesOrderHistoryModel {
     required this.products,
     required this.createdAt,
     required this.printUrl,
+    required this.checkNumber,
   });
 
   factory SalesOrderHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,9 @@ class SalesOrderHistoryModel {
           .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
       printUrl: json['webkassa_check'] != null
           ? json['webkassa_check']['ticket_print_url']
+          : null,
+      checkNumber: json['webkassa_check'] != null
+          ? json['webkassa_check']['check_number']
           : null,
     );
   }

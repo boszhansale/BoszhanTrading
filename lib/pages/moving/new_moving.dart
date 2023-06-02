@@ -9,6 +9,7 @@ import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
+import 'package:boszhan_trading/widgets/storage_selection_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,6 +28,9 @@ class _NewMovingPageState extends State<NewMovingPage> {
   String storeName = '';
   String storageName = '';
   String organizationName = '';
+
+  int sendStorageId = 0;
+  String sendStorageName = '';
 
   dynamic selectedProduct;
 
@@ -87,7 +91,9 @@ class _NewMovingPageState extends State<NewMovingPage> {
                           const Spacer(),
                           customTextButton(
                             () {
-                              if (basket.isNotEmpty && isButtonActive) {
+                              if (basket.isNotEmpty &&
+                                  isButtonActive &&
+                                  sendStorageId != 0) {
                                 createOrder();
                               }
                             },
@@ -148,6 +154,21 @@ class _NewMovingPageState extends State<NewMovingPage> {
                                       });
                                     },
                                   )
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Склад: $sendStorageName',
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                      onPressed: () {
+                                        showStorageDialog();
+                                      },
+                                      icon: const Icon(Icons.edit)),
                                 ],
                               ),
                             ],
@@ -275,6 +296,26 @@ class _NewMovingPageState extends State<NewMovingPage> {
     setState(() {});
   }
 
+  void showStorageDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите склад:'),
+          content: StorageSelectionWidget(
+            selectStorage: selectStorage,
+          ),
+        );
+      },
+    );
+  }
+
+  void selectStorage(int id, String name) async {
+    sendStorageId = id;
+    sendStorageName = name;
+    setState(() {});
+  }
+
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
@@ -288,7 +329,10 @@ class _NewMovingPageState extends State<NewMovingPage> {
 
     try {
       var response = await MainApiService().createMovingOrder(
-          int.parse(operationSelectedValue.toString()), sendBasketList);
+        int.parse(operationSelectedValue.toString()),
+        sendBasketList,
+        sendStorageId,
+      );
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

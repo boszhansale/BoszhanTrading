@@ -7,6 +7,7 @@ import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class IncomingHistoryPage extends StatefulWidget {
   const IncomingHistoryPage({Key? key}) : super(key: key);
@@ -17,6 +18,9 @@ class IncomingHistoryPage extends StatefulWidget {
 
 class _IncomingHistoryPageState extends State<IncomingHistoryPage> {
   List<IncomingOrderHistoryModel> orders = [];
+
+  String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
@@ -52,6 +56,78 @@ class _IncomingHistoryPageState extends State<IncomingHistoryPage> {
                     children: [
                       const Text("Журнал поступления товара",
                           style: ProjectStyles.textStyle_30Bold),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Дата: ',
+                              style: ProjectStyles.textStyle_14Bold),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                const Text('с ',
+                                    style: ProjectStyles.textStyle_14Bold),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime.now())
+                                        .then((pickedDate) {
+                                      if (pickedDate == null) {
+                                        return;
+                                      }
+                                      setState(() {
+                                        dateFrom = DateFormat('yyyy-MM-dd')
+                                            .format(pickedDate);
+                                      });
+                                      if (dateFrom != '' && dateTo != '') {
+                                        getHistory();
+                                      }
+                                    });
+                                  },
+                                  child: Text(
+                                      dateFrom == '' ? 'выбрать' : dateFrom,
+                                      style: ProjectStyles.textStyle_14Bold
+                                          .copyWith(color: ColorPalette.main)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Text(' по ',
+                                  style: ProjectStyles.textStyle_14Bold),
+                              GestureDetector(
+                                onTap: () {
+                                  showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2020),
+                                          lastDate: DateTime.now())
+                                      .then((pickedDate) {
+                                    if (pickedDate == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      dateTo = DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                    });
+                                    if (dateFrom != '' && dateTo != '') {
+                                      getHistory();
+                                    }
+                                  });
+                                },
+                                child: Text(dateTo == '' ? 'выбрать' : dateTo,
+                                    style: ProjectStyles.textStyle_14Bold
+                                        .copyWith(color: ColorPalette.main)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
@@ -131,7 +207,8 @@ class _IncomingHistoryPageState extends State<IncomingHistoryPage> {
 
   void getHistory() async {
     try {
-      var response = await MainApiService().getIncomingOrderHistory();
+      var response =
+          await MainApiService().getIncomingOrderHistory(dateFrom, dateTo);
 
       orders = [];
 

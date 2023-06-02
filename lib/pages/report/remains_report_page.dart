@@ -7,6 +7,7 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RemainsReportPage extends StatefulWidget {
   const RemainsReportPage({Key? key}) : super(key: key);
@@ -17,6 +18,9 @@ class RemainsReportPage extends StatefulWidget {
 
 class RemainsReportPageState extends State<RemainsReportPage> {
   List<ReportRemainProduct> products = [];
+
+  String dateFrom = '';
+  String dateTo = '';
 
   @override
   void initState() {
@@ -64,6 +68,78 @@ class RemainsReportPageState extends State<RemainsReportPage> {
                           ),
                           const Text("Остатки товаров",
                               style: ProjectStyles.textStyle_30Bold),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Дата: ',
+                              style: ProjectStyles.textStyle_14Bold),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                const Text('с ',
+                                    style: ProjectStyles.textStyle_14Bold),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime.now())
+                                        .then((pickedDate) {
+                                      if (pickedDate == null) {
+                                        return;
+                                      }
+                                      setState(() {
+                                        dateFrom = DateFormat('yyyy-MM-dd')
+                                            .format(pickedDate);
+                                      });
+                                      if (dateFrom != '' && dateTo != '') {
+                                        getProducts();
+                                      }
+                                    });
+                                  },
+                                  child: Text(
+                                      dateFrom == '' ? 'выбрать' : dateFrom,
+                                      style: ProjectStyles.textStyle_14Bold
+                                          .copyWith(color: ColorPalette.main)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Text(' по ',
+                                  style: ProjectStyles.textStyle_14Bold),
+                              GestureDetector(
+                                onTap: () {
+                                  showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2020),
+                                          lastDate: DateTime.now())
+                                      .then((pickedDate) {
+                                    if (pickedDate == null) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      dateTo = DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                    });
+                                    if (dateFrom != '' && dateTo != '') {
+                                      getProducts();
+                                    }
+                                  });
+                                },
+                                child: Text(dateTo == '' ? 'выбрать' : dateTo,
+                                    style: ProjectStyles.textStyle_14Bold
+                                        .copyWith(color: ColorPalette.main)),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -123,7 +199,7 @@ class RemainsReportPageState extends State<RemainsReportPage> {
 
   void getProducts() async {
     try {
-      var response = await MainApiService().getRemainProducts();
+      var response = await MainApiService().getRemainProducts(dateFrom, dateTo);
 
       for (var item in response) {
         products.add(ReportRemainProduct.fromJson(item));

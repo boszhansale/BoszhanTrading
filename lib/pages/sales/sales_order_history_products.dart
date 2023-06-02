@@ -73,6 +73,8 @@ class _SalesOrderHistoryProductsPageState
                           style: ProjectStyles.textStyle_14Medium),
                       Text("Торговая точка: ${widget.order.storeName}",
                           style: ProjectStyles.textStyle_14Medium),
+                      Text("Чек №: ${widget.order.checkNumber}",
+                          style: ProjectStyles.textStyle_14Medium),
                       const SizedBox(height: 20),
                       SizedBox(
                         height: 600,

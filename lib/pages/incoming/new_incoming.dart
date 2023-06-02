@@ -262,7 +262,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
           DataCell(Text('${basket[i]['price']} тг')),
           DataCell(Text('${basket[i]['newPrice']} тг')),
           DataCell(Text(
-              '${(basket[i]['price'] / basket[i]['newPrice']).toString().substring(0, 4)}%')),
+              '${(basket[i]['newPrice'] - basket[i]['price']).toString()} тг')),
           DataCell(Text(basket[i]['count'].toString())),
           DataCell(Text('${basket[i]['newPrice'] * basket[i]['count']} тг')),
           DataCell(

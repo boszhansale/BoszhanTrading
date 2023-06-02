@@ -5,6 +5,7 @@ import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
+import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
@@ -115,6 +116,11 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
                                 'Склад: $storageName',
                                 style: ProjectStyles.textStyle_14Medium,
                               ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Организация: $organizationName',
+                                style: ProjectStyles.textStyle_14Medium,
+                              ),
                             ],
                           ),
                           Column(
@@ -125,9 +131,19 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
                                 style: ProjectStyles.textStyle_14Medium,
                               ),
                               const SizedBox(height: 10),
-                              Text(
-                                'Организация: $organizationName',
-                                style: ProjectStyles.textStyle_14Medium,
+                              Row(
+                                children: [
+                                  Text(
+                                    'Контрагент: $counteragentName',
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                      onPressed: () {
+                                        showCounteragentDialog();
+                                      },
+                                      icon: const Icon(Icons.edit)),
+                                ],
                               ),
                             ],
                           ),
@@ -272,6 +288,26 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
     showReasonDialog();
   }
 
+  void showCounteragentDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите контрагента:'),
+          content: CounteragentSelectionWidget(
+            selectCounteragent: selectCounteragent,
+          ),
+        );
+      },
+    );
+  }
+
+  void selectCounteragent(int id, String name) async {
+    counteragentId = id;
+    counteragentName = name;
+    setState(() {});
+  }
+
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
@@ -284,8 +320,8 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
     }
 
     try {
-      var response =
-          await MainApiService().createReturnProducerOrder(sendBasketList);
+      var response = await MainApiService()
+          .createReturnProducerOrder(sendBasketList, counteragentId);
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

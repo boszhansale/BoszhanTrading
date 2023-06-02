@@ -19,12 +19,13 @@ class ProductReportPage extends StatefulWidget {
 class ProductReportPageState extends State<ProductReportPage> {
   List<ProductReportModel> products = [];
 
-  String dateFrom = '';
-  String dateTo = '';
+  String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
     checkLogin();
+    getProducts();
     super.initState();
   }
 

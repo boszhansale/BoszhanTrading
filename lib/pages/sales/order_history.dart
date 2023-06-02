@@ -22,13 +22,13 @@ class OrderHistoryPage extends StatefulWidget {
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
   List<SalesOrderHistoryModel> orders = [];
 
-  String dateFrom = '';
-  String dateTo = '';
+  String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
     checkLogin();
-    getHistory();
+    searchOrder();
     super.initState();
   }
 
@@ -219,22 +219,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     ];
   }
 
-  void getHistory() async {
-    try {
-      var response = await MainApiService().getSalesOrderHistory();
-
-      orders = [];
-
-      for (var item in response) {
-        orders.add(SalesOrderHistoryModel.fromJson(item));
-      }
-
-      setState(() {});
-    } catch (e) {
-      print(e);
-    }
-  }
-
   void searchOrder() async {
     var response = await MainApiService()
         .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
@@ -251,7 +235,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   void deleteOrderFromHistory(int id) async {
     try {
       await MainApiService().deleteSalesOrderFromHistory(id);
-      getHistory();
+      searchOrder();
     } catch (e) {
       print(e);
     }

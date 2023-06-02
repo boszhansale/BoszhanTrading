@@ -8,6 +8,7 @@ class Product {
   final double price;
   final String measure;
   final String? returnReasonTitle;
+  final String? returnComment;
 
   Product({
     required this.id,
@@ -19,6 +20,7 @@ class Product {
     required this.price,
     required this.measure,
     this.returnReasonTitle,
+    this.returnComment,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class Product {
       measure: json['measure'] == 1 ? "шт" : "кг",
       returnReasonTitle:
           json['reason_refund'] != null ? json['reason_refund']['title'] : null,
+      returnComment: json['comment'],
     );
   }
 

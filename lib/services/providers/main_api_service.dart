@@ -205,9 +205,15 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getReturnOrderHistory() async {
+  Future<dynamic> getReturnOrderHistory(String dateFrom, String dateTo) async {
+    String url = '$baseUrl/refund/history';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/refund/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -277,9 +283,16 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getIncomingOrderHistory() async {
+  Future<dynamic> getIncomingOrderHistory(
+      String dateFrom, String dateTo) async {
+    String url = '$baseUrl/receipt/history';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/receipt/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -342,9 +355,16 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getWriteOffOrderHistory() async {
+  Future<dynamic> getWriteOffOrderHistory(
+      String dateFrom, String dateTo) async {
+    String url = '$baseUrl/reject/history';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/reject/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -383,11 +403,15 @@ class MainApiService {
   // TODO: Return producer
 
   Future<Map<String, dynamic>> createReturnProducerOrder(
-      List<dynamic> products) async {
+      List<dynamic> products, int counteragentId) async {
     Map<String, dynamic> body = {
       "payment_type": 1,
       "products": products,
     };
+
+    if (counteragentId != 0) {
+      body["counteragent_id"] = counteragentId;
+    }
 
     final response = await http.post(
       Uri.parse('$baseUrl/refund-producer'),
@@ -408,9 +432,16 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getReturnProducerOrderHistory() async {
+  Future<dynamic> getReturnProducerOrderHistory(
+      String dateFrom, String dateTo) async {
+    String url = '$baseUrl/refund-producer/history';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/refund-producer/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -449,11 +480,12 @@ class MainApiService {
   // TODO: Moving
 
   Future<Map<String, dynamic>> createMovingOrder(
-      int operation, List<dynamic> products) async {
+      int operation, List<dynamic> products, int storageId) async {
     Map<String, dynamic> body = {
       "payment_type": 1,
       "operation": operation,
       "products": products,
+      "storage_id": storageId,
     };
 
     final response = await http.post(
@@ -475,9 +507,15 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getMovingOrderHistory() async {
+  Future<dynamic> getMovingOrderHistory(String dateFrom, String dateTo) async {
+    String url = '$baseUrl/moving/history';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/moving/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -559,9 +597,15 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getInventoryOrderHistory() async {
+  Future<dynamic> getInventoryOrderHistory(
+      String dateFrom, String dateTo) async {
+    String url = '$baseUrl/inventory/history';
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/inventory/history'),
+      Uri.parse(url),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -609,6 +653,27 @@ class MainApiService {
   Future<dynamic> getCounteragents() async {
     final response = await http.get(
       Uri.parse('$baseUrl/counteragent'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Storages
+
+  Future<dynamic> getStorages() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/storage'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -736,29 +801,10 @@ class MainApiService {
 
   // TODO: Report
 
-  Future<dynamic> getRemainProducts() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/report/remains'),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json; charset=UTF-8",
-        "Accept": "application/json",
-        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
-      },
-    );
-    var responseJson = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return responseJson;
-    } else {
-      throw Exception(responseJson['message']);
-    }
-  }
-
-  Future<dynamic> getDiscountCardReport(String phone) async {
-    String url = '$baseUrl/report/discount-card';
-    if (phone != '') {
-      url += '?search=$phone';
+  Future<dynamic> getRemainProducts(String dateFrom, String dateTo) async {
+    String url = '$baseUrl/report/remains';
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
     }
 
     final response = await http.get(
@@ -779,8 +825,44 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getOnlineSaleReport() async {
+  Future<dynamic> getDiscountCardReport(
+      String phone, String dateFrom, String dateTo) async {
+    String url = '$baseUrl/report/discount-card';
+    if (phone != '') {
+      url += '?search=$phone';
+      if (dateFrom != '' && dateTo != '') {
+        url += '&date_from=$dateFrom&date_to=$dateTo';
+      }
+    } else {
+      if (dateFrom != '' && dateTo != '') {
+        url += '?date_from=$dateFrom&date_to=$dateTo';
+      }
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> getOnlineSaleReport(String dateFrom, String dateTo) async {
     String url = '$baseUrl/report/order';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
 
     final response = await http.get(
       Uri.parse(url),
