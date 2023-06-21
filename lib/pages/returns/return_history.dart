@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/return_order_history_model.dart';
 import 'package:boszhan_trading/pages/returns/return_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
@@ -6,6 +8,7 @@ import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
+import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -54,7 +57,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      const Text("Журнал возвратов",
+                      const Text("Журнал возвратов от покупателя",
                           style: ProjectStyles.textStyle_30Bold),
                       const SizedBox(height: 20),
                       Row(
@@ -167,6 +170,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
       const DataColumn(label: Text('Дата')),
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
+      const DataColumn(label: Text('Чек')),
       const DataColumn(label: Text('Показать')),
       // const DataColumn(label: Text('Удалить')),
     ];
@@ -183,6 +187,16 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
           DataCell(Text(orders[i].createdAt ?? '')),
           DataCell(Text(orders[i].productsCount.toString())),
           DataCell(Text(orders[i].totalPrice.toString())),
+          DataCell(
+            IconButton(
+              onPressed: () {
+                orders[i].printUrl != null
+                    ? js.context.callMethod('open', [orders[i].printUrl])
+                    : showCustomSnackBar(context, 'Чек отсутствует!');
+              },
+              icon: const Icon(Icons.print),
+            ),
+          ),
           DataCell(
             IconButton(
               onPressed: () {

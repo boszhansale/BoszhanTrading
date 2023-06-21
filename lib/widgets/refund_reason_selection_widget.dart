@@ -5,7 +5,7 @@ class RefundReasonSelectionWidget extends StatefulWidget {
   const RefundReasonSelectionWidget({Key? key, required this.selectReason})
       : super(key: key);
 
-  final Function(int) selectReason;
+  final Function(int, String) selectReason;
 
   @override
   State<RefundReasonSelectionWidget> createState() =>
@@ -54,7 +54,7 @@ class _RefundReasonSelectionWidgetState
                 trailing: IconButton(
                   icon: const Icon(Icons.check_circle),
                   onPressed: () {
-                    widget.selectReason(index + 1);
+                    widget.selectReason(index + 1, dataList[index]);
                     Navigator.of(context).pop();
                   },
                 ),

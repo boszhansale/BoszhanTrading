@@ -243,7 +243,7 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
           (double.tryParse(cardController.text) ?? 0);
     }
 
-    surrender = widget.totalPrice - sum;
+    surrender = sum - widget.totalPrice;
     setState(() {});
   }
 

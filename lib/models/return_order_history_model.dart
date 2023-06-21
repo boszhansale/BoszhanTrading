@@ -9,6 +9,8 @@ class ReturnOrderHistoryModel {
   final double totalPrice;
   final List<Product> products;
   final String createdAt;
+  final String? printUrl;
+  final String? checkNumber;
 
   ReturnOrderHistoryModel({
     required this.id,
@@ -18,6 +20,8 @@ class ReturnOrderHistoryModel {
     required this.totalPrice,
     required this.products,
     required this.createdAt,
+    required this.printUrl,
+    required this.checkNumber,
   });
 
   factory ReturnOrderHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,8 @@ class ReturnOrderHistoryModel {
           .toList(),
       createdAt: DateFormat('yyyy-MM-dd HH:mm')
           .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
+      printUrl: json['ticket_print_url'],
+      checkNumber: json['check_number'],
     );
   }
 }

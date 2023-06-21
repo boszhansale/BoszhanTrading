@@ -73,6 +73,16 @@ class ProjectStyles {
     fontSize: 22,
     color: ColorPalette.black,
   );
+  static const TextStyle textStyle_26Regular = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 26,
+    color: ColorPalette.black,
+  );
+  static const TextStyle textStyle_26Bold = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 26,
+    color: ColorPalette.black,
+  );
   static const TextStyle textStyle_30Regular = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 30,

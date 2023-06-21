@@ -10,6 +10,7 @@ class SalesOrderHistoryModel {
   final String createdAt;
   final String? printUrl;
   final String? checkNumber;
+  final String? counteragentName;
 
   SalesOrderHistoryModel({
     required this.id,
@@ -20,6 +21,7 @@ class SalesOrderHistoryModel {
     required this.createdAt,
     required this.printUrl,
     required this.checkNumber,
+    required this.counteragentName,
   });
 
   factory SalesOrderHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,9 @@ class SalesOrderHistoryModel {
       checkNumber: json['webkassa_check'] != null
           ? json['webkassa_check']['check_number']
           : null,
+      counteragentName: json['counteragent_id'] == null
+          ? 'Физ лицо'
+          : json['counteragent']['name'],
     );
   }
 }

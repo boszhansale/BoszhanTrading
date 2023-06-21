@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                   () {
                     _showSimpleDialogForReturn(context);
                   },
-                  title: 'Возврат товара',
+                  title: 'Возврат товара от покупателя',
                 ),
                 customTextButton(
                   () {

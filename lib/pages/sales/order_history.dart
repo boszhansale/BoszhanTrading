@@ -165,6 +165,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('№')),
       const DataColumn(label: Text('ID')),
       const DataColumn(label: Text('Тор. точка')),
+      const DataColumn(label: Text('Контрагент')),
       const DataColumn(label: Text('Дата')),
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
@@ -181,6 +182,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           DataCell(Text('${i + 1}')),
           DataCell(Text(orders[i].id.toString())),
           DataCell(Text(orders[i].storeName ?? '')),
+          DataCell(Text(orders[i].counteragentName ?? '')),
           DataCell(Text(orders[i].createdAt ?? '')),
           DataCell(Text(orders[i].productsCount.toString())),
           DataCell(Text(orders[i].totalPrice.toString())),
@@ -222,6 +224,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   void searchOrder() async {
     var response = await MainApiService()
         .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
+    print(response);
 
     orders = [];
 

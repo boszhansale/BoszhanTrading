@@ -1,14 +1,16 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/order_products_selection.dart';
 import 'package:boszhan_trading/widgets/refund_reason_selection_widget.dart';
 import 'package:boszhan_trading/widgets/select_order_for_return_widget.dart';
@@ -89,7 +91,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
                     children: [
                       Row(
                         children: [
-                          const Text("Новое поступление",
+                          const Text("Новый возврат от покупателя",
                               style: ProjectStyles.textStyle_30Bold),
                           const Spacer(),
                           customTextButton(
@@ -230,21 +232,9 @@ class _NewReturnPageState extends State<NewReturnPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: $sum тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${calculateNDS(sum)} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
+                      buildNDSWidget(
+                        sum,
+                      ),
                     ],
                   ),
                 ),
@@ -334,7 +324,7 @@ class _NewReturnPageState extends State<NewReturnPage> {
     );
   }
 
-  void selectReason(int index) async {
+  void selectReason(int index, String text) async {
     selectedProduct['reason_refund_id'] = index;
     basket.add(selectedProduct);
     sum = 0;
@@ -402,8 +392,13 @@ class _NewReturnPageState extends State<NewReturnPage> {
           sendBasketList,
           counteragentId,
           int.parse(dayTypeSelectedValue.toString()));
-      // print(response);
+      print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
+
+      if (response['ticket_print_url'] != null) {
+        js.context.callMethod('open', [response['ticket_print_url']]);
+      }
+
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
     } catch (e) {

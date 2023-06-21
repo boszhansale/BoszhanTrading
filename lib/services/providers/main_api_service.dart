@@ -251,13 +251,13 @@ class MainApiService {
 
   // TODO: Incomings
 
-  Future<Map<String, dynamic>> createIncomingOrder(int operation, String bank,
-      List<dynamic> products, int counteragentId) async {
+  Future<Map<String, dynamic>> createIncomingOrder(int operation,
+      List<dynamic> products, int counteragentId, int nds) async {
     Map<String, dynamic> body = {
       "payment_type": 1,
       "operation": operation,
-      "bank": bank,
       "products": products,
+      "nds": nds,
     };
 
     if (counteragentId != 0) {
@@ -479,14 +479,18 @@ class MainApiService {
 
   // TODO: Moving
 
-  Future<Map<String, dynamic>> createMovingOrder(
-      int operation, List<dynamic> products, int storageId) async {
+  Future<Map<String, dynamic>> createMovingOrder(int operation,
+      List<dynamic> products, int storageId, int selectedOrderId) async {
     Map<String, dynamic> body = {
       "payment_type": 1,
       "operation": operation,
       "products": products,
       "storage_id": storageId,
     };
+
+    if (selectedOrderId != 0) {
+      body['order_id'] = selectedOrderId;
+    }
 
     final response = await http.post(
       Uri.parse('$baseUrl/moving'),

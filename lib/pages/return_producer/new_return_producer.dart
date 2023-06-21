@@ -1,13 +1,13 @@
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/refund_reason_selection_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
@@ -176,21 +176,9 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: $sum тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${calculateNDS(sum)} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
+                      buildNDSWidget(
+                        sum,
+                      ),
                     ],
                   ),
                 ),
@@ -212,6 +200,7 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
       const DataColumn(label: Text('Код')),
       const DataColumn(label: Text('Артикуль')),
       const DataColumn(label: Text('Название')),
+      const DataColumn(label: Text('Причина')),
       const DataColumn(label: Text('Ед.')),
       const DataColumn(label: Text('Цена')),
       const DataColumn(label: Text('Колличество')),
@@ -228,6 +217,7 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
           DataCell(Text(basket[i]['id_1c'])),
           DataCell(Text(basket[i]['article'])),
           DataCell(Text(basket[i]['name'])),
+          DataCell(Text(basket[i]['reason_refund_text'])),
           DataCell(Text(basket[i]['measure'])),
           DataCell(Text('${basket[i]['price']} тг')),
           DataCell(Text(basket[i]['count'].toString())),
@@ -259,8 +249,9 @@ class _NewReturnProducerPageState extends State<NewReturnProducerPage> {
     );
   }
 
-  void selectReason(int index) async {
+  void selectReason(int index, String text) async {
     selectedProduct['reason_refund_id'] = index;
+    selectedProduct['reason_refund_text'] = text;
     basket.add(selectedProduct);
     sum = 0;
     for (var item in basket) {

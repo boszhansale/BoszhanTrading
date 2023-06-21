@@ -156,7 +156,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       const DataColumn(label: Text('Перемещение')),
       const DataColumn(label: Text('Поступление')),
       const DataColumn(label: Text('Продажа')),
-      const DataColumn(label: Text('Остатки')),
+      const DataColumn(label: Text('Излишки')),
       const DataColumn(label: Text('Колличество')),
       const DataColumn(label: Text('Разница')),
       // const DataColumn(label: Text('Сумма')),

@@ -1,7 +1,6 @@
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -9,6 +8,7 @@ import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:boszhan_trading/widgets/input_price_widget.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +24,7 @@ class NewIncomingPage extends StatefulWidget {
 class _NewIncomingPageState extends State<NewIncomingPage> {
   String createdTime = '';
   Object operationSelectedValue = 0;
+  Object ndsSelectedValue = 0;
 
   String name = '';
   String bank = '';
@@ -120,6 +121,16 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
                                 'Организация: $organizationName',
                                 style: ProjectStyles.textStyle_14Medium,
                               ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'От: $createdTime',
+                                style: ProjectStyles.textStyle_14Medium,
+                              ),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
                                   Text(
@@ -134,23 +145,9 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
                                       icon: const Icon(Icons.edit))
                                 ],
                               ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'От: $createdTime',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Банковский счет: $bank',
-                                style: ProjectStyles.textStyle_14Medium,
-                              ),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Операция:',
                                     style: ProjectStyles.textStyle_14Medium,
                                   ),
@@ -168,6 +165,29 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
                                     onChanged: (Object? newValue) {
                                       setState(() {
                                         operationSelectedValue = newValue!;
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'НДС:',
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  DropdownButton(
+                                    value: ndsSelectedValue,
+                                    items: const [
+                                      DropdownMenuItem(
+                                          child: Text("с НДС"), value: 0),
+                                      DropdownMenuItem(
+                                          child: Text("без НДС"), value: 1),
+                                    ],
+                                    onChanged: (Object? newValue) {
+                                      setState(() {
+                                        ndsSelectedValue = newValue!;
                                       });
                                     },
                                   )
@@ -204,21 +224,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: $sum тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${calculateNDS(sum)} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
+                      buildNDSWidget(sum),
                     ],
                   ),
                 ),
@@ -240,6 +246,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
       const DataColumn(label: Text('Код')),
       const DataColumn(label: Text('Артикуль')),
       const DataColumn(label: Text('Название')),
+      const DataColumn(label: Text('Коммент.')),
       const DataColumn(label: Text('Ед.')),
       const DataColumn(label: Text('Старая цена')),
       const DataColumn(label: Text('Новая цена')),
@@ -258,6 +265,7 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
           DataCell(Text(basket[i]['id_1c'])),
           DataCell(Text(basket[i]['article'])),
           DataCell(Text(basket[i]['name'])),
+          DataCell(Text(basket[i]['comment'])),
           DataCell(Text(basket[i]['measure'])),
           DataCell(Text('${basket[i]['price']} тг')),
           DataCell(Text('${basket[i]['newPrice']} тг')),
@@ -325,8 +333,9 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
     );
   }
 
-  void inputPrice(double price) async {
+  void inputPrice(double price, String comment) async {
     selectedProduct['newPrice'] = price;
+    selectedProduct['comment'] = comment;
     basket.add(selectedProduct);
     sum = 0;
     for (var item in basket) {
@@ -348,16 +357,18 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
       sendBasketList.add({
         'product_id': item['id'],
         'count': item['count'],
-        'price': item['newPrice']
+        'price': item['newPrice'],
+        'comment': item['comment'],
       });
     }
 
     try {
       var response = await MainApiService().createIncomingOrder(
-          int.parse(operationSelectedValue.toString()) + 1,
-          bank,
-          sendBasketList,
-          counteragentId);
+        int.parse(operationSelectedValue.toString()) + 1,
+        sendBasketList,
+        counteragentId,
+        int.parse(ndsSelectedValue.toString()) + 1,
+      );
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))

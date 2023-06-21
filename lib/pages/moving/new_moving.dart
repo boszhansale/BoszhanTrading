@@ -1,13 +1,15 @@
+import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
+import 'package:boszhan_trading/widgets/select_order_for_return_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:boszhan_trading/widgets/storage_selection_widget.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
 
   int sendStorageId = 0;
   String sendStorageName = '';
+  int selectedOrderId = 0;
 
   dynamic selectedProduct;
 
@@ -135,6 +138,20 @@ class _NewMovingPageState extends State<NewMovingPage> {
                               const SizedBox(height: 10),
                               Row(
                                 children: [
+                                  Text(
+                                    'Заказ №: ${selectedOrderId != 0 ? selectedOrderId : ''}',
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                      onPressed: () {
+                                        showOrderSelectionDialog();
+                                      },
+                                      icon: const Icon(Icons.edit))
+                                ],
+                              ),
+                              Row(
+                                children: [
                                   const Text(
                                     'Операция:',
                                     style: ProjectStyles.textStyle_14Medium,
@@ -144,9 +161,11 @@ class _NewMovingPageState extends State<NewMovingPage> {
                                     value: operationSelectedValue,
                                     items: const [
                                       DropdownMenuItem(
-                                          child: Text("Со склада"), value: 1),
+                                          child: Text("Поступление со склада"),
+                                          value: 1),
                                       DropdownMenuItem(
-                                          child: Text("На склад"), value: 2),
+                                          child: Text("Возврат на склад"),
+                                          value: 2),
                                     ],
                                     onChanged: (Object? newValue) {
                                       setState(() {
@@ -202,21 +221,9 @@ class _NewMovingPageState extends State<NewMovingPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: $sum тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${calculateNDS(sum)} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
+                      buildNDSWidget(
+                        sum,
+                      ),
                     ],
                   ),
                 ),
@@ -269,6 +276,27 @@ class _NewMovingPageState extends State<NewMovingPage> {
           )
         ]),
     ];
+  }
+
+  void showOrderSelectionDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите заказ'),
+          content: SelectOrderForReturnWidget(
+            selectOrder: selectOrder,
+            isShowTodaysOrders: false,
+          ),
+        );
+      },
+    );
+  }
+
+  void selectOrder(int index, List<Product> products) async {
+    selectedOrderId = index;
+    // selectedOrderProducts = products;
+    setState(() {});
   }
 
   void showProductDialog() async {
@@ -332,6 +360,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
         int.parse(operationSelectedValue.toString()),
         sendBasketList,
         sendStorageId,
+        selectedOrderId,
       );
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');

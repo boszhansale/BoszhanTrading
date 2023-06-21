@@ -4,6 +4,7 @@ import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:flutter/material.dart';
 
 class IncomingOrderHistoryProductsPage extends StatefulWidget {
@@ -67,6 +68,13 @@ class _IncomingOrderHistoryProductsPageState
                         ],
                       ),
                       const SizedBox(height: 20),
+                      Text("Заказ №${widget.order.id}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      Text("Дата создания: ${widget.order.createdAt}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      Text("Торговая точка: ${widget.order.storeName}",
+                          style: ProjectStyles.textStyle_14Medium),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
                         child: SingleChildScrollView(
@@ -81,21 +89,9 @@ class _IncomingOrderHistoryProductsPageState
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            'Сумма с НДС: ${widget.order.totalPrice} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                          Text(
-                            'НДС: ${widget.order.totalPrice * 0.12} тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                          const Spacer(),
-                        ],
-                      )
+                      buildNDSWidget(
+                        widget.order.totalPrice,
+                      ),
                     ],
                   ),
                 ),
@@ -117,6 +113,7 @@ class _IncomingOrderHistoryProductsPageState
       const DataColumn(label: Text('Код')),
       const DataColumn(label: Text('Артикуль')),
       const DataColumn(label: Text('Название')),
+      const DataColumn(label: Text('Коммен.')),
       const DataColumn(label: Text('Ед.')),
       const DataColumn(label: Text('Цена')),
       const DataColumn(label: Text('Колличество')),
@@ -133,6 +130,7 @@ class _IncomingOrderHistoryProductsPageState
           DataCell(Text(widget.order.products[i].id_1c ?? '')),
           DataCell(Text(widget.order.products[i].article ?? '')),
           DataCell(Text(widget.order.products[i].name ?? '')),
+          DataCell(Text(widget.order.products[i].returnComment ?? '')),
           DataCell(Text(widget.order.products[i].measure)),
           DataCell(Text('${widget.order.products[i].price.toString()} тг')),
           DataCell(Text(widget.order.products[i].count.toString())),

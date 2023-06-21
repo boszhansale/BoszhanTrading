@@ -4,13 +4,13 @@ import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/counteragent_selection_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/payment_calculator_widget.dart';
 import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
@@ -103,6 +103,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
     if (basket.isNotEmpty) {
       prefs.setString('SalesBasket', jsonEncode(basket));
+    } else {
+      prefs.setString('SalesBasket', '[]');
     }
   }
 
@@ -298,21 +300,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            const Spacer(),
-                            Text(
-                              'Сумма с НДС: $sum тг',
-                              style: ProjectStyles.textStyle_30Bold,
-                            ),
-                            const Spacer(),
-                            Text(
-                              'НДС: ${calculateNDS(sum)} тг',
-                              style: ProjectStyles.textStyle_30Bold,
-                            ),
-                            const Spacer(),
-                          ],
-                        )
+                        buildNDSWidget(
+                          sum,
+                        ),
                       ],
                     ),
                   ),
@@ -359,6 +349,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
             IconButton(
               onPressed: () {
                 basket.remove(basket[i]);
+                saveBasket();
                 setState(() {});
               },
               icon: const Icon(Icons.delete),
@@ -470,6 +461,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
           phoneController.text);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('SalesBasket', '[]');
+
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.push(
                 context,
