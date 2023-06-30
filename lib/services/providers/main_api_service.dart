@@ -73,11 +73,14 @@ class MainApiService {
       "online_sale": onlineSale,
       "payment_type": paymentType,
       "products": products,
-      "phone": phone,
     };
 
     if (counteragentId != 0) {
       body['counteragent_id'] = counteragentId;
+    }
+
+    if (phone != '') {
+      body['phone'] = phone;
     }
 
     final response = await http.post(
@@ -889,6 +892,27 @@ class MainApiService {
   Future<dynamic> getProductsReport(String dateFrom, String dateTo) async {
     final response = await http.get(
       Uri.parse('$baseUrl/report/product?date_from=$dateFrom&date_to=$dateTo'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  // TODO: Get ticket for printing
+
+  Future<Map<String, dynamic>> getTicketForPrint(int orderId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/order/print-check/$orderId'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",

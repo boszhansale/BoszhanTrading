@@ -575,7 +575,8 @@ class _HomePageState extends State<HomePage> {
             }
           }
 
-          if (productsMap['products'].isNotEmpty) {
+          if (productsMap['products'].isNotEmpty &&
+              responseBrands[i]['id'] == responseCategories[j]['brand_id']) {
             categoryMap['categories'].add(productsMap);
           }
         }

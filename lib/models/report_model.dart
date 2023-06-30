@@ -11,8 +11,8 @@ class ReportModel {
   String? startOn;
   String? closeOn;
   String? reportOn;
-  int? cashierCode;
-  int? shiftNumber;
+  String? cashierCode;
+  String? shiftNumber;
   int? documentCount;
   double? putMoneySum;
   double? takeMoneySum;
@@ -71,8 +71,8 @@ class ReportModel {
     startOn = json['StartOn'];
     closeOn = json['CloseOn'];
     reportOn = json['ReportOn'];
-    cashierCode = json['CashierCode'];
-    shiftNumber = json['ShiftNumber'];
+    cashierCode = json['CashierCode'].toString();
+    shiftNumber = json['ShiftNumber'].toString();
     documentCount = json['DocumentCount'];
     putMoneySum = double.parse(json['PutMoneySum'].toString());
     takeMoneySum = double.parse(json['TakeMoneySum'].toString());

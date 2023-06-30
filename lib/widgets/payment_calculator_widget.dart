@@ -1,5 +1,4 @@
-import 'dart:js' as js;
-
+import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/utils/calculateNDS.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -256,12 +255,18 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
           double.tryParse(cashController.text) ?? 0,
           double.tryParse(cardController.text) ?? 0);
 
-      // print(response);
+      var responsePrintCheck =
+          await MainApiService().getTicketForPrint(widget.orderId);
 
-      js.context.callMethod('open', [response['Data']['TicketPrintUrl']]);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CheckPage(
+                  check: responsePrintCheck["Lines"],
+                )),
+      );
 
-      // Future.delayed(const Duration(seconds: 2))
-      //     .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+      // js.context.callMethod('open', [response['Data']['TicketPrintUrl']]);
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());
