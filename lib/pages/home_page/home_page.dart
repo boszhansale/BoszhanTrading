@@ -68,6 +68,11 @@ class _HomePageState extends State<HomePage> {
                   height: 350,
                   child: Image.asset('assets/images/logo.png'),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 20),
+                  child: Text('Пользователь: $userName',
+                      style: ProjectStyles.textStyle_14Regular),
+                ),
                 customTextButton(
                   () {
                     _showSimpleDialogForSales(context);
@@ -129,11 +134,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   title: 'Отчеты',
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text('Пользователь: $userName',
-                      style: ProjectStyles.textStyle_14Regular),
-                ),
+
                 const SizedBox(height: 20),
               ],
             ),
