@@ -11,6 +11,9 @@ import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+List<dynamic> globalInventoryList = [];
+List<TextEditingController> globalInventoryTextFields = [];
+
 class NewInventoryPage extends StatefulWidget {
   const NewInventoryPage({Key? key}) : super(key: key);
 
@@ -30,14 +33,12 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   bool isButtonActive = true;
 
-  List<dynamic> basket = [];
+  List<double> savedCounts = [];
 
   List<ProductMain> products = [];
   String scannedBarcode = '';
 
   bool dialogIsActive = false;
-
-  List<TextEditingController> basketTextFields = [];
 
   @override
   void initState() {
@@ -141,8 +142,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
-  DataTable _createDataTable() {
-    return DataTable(columns: _createColumns(), rows: _createRows());
+  PaginatedDataTable _createDataTable() {
+    return PaginatedDataTable(
+      source: MyData(context, refresh),
+      columns: _createColumns(),
+      rowsPerPage: 10,
+      showCheckboxColumn: false,
+    );
   }
 
   List<DataColumn> _createColumns() {
@@ -156,64 +162,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       const DataColumn(label: Text('Перемещение')),
       const DataColumn(label: Text('Поступление')),
       const DataColumn(label: Text('Продажа')),
-      const DataColumn(label: Text('Излишки')),
+      const DataColumn(label: Text('Остаток')),
       const DataColumn(label: Text('Колличество')),
       const DataColumn(label: Text('Разница')),
       // const DataColumn(label: Text('Сумма')),
       // const DataColumn(label: Text('Удалить')),
-    ];
-  }
-
-  List<DataRow> _createRows() {
-    return [
-      for (int i = 0; i < basket.length; i++)
-        DataRow(cells: [
-          DataCell(Text('${i + 1}')),
-          DataCell(Text(basket[i]['product_id'].toString() ?? '')),
-          DataCell(Text(basket[i]['article'] ?? '')),
-          DataCell(Text(basket[i]['name'] ?? '')),
-          // DataCell(Text(basket[i]['measure'])),
-          // DataCell(Text('${basket[i]['price']} тг')),
-          DataCell(Text(basket[i]['moving'].toString())),
-          DataCell(Text(basket[i]['receipt'].toString())),
-          DataCell(Text(basket[i]['sale'].toString())),
-          DataCell(Text(basket[i]['remains'].toString())),
-          DataCell(Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: SizedBox(
-              width: 50,
-              child: TextField(
-                controller: basketTextFields[i],
-                decoration: const InputDecoration(hintText: 'кл.'),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
-            ),
-          )),
-          DataCell(
-            Text(
-              (double.parse(basket[i]['remains'].toString()) -
-                      double.parse(basketTextFields[i].text == ''
-                          ? '0'
-                          : basketTextFields[i].text))
-                  .toString(),
-            ),
-          ),
-          // DataCell(Text('${basket[i]['price'] * basket[i]['count']} тг')),
-          // DataCell(
-          //   IconButton(
-          //     onPressed: () {
-          //       basket.remove(basket[i]);
-          //       setState(() {});
-          //     },
-          //     icon: const Icon(Icons.delete),
-          //   ),
-          // )
-        ]),
     ];
   }
 
@@ -241,6 +194,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   void addProduct(int productId, double count) async {
     try {
+      saveCountOfProduct();
       var response =
           await MainApiService().addProductToInventoryOrder(productId, count);
 
@@ -253,7 +207,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void createOrder() async {
-    for (var i in basketTextFields) {
+    for (var i in globalInventoryTextFields) {
       if (i.text.isEmpty) {
         showCustomSnackBar(context, 'Заполните все поля!');
         return;
@@ -261,9 +215,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     }
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
-    for (int i = 0; i < basket.length; i++) {
-      var tempMap = basket[i];
-      tempMap['count'] = basketTextFields[i].text;
+    for (int i = 0; i < globalInventoryList.length; i++) {
+      var tempMap = globalInventoryList[i];
+      tempMap['count'] = globalInventoryTextFields[i].text;
       sendBasketList.add(tempMap);
     }
 
@@ -284,11 +238,21 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   void getInventoryProducts() async {
     try {
       var response = await MainApiService().getInventoryProducts();
-      basket = response;
-      basketTextFields = [];
+      globalInventoryList = response;
+      globalInventoryTextFields = [];
       setState(() {});
       for (var i in response) {
-        basketTextFields.add(TextEditingController());
+        globalInventoryTextFields.add(TextEditingController());
+      }
+
+      if (globalInventoryTextFields.length == savedCounts.length) {
+        for (int i = 0; i < globalInventoryTextFields.length; i++) {
+          if (savedCounts[i] != 0) {
+            globalInventoryTextFields[i].text = savedCounts[i].toString();
+          }
+        }
+
+        setState(() {});
       }
     } catch (e) {
       showCustomSnackBar(context, e.toString());
@@ -315,8 +279,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
         isExist = true;
         bool inBasket = false;
         int index = 0;
-        for (int j = 0; j < basket.length; j++) {
-          if (basket[j]['product_id'] == product.id) {
+        for (int j = 0; j < globalInventoryList.length; j++) {
+          if (globalInventoryList[j]['product_id'] == product.id) {
             inBasket = true;
             index = j;
           }
@@ -325,10 +289,10 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           addProduct(product.id, 1);
         } else {
           if (inBasket) {
-            basketTextFields[index].text = (double.parse(
-                        basketTextFields[index].text == ''
+            globalInventoryTextFields[index].text = (double.parse(
+                        globalInventoryTextFields[index].text == ''
                             ? '0'
-                            : basketTextFields[index].text) +
+                            : globalInventoryTextFields[index].text) +
                     1)
                 .toString();
             setState(() {});
@@ -344,5 +308,77 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     if (isExist == false) {
       showCustomSnackBar(context, 'Данный продукт не найден...');
     }
+  }
+
+  refresh() {
+    setState(() {});
+  }
+
+  void saveCountOfProduct() {
+    savedCounts = [];
+    for (var i in globalInventoryTextFields) {
+      if (double.tryParse(i.text) != null) {
+        savedCounts.add(double.parse(i.text));
+      } else {
+        savedCounts.add(0);
+      }
+    }
+  }
+}
+
+class MyData extends DataTableSource {
+  MyData(this.context, this.notifyParent);
+  final Function() notifyParent;
+  final BuildContext context;
+
+  final List<dynamic> _data = globalInventoryList;
+  List<TextEditingController> basketTextFields = globalInventoryTextFields;
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _data.length;
+
+  @override
+  int get selectedRowCount => 0;
+
+  @override
+  DataRow getRow(int i) {
+    return DataRow(cells: [
+      DataCell(Text('${i + 1}')),
+      DataCell(Text(_data[i]['product_id'].toString() ?? '')),
+      DataCell(Text(_data[i]['article'] ?? '')),
+      DataCell(Text(_data[i]['name'] ?? '')),
+      DataCell(Text(_data[i]['moving_from'].toString())),
+      DataCell(Text(_data[i]['receipt'].toString())),
+      DataCell(Text(_data[i]['sale'].toString())),
+      DataCell(Text(_data[i]['remains'].toString())),
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: SizedBox(
+          width: 50,
+          child: TextField(
+            controller: basketTextFields[i],
+            decoration: const InputDecoration(hintText: 'кл.'),
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            onChanged: (value) {
+              notifyParent();
+            },
+          ),
+        ),
+      )),
+      DataCell(
+        Text(
+          (double.parse(_data[i]['remains'].toString()) -
+                  double.parse(basketTextFields[i].text == ''
+                      ? '0'
+                      : basketTextFields[i].text))
+              .toString(),
+        ),
+      ),
+    ]);
   }
 }
