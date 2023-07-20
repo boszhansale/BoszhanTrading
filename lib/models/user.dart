@@ -25,9 +25,9 @@ class User {
       name: json['name'],
       login: json['login'],
       phone: json['phone'] ?? '',
-      storeName: json['store']['name'] ?? '',
-      storageName: json['storage']['name'] ?? '',
-      organizationName: json['organization']['name'] ?? '',
+      storeName: json['store']?['name'] ?? '',
+      storageName: json['storage']?['name'] ?? '',
+      organizationName: json['organization']?['name'] ?? '',
       bank: json['bank'] ?? '',
     );
   }

@@ -23,6 +23,8 @@ class AuthProvider {
 
     var responseJson = jsonDecode(response.body);
 
+    print(responseJson);
+
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(responseJson);
     } else {
