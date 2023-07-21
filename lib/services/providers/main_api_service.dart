@@ -954,4 +954,23 @@ class MainApiService {
       throw Exception(responseJson['message']);
     }
   }
+
+  Future<Map<String, dynamic>> getTicketForPrintReturn(int id) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/refund/print-check/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
 }

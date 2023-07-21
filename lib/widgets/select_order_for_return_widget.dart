@@ -148,7 +148,7 @@ class _SelectOrderForReturnWidgetState
               itemCount: dataList.length,
               itemBuilder: (BuildContext context, int index) => ListTile(
                 title: Text(
-                  dataList[index].id.toString(),
+                  'ID: ${dataList[index].id}, чек № ${dataList[index].checkNumber}',
                   style: ProjectStyles.textStyle_14Bold,
                 ),
                 subtitle: Text(dataList[index].storeName ?? '',

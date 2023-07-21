@@ -1,6 +1,5 @@
-import 'dart:js' as js;
-
 import 'package:boszhan_trading/models/return_order_history_model.dart';
+import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/pages/returns/return_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -191,7 +190,7 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
             IconButton(
               onPressed: () {
                 orders[i].printUrl != null
-                    ? js.context.callMethod('open', [orders[i].printUrl])
+                    ? getCheckAndPrint(orders[i].id)
                     : showCustomSnackBar(context, 'Чек отсутствует!');
               },
               icon: const Icon(Icons.print),
@@ -246,5 +245,17 @@ class _ReturnHistoryPageState extends State<ReturnHistoryPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrintReturn(id);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CheckPage(
+                check: responsePrintCheck["Lines"],
+              )),
+    );
   }
 }

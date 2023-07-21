@@ -1,7 +1,6 @@
-import 'dart:js' as js;
-
 import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/user.dart';
+import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -395,9 +394,16 @@ class _NewReturnPageState extends State<NewReturnPage> {
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
 
-      if (response['ticket_print_url'] != null) {
-        js.context.callMethod('open', [response['ticket_print_url']]);
-      }
+      var responsePrintCheck =
+          await MainApiService().getTicketForPrintReturn(response['id']);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CheckPage(
+                  check: responsePrintCheck["Lines"],
+                )),
+      );
 
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));

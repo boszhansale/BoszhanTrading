@@ -1,6 +1,5 @@
-import 'dart:js' as js;
-
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
+import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/pages/sales/sales_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -190,7 +189,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             IconButton(
               onPressed: () {
                 orders[i].printUrl != null
-                    ? js.context.callMethod('open', [orders[i].printUrl])
+                    ? getCheckAndPrint(orders[i].id)
                     : showCustomSnackBar(context, 'Чек отсутствует!');
               },
               icon: const Icon(Icons.print),
@@ -224,7 +223,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   void searchOrder() async {
     var response = await MainApiService()
         .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
-    print(response);
+    // print(response);
 
     orders = [];
 
@@ -242,5 +241,17 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CheckPage(
+                check: responsePrintCheck["Lines"],
+              )),
+    );
   }
 }

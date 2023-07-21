@@ -27,7 +27,7 @@ class _CheckPageState extends State<CheckPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-        width: 400,
+        width: 250,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -36,7 +36,7 @@ class _CheckPageState extends State<CheckPage> {
                 Navigator.of(context).pushNamed('/home');
               },
               child: SizedBox(
-                width: 100,
+                width: 80,
                 child: Image.asset('assets/images/logo.png'),
               ),
             ),
