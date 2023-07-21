@@ -98,6 +98,9 @@ class _NewMovingPageState extends State<NewMovingPage> {
                                   isButtonActive &&
                                   sendStorageId != 0) {
                                 createOrder();
+                              } else {
+                                showCustomSnackBar(context,
+                                    'Список товаров пуст или не выбран склад.');
                               }
                             },
                             title: 'Сохранить',
