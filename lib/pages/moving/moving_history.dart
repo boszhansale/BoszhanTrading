@@ -1,4 +1,5 @@
 import 'package:boszhan_trading/models/moving_history_model.dart';
+import 'package:boszhan_trading/pages/moving/moving_edit_page.dart';
 import 'package:boszhan_trading/pages/moving/moving_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -167,6 +168,7 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Показать')),
+      const DataColumn(label: Text('Изменить')),
       // const DataColumn(label: Text('Удалить')),
     ];
   }
@@ -193,6 +195,18 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
                 );
               },
               icon: const Icon(Icons.list),
+            ),
+          ),
+          DataCell(
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MovingEditPage(order: orders[i])),
+                );
+              },
+              icon: const Icon(Icons.edit),
             ),
           ),
           // DataCell(

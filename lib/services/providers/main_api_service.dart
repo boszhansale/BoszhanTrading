@@ -514,6 +514,32 @@ class MainApiService {
     }
   }
 
+  Future<Map<String, dynamic>> editMovingOrder(
+      int id, List<dynamic> products) async {
+    Map<String, dynamic> body = {
+      "products": products,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/moving/update/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   Future<dynamic> getMovingOrderHistory(String dateFrom, String dateTo) async {
     String url = '$baseUrl/moving/history';
 
