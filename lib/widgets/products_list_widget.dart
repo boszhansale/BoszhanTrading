@@ -52,8 +52,11 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                       for (var category in brands['categories']) {
                         for (var product in category['products']) {
                           if (product['name']
-                              .toLowerCase()
-                              .contains(value.toLowerCase())) {
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              product['article']
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase())) {
                             searchList.add(product);
                           }
                         }
