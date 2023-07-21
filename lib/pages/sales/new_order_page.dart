@@ -47,11 +47,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
   String scannedBarcode = '';
   List<ProductMain> products = [];
 
+  Map<dynamic, double> productsPermission = {};
+
   @override
   void initState() {
     _init();
     checkLogin();
     getProducts();
+    getInventoryProducts();
     super.initState();
   }
 
@@ -373,17 +376,25 @@ class _NewOrderPageState extends State<NewOrderPage> {
           }
         }
         if (inBasket) {
-          basket[index]['count'] = basket[index]['count'] + 1;
+          if (productsPermission[product.id]! > basket[index]['count']) {
+            basket[index]['count'] = basket[index]['count'] + 1;
+          } else {
+            showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+          }
         } else {
-          basket.add({
-            "id": product.id,
-            "name": product.name,
-            "id_1c": product.id_1c,
-            "article": product.article,
-            "price": product.price,
-            "measure": product.measure,
-            "count": 1
-          });
+          if (productsPermission[product.id]! > 1) {
+            basket.add({
+              "id": product.id,
+              "name": product.name,
+              "id_1c": product.id_1c,
+              "article": product.article,
+              "price": product.price,
+              "measure": product.measure,
+              "count": 1
+            });
+          } else {
+            showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+          }
         }
       }
     }
@@ -415,14 +426,18 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addToBasket(dynamic product) async {
-    basket.add(product);
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
-    }
+    if (productsPermission[product['id']]! >= product['count']) {
+      basket.add(product);
+      sum = 0;
+      for (var item in basket) {
+        sum += item['count'] * item['price'];
+      }
 
-    saveBasket();
-    setState(() {});
+      saveBasket();
+      setState(() {});
+    } else {
+      showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+    }
   }
 
   void showCounteragentDialog() async {
@@ -477,6 +492,26 @@ class _NewOrderPageState extends State<NewOrderPage> {
               ));
     } catch (e) {
       isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
+  }
+
+  void getInventoryProducts() async {
+    try {
+      var response = await MainApiService().getInventoryProducts();
+
+      for (var i in response) {
+        double? remains = double.tryParse(i['remains']);
+        if (remains != null) {
+          productsPermission[i['product_id']] = remains;
+        } else {
+          productsPermission[i['product_id']] = 0;
+        }
+      }
+
+      setState(() {});
+    } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
