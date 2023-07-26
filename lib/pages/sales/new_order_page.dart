@@ -426,7 +426,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addToBasket(dynamic product) async {
-    if (productsPermission[product['id']]! >= product['count']) {
+    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
       basket.add(product);
       sum = 0;
       for (var item in basket) {
@@ -436,7 +436,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
       saveBasket();
       setState(() {});
     } else {
-      showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+      showCustomSnackBar(context,
+          'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
     }
   }
 
