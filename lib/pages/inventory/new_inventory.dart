@@ -142,14 +142,60 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
-  PaginatedDataTable _createDataTable() {
-    return PaginatedDataTable(
-      source: MyData(context, refresh),
+  DataTable _createDataTable() {
+    return DataTable(
       columns: _createColumns(),
-      rowsPerPage: 10,
+      rows: [
+        for (int i = 0; i < globalInventoryList.length; i++)
+          DataRow(cells: [
+            DataCell(Text('${i + 1}')),
+            DataCell(
+                Text(globalInventoryList[i]['product_id'].toString() ?? '')),
+            DataCell(Text(globalInventoryList[i]['article'] ?? '')),
+            DataCell(Text(globalInventoryList[i]['name'] ?? '')),
+            DataCell(Text(globalInventoryList[i]['moving_from'].toString())),
+            DataCell(Text(globalInventoryList[i]['receipt'].toString())),
+            DataCell(Text(globalInventoryList[i]['sale'].toString())),
+            DataCell(Text(globalInventoryList[i]['remains'].toString())),
+            DataCell(Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: SizedBox(
+                width: 50,
+                child: TextField(
+                  controller: globalInventoryTextFields[i],
+                  decoration: const InputDecoration(hintText: 'кл.'),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                ),
+              ),
+            )),
+            DataCell(
+              Text(
+                (double.parse(globalInventoryList[i]['remains'].toString()) -
+                        double.parse(globalInventoryTextFields[i].text == ''
+                            ? '0'
+                            : globalInventoryTextFields[i].text))
+                    .toString(),
+              ),
+            ),
+          ])
+      ],
       showCheckboxColumn: false,
     );
   }
+
+  // PaginatedDataTable _createDataTable() {
+  //   return PaginatedDataTable(
+  //     source: MyData(context, refresh),
+  //     columns: _createColumns(),
+  //     rowsPerPage: 10,
+  //     showCheckboxColumn: false,
+  //   );
+  // }
 
   List<DataColumn> _createColumns() {
     return [
@@ -326,59 +372,59 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 }
 
-class MyData extends DataTableSource {
-  MyData(this.context, this.notifyParent);
-  final Function() notifyParent;
-  final BuildContext context;
-
-  final List<dynamic> _data = globalInventoryList;
-  List<TextEditingController> basketTextFields = globalInventoryTextFields;
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => _data.length;
-
-  @override
-  int get selectedRowCount => 0;
-
-  @override
-  DataRow getRow(int i) {
-    return DataRow(cells: [
-      DataCell(Text('${i + 1}')),
-      DataCell(Text(_data[i]['product_id'].toString() ?? '')),
-      DataCell(Text(_data[i]['article'] ?? '')),
-      DataCell(Text(_data[i]['name'] ?? '')),
-      DataCell(Text(_data[i]['moving_from'].toString())),
-      DataCell(Text(_data[i]['receipt'].toString())),
-      DataCell(Text(_data[i]['sale'].toString())),
-      DataCell(Text(_data[i]['remains'].toString())),
-      DataCell(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: SizedBox(
-          width: 50,
-          child: TextField(
-            controller: basketTextFields[i],
-            decoration: const InputDecoration(hintText: 'кл.'),
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            onChanged: (value) {
-              notifyParent();
-            },
-          ),
-        ),
-      )),
-      DataCell(
-        Text(
-          (double.parse(_data[i]['remains'].toString()) -
-                  double.parse(basketTextFields[i].text == ''
-                      ? '0'
-                      : basketTextFields[i].text))
-              .toString(),
-        ),
-      ),
-    ]);
-  }
-}
+// class MyData extends DataTableSource {
+//   MyData(this.context, this.notifyParent);
+//   final Function() notifyParent;
+//   final BuildContext context;
+//
+//   final List<dynamic> _data = globalInventoryList;
+//   List<TextEditingController> basketTextFields = globalInventoryTextFields;
+//
+//   @override
+//   bool get isRowCountApproximate => false;
+//
+//   @override
+//   int get rowCount => _data.length;
+//
+//   @override
+//   int get selectedRowCount => 0;
+//
+//   @override
+//   DataRow getRow(int i) {
+//     return DataRow(cells: [
+//       DataCell(Text('${i + 1}')),
+//       DataCell(Text(_data[i]['product_id'].toString() ?? '')),
+//       DataCell(Text(_data[i]['article'] ?? '')),
+//       DataCell(Text(_data[i]['name'] ?? '')),
+//       DataCell(Text(_data[i]['moving_from'].toString())),
+//       DataCell(Text(_data[i]['receipt'].toString())),
+//       DataCell(Text(_data[i]['sale'].toString())),
+//       DataCell(Text(_data[i]['remains'].toString())),
+//       DataCell(Padding(
+//         padding: const EdgeInsets.symmetric(vertical: 5),
+//         child: SizedBox(
+//           width: 50,
+//           child: TextField(
+//             controller: basketTextFields[i],
+//             decoration: const InputDecoration(hintText: 'кл.'),
+//             inputFormatters: <TextInputFormatter>[
+//               FilteringTextInputFormatter.digitsOnly
+//             ],
+//             onChanged: (value) {
+//               notifyParent();
+//             },
+//           ),
+//         ),
+//       )),
+//       DataCell(
+//         Text(
+//           (double.parse(_data[i]['remains'].toString()) -
+//                   double.parse(basketTextFields[i].text == ''
+//                       ? '0'
+//                       : basketTextFields[i].text))
+//               .toString(),
+//         ),
+//       ),
+//     ]);
+//   }
+// }
