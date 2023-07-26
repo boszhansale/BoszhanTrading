@@ -13,9 +13,11 @@ class PaymentCalculatorWidget extends StatefulWidget {
     Key? key,
     required this.orderId,
     required this.totalPrice,
+    required this.isSale,
   }) : super(key: key);
   final int orderId;
   final double totalPrice;
+  final bool isSale;
 
   @override
   State<PaymentCalculatorWidget> createState() =>
@@ -178,20 +180,22 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
                               ],
                             )
                           : const SizedBox.shrink(),
-                      const Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text(
-                            'Сдача',
-                            style: ProjectStyles.textStyle_14Regular,
-                          ),
-                          Text(
-                            '$surrender тг',
-                            style: ProjectStyles.textStyle_14Bold,
-                          ),
-                        ],
-                      ),
+                      selectedPaymentType != 2 ? const Divider() : Container(),
+                      selectedPaymentType != 2
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const Text(
+                                  'Сдача',
+                                  style: ProjectStyles.textStyle_14Regular,
+                                ),
+                                Text(
+                                  '$surrender тг',
+                                  style: ProjectStyles.textStyle_14Bold,
+                                ),
+                              ],
+                            )
+                          : Container(),
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -249,22 +253,41 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
   void sendData() async {
     isButtonActive = false;
     try {
-      var response = await MainApiService().sendDataToCheck(
-          widget.orderId,
-          selectedPaymentType,
-          double.tryParse(cashController.text) ?? 0,
-          double.tryParse(cardController.text) ?? 0);
+      if (widget.isSale) {
+        var response = await MainApiService().sendDataToCheck(
+            widget.orderId,
+            selectedPaymentType,
+            double.tryParse(cashController.text) ?? 0,
+            double.tryParse(cardController.text) ?? 0);
 
-      var responsePrintCheck =
-          await MainApiService().getTicketForPrint(widget.orderId);
+        var responsePrintCheck =
+            await MainApiService().getTicketForPrint(widget.orderId);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CheckPage(
-                  check: responsePrintCheck["Lines"],
-                )),
-      );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CheckPage(
+                    check: responsePrintCheck["Lines"],
+                  )),
+        );
+      } else {
+        var response = await MainApiService().sendDataToCheckReturn(
+            widget.orderId,
+            selectedPaymentType,
+            double.tryParse(cashController.text) ?? 0,
+            double.tryParse(cardController.text) ?? 0);
+
+        var responsePrintCheck =
+            await MainApiService().getTicketForPrintReturn(widget.orderId);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CheckPage(
+                    check: responsePrintCheck["Lines"],
+                  )),
+        );
+      }
 
       // js.context.callMethod('open', [response['Data']['TicketPrintUrl']]);
     } catch (e) {

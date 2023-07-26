@@ -767,6 +767,48 @@ class MainApiService {
     }
   }
 
+  Future<Map<String, dynamic>> sendDataToCheckReturn(
+    int orderId,
+    int paymentType,
+    double cash,
+    double card,
+  ) async {
+    Map<String, dynamic> body = {};
+
+    if (paymentType == 1) {
+      body['payments'] = [
+        {"Sum": cash, "PaymentType": 0},
+      ];
+    } else if (paymentType == 2) {
+      body['payments'] = [
+        {"Sum": card, "PaymentType": 1},
+      ];
+    } else {
+      body['payments'] = [
+        {"Sum": cash, "PaymentType": 0},
+        {"Sum": card, "PaymentType": 1},
+      ];
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/refund/check/$orderId'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   // TODO: Money operation
 
   Future<Map<String, dynamic>> sendMoneyOperationRequest(

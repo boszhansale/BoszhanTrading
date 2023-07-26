@@ -1,6 +1,5 @@
 import 'package:boszhan_trading/models/product.dart';
 import 'package:boszhan_trading/models/user.dart';
-import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
@@ -11,6 +10,7 @@ import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
 import 'package:boszhan_trading/widgets/nds_widget.dart';
 import 'package:boszhan_trading/widgets/order_products_selection.dart';
+import 'package:boszhan_trading/widgets/payment_calculator_widget.dart';
 import 'package:boszhan_trading/widgets/refund_reason_selection_widget.dart';
 import 'package:boszhan_trading/widgets/select_order_for_return_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
@@ -394,19 +394,17 @@ class _NewReturnPageState extends State<NewReturnPage> {
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
 
-      var responsePrintCheck =
-          await MainApiService().getTicketForPrintReturn(response['id']);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CheckPage(
-                  check: responsePrintCheck["Lines"],
-                )),
-      );
-
       Future.delayed(const Duration(seconds: 2))
-          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+          .whenComplete(() => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PaymentCalculatorWidget(
+                          orderId: int.parse(response['id'].toString()),
+                          totalPrice:
+                              double.parse(response['total_price'].toString()),
+                          isSale: false,
+                        )),
+              ));
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());

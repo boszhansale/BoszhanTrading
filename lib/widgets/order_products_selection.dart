@@ -98,7 +98,8 @@ class OrderProductsSelectionWidgetState
                     ),
                     TextButton(
                         onPressed: () {
-                          double? count = double.tryParse(countController.text);
+                          double? count = double.tryParse(
+                              countController.text.replaceAll(',', '.'));
                           if (count != null && count != 0) {
                             selectedProduct['count'] = count;
                             Navigator.of(context).pop();

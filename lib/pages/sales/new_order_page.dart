@@ -489,6 +489,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                           orderId: int.parse(response['id'].toString()),
                           totalPrice:
                               double.parse(response['total_price'].toString()),
+                          isSale: true,
                         )),
               ));
     } catch (e) {

@@ -263,7 +263,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     List<dynamic> sendBasketList = [];
     for (int i = 0; i < globalInventoryList.length; i++) {
       var tempMap = globalInventoryList[i];
-      tempMap['count'] = globalInventoryTextFields[i].text;
+      tempMap['count'] = globalInventoryTextFields[i].text.replaceAll(',', '.');
       sendBasketList.add(tempMap);
     }
 
@@ -363,8 +363,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   void saveCountOfProduct() {
     savedCounts = [];
     for (var i in globalInventoryTextFields) {
-      if (double.tryParse(i.text) != null) {
-        savedCounts.add(double.parse(i.text));
+      if (double.tryParse(i.text.replaceAll(',', '.')) != null) {
+        savedCounts.add(double.parse(i.text.replaceAll(',', '.')));
       } else {
         savedCounts.add(0);
       }
