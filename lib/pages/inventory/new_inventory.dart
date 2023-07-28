@@ -175,10 +175,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             )),
             DataCell(
               Text(
-                (double.parse(globalInventoryList[i]['remains'].toString()) -
-                        double.parse(globalInventoryTextFields[i].text == ''
+                (double.parse(globalInventoryTextFields[i].text == ''
                             ? '0'
-                            : globalInventoryTextFields[i].text))
+                            : globalInventoryTextFields[i].text) -
+                        double.parse(
+                            globalInventoryList[i]['remains'].toString()))
                     .toString(),
               ),
             ),
@@ -319,39 +320,35 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void addProductFromScanner(String barcode) async {
-    bool isExist = false;
-    for (var product in products) {
-      if (product.barcode == barcode) {
-        isExist = true;
-        bool inBasket = false;
-        int index = 0;
-        for (int j = 0; j < globalInventoryList.length; j++) {
-          if (globalInventoryList[j]['product_id'] == product.id) {
-            inBasket = true;
-            index = j;
-          }
-        }
-        if (dialogIsActive) {
-          addProduct(product.id, 1);
-        } else {
-          if (inBasket) {
-            globalInventoryTextFields[index].text = (double.parse(
-                        globalInventoryTextFields[index].text == ''
-                            ? '0'
-                            : globalInventoryTextFields[index].text) +
-                    1)
-                .toString();
-            setState(() {});
-          } else {
-            showCustomSnackBar(
-                context, 'Данный продукт не находится в списке поступлении.');
-            // addProduct(product.id, 1);
-          }
+    var response = await MainApiService().searchProductByBarcode(barcode);
+    if (response.isNotEmpty) {
+      ProductMain product = ProductMain.fromJson(response[0]);
+      bool inBasket = false;
+      int index = 0;
+      for (int j = 0; j < globalInventoryList.length; j++) {
+        if (globalInventoryList[j]['product_id'] == product.id) {
+          inBasket = true;
+          index = j;
         }
       }
-    }
-
-    if (isExist == false) {
+      if (dialogIsActive) {
+        addProduct(product.id, 1);
+      } else {
+        if (inBasket) {
+          globalInventoryTextFields[index].text = (double.parse(
+                      globalInventoryTextFields[index].text == ''
+                          ? '0'
+                          : globalInventoryTextFields[index].text) +
+                  1)
+              .toString();
+          setState(() {});
+        } else {
+          showCustomSnackBar(
+              context, 'Данный продукт не находится в списке поступлении.');
+          // addProduct(product.id, 1);
+        }
+      }
+    } else {
       showCustomSnackBar(context, 'Данный продукт не найден...');
     }
   }

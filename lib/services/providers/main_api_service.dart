@@ -65,6 +65,25 @@ class MainApiService {
     }
   }
 
+  Future<dynamic> searchProductByBarcode(String barcode) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/product?search=$barcode'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   // TODO: Sales
 
   Future<Map<String, dynamic>> createSalesOrder(int onlineSale, int paymentType,

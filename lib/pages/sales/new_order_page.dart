@@ -45,7 +45,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
   List<dynamic> basket = [];
 
   String scannedBarcode = '';
-  List<ProductMain> products = [];
 
   Map<dynamic, double> productsPermission = {};
 
@@ -53,7 +52,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
   void initState() {
     _init();
     checkLogin();
-    getProducts();
     getInventoryProducts();
     super.initState();
   }
@@ -87,18 +85,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
     Future.delayed(const Duration(milliseconds: 500))
         .whenComplete(() => mounted ? showProductDialog() : null);
-  }
-
-  void getProducts() async {
-    try {
-      var responseProducts = await MainApiService().getProducts();
-
-      for (var i in responseProducts) {
-        products.add(ProductMain.fromJson(i));
-      }
-    } catch (error) {
-      showCustomSnackBar(context, error.toString());
-    }
   }
 
   void saveBasket() async {
@@ -363,43 +349,39 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addProductFromScanner(String barcode) async {
-    bool isExist = false;
-    for (var product in products) {
-      if (product.barcode == barcode) {
-        isExist = true;
-        bool inBasket = false;
-        int index = 0;
-        for (int j = 0; j < basket.length; j++) {
-          if (basket[j]['id'] == product.id) {
-            inBasket = true;
-            index = j;
-          }
-        }
-        if (inBasket) {
-          if (productsPermission[product.id]! > basket[index]['count']) {
-            basket[index]['count'] = basket[index]['count'] + 1;
-          } else {
-            showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-          }
-        } else {
-          if (productsPermission[product.id]! > 1) {
-            basket.add({
-              "id": product.id,
-              "name": product.name,
-              "id_1c": product.id_1c,
-              "article": product.article,
-              "price": product.price,
-              "measure": product.measure,
-              "count": 1
-            });
-          } else {
-            showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-          }
+    var response = await MainApiService().searchProductByBarcode(barcode);
+    if (response.isNotEmpty) {
+      ProductMain product = ProductMain.fromJson(response[0]);
+      bool inBasket = false;
+      int index = 0;
+      for (int j = 0; j < basket.length; j++) {
+        if (basket[j]['id'] == product.id) {
+          inBasket = true;
+          index = j;
         }
       }
-    }
-
-    if (isExist == false) {
+      if (inBasket) {
+        if (productsPermission[product.id]! > basket[index]['count']) {
+          basket[index]['count'] = basket[index]['count'] + 1;
+        } else {
+          showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        }
+      } else {
+        if (productsPermission[product.id]! > 1) {
+          basket.add({
+            "id": product.id,
+            "name": product.name,
+            "id_1c": product.id_1c,
+            "article": product.article,
+            "price": product.price,
+            "measure": product.measure,
+            "count": 1
+          });
+        } else {
+          showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        }
+      }
+    } else {
       showCustomSnackBar(context, 'Данный продукт не найден...');
     }
 
