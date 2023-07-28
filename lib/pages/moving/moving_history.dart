@@ -3,10 +3,12 @@ import 'package:boszhan_trading/pages/moving/moving_edit_page.dart';
 import 'package:boszhan_trading/pages/moving/moving_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
+import 'package:boszhan_trading/utils/const.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
+import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -200,11 +202,22 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
           DataCell(
             IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MovingEditPage(order: orders[i])),
-                );
+                var now = new DateTime.now();
+                var formatter = new DateFormat('yyyy-MM-dd');
+                String formattedDate = formatter.format(now);
+
+                DateTime ordersDate = DateTime.parse(orders[i].createdAt);
+                String formattedOrdersDate = formatter.format(ordersDate);
+
+                if (formattedOrdersDate == formattedDate) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MovingEditPage(order: orders[i])),
+                  );
+                } else {
+                  _showPasswordEntering(orders[i]);
+                }
               },
               icon: const Icon(Icons.edit),
             ),
@@ -245,5 +258,59 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void _showPasswordEntering(MovingOrderHistoryModel order) async {
+    TextEditingController passwordcontroller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Введите пароль для подтверждения'),
+          content: SizedBox(
+            width: 200,
+            height: 150,
+            child: Column(
+              children: [
+                TextField(
+                  controller: passwordcontroller,
+                  decoration: const InputDecoration(hintText: 'Пароль'),
+                  autofocus: true,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Отмена'),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          if (passwordcontroller.text ==
+                              AppConstants.appPassword) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MovingEditPage(order: order)),
+                            );
+                          } else {
+                            showCustomSnackBar(context, 'Неверный пароль!');
+                          }
+                        },
+                        child: const Text('Ok')),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

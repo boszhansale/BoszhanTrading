@@ -4,10 +4,12 @@ import 'package:boszhan_trading/models/user.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/providers/session_data_provider.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
+import 'package:boszhan_trading/utils/const.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -446,7 +448,7 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/inventory/new');
+                _showPasswordEnteringForInventory();
               },
               child: const Text('Новый документ инвентаризации',
                   style: ProjectStyles.textStyle_18Medium),
@@ -460,6 +462,56 @@ class _HomePageState extends State<HomePage> {
                   style: ProjectStyles.textStyle_18Medium),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showPasswordEnteringForInventory() async {
+    TextEditingController passwordcontroller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Введите пароль для подтверждения'),
+          content: SizedBox(
+            width: 200,
+            height: 150,
+            child: Column(
+              children: [
+                TextField(
+                  controller: passwordcontroller,
+                  decoration: const InputDecoration(hintText: 'Пароль'),
+                  autofocus: true,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Отмена'),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          if (passwordcontroller.text ==
+                              AppConstants.appPassword) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamed('/inventory/new');
+                          } else {
+                            showCustomSnackBar(context, 'Неверный пароль!');
+                          }
+                        },
+                        child: const Text('Ok')),
+                  ],
+                )
+              ],
+            ),
+          ),
         );
       },
     );
