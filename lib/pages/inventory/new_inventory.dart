@@ -164,8 +164,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                 child: TextField(
                   controller: globalInventoryTextFields[i],
                   decoration: const InputDecoration(hintText: 'кл.'),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+[\,\.]?\d{0,2}')),
                   ],
                   onChanged: (value) {
                     setState(() {});
@@ -177,7 +178,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
               Text(
                 (double.parse(globalInventoryTextFields[i].text == ''
                             ? '0'
-                            : globalInventoryTextFields[i].text) -
+                            : globalInventoryTextFields[i]
+                                .text
+                                .replaceAll(',', '.')) -
                         double.parse(
                             globalInventoryList[i]['remains'].toString()))
                     .toString(),
