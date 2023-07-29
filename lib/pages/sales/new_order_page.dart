@@ -409,14 +409,34 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
   void addToBasket(dynamic product) async {
     // if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-    basket.add(product);
+    bool inBasket = false;
+    int index = 0;
+    for (int j = 0; j < basket.length; j++) {
+      if (basket[j]['id'] == product['id']) {
+        inBasket = true;
+        index = j;
+      }
+    }
+    if (inBasket) {
+      // if (productsPermission[product.id]! > basket[index]['count']) {
+      basket[index]['count'] = basket[index]['count'] + product['count'];
+      // } else {
+      //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+      // }
+    } else {
+      basket.add(product);
+    }
+
     sum = 0;
     for (var item in basket) {
       sum += item['count'] * item['price'];
     }
 
     saveBasket();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
+
     // } else {
     //   showCustomSnackBar(context,
     //       'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
