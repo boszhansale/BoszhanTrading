@@ -361,25 +361,25 @@ class _NewOrderPageState extends State<NewOrderPage> {
         }
       }
       if (inBasket) {
-        if (productsPermission[product.id]! > basket[index]['count']) {
-          basket[index]['count'] = basket[index]['count'] + 1;
-        } else {
-          showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-        }
+        // if (productsPermission[product.id]! > basket[index]['count']) {
+        basket[index]['count'] = basket[index]['count'] + 1;
+        // } else {
+        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        // }
       } else {
-        if (productsPermission[product.id]! > 1) {
-          basket.add({
-            "id": product.id,
-            "name": product.name,
-            "id_1c": product.id_1c,
-            "article": product.article,
-            "price": product.price,
-            "measure": product.measure,
-            "count": 1
-          });
-        } else {
-          showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-        }
+        // if (productsPermission[product.id]! > 0) {
+        basket.add({
+          "id": product.id,
+          "name": product.name,
+          "id_1c": product.id_1c,
+          "article": product.article,
+          "price": product.price,
+          "measure": product.measure,
+          "count": 1
+        });
+        // } else {
+        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        // }
       }
     } else {
       showCustomSnackBar(context, 'Данный продукт не найден...');
@@ -408,19 +408,19 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addToBasket(dynamic product) async {
-    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-      basket.add(product);
-      sum = 0;
-      for (var item in basket) {
-        sum += item['count'] * item['price'];
-      }
-
-      saveBasket();
-      setState(() {});
-    } else {
-      showCustomSnackBar(context,
-          'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
+    // if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+    basket.add(product);
+    sum = 0;
+    for (var item in basket) {
+      sum += item['count'] * item['price'];
     }
+
+    saveBasket();
+    setState(() {});
+    // } else {
+    //   showCustomSnackBar(context,
+    //       'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
+    // }
   }
 
   void showCounteragentDialog() async {
