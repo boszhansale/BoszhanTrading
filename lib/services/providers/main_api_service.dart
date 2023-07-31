@@ -331,6 +331,32 @@ class MainApiService {
     }
   }
 
+  Future<Map<String, dynamic>> editIncomingOrder(
+      int id, List<dynamic> products) async {
+    Map<String, dynamic> body = {
+      "products": products,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/receipt/update/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   Future<dynamic> deleteIncomingOrderFromHistory(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/receipt/$id'),
@@ -632,6 +658,31 @@ class MainApiService {
 
     final response = await http.post(
       Uri.parse('$baseUrl/inventory'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<Map<String, dynamic>> editInventoryOrder(
+      int id, List<dynamic> products) async {
+    Map<String, dynamic> body = {
+      "products": products,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/inventory/update-product/$id'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
