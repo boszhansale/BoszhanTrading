@@ -126,7 +126,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
       onKey: (event) {
         if (event is RawKeyDownEvent) {
           if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-            print(scannedBarcode);
             addProductFromScanner(scannedBarcode);
             scannedBarcode = '';
           } else {
@@ -350,7 +349,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addProductFromScanner(String barcode) async {
-    print(barcode);
     var response = await MainApiService().searchProductByBarcode(barcode);
     if (response.isNotEmpty) {
       ProductMain product = ProductMain.fromJson(response[0]);

@@ -103,6 +103,8 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
                                 ? null
                                 : () {
                                     selectedPaymentType = 2;
+                                    cardController.text =
+                                        widget.totalPrice.toString();
                                     calculatePrice();
                                     setState(() {});
                                   },

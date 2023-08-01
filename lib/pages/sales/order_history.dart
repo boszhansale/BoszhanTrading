@@ -166,8 +166,10 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('Тор. точка')),
       const DataColumn(label: Text('Контрагент')),
       const DataColumn(label: Text('Дата')),
-      const DataColumn(label: Text('Колл. продуктов')),
+      const DataColumn(label: Text('Колл. пр.')),
       const DataColumn(label: Text('Сумма')),
+      const DataColumn(label: Text('Сдача')),
+      const DataColumn(label: Text('Оплата')),
       const DataColumn(label: Text('Чек')),
       const DataColumn(label: Text('Показать')),
       // const DataColumn(label: Text('Удалить')),
@@ -185,6 +187,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           DataCell(Text(orders[i].createdAt ?? '')),
           DataCell(Text(orders[i].productsCount.toString())),
           DataCell(Text(orders[i].totalPrice.toString())),
+          DataCell(Text(orders[i].givePrice.toString())),
+          DataCell(Text(orders[i].payments.isNotEmpty
+              ? orders[i].payments[0]['PaymentType'] == 1
+                  ? 'Нал'
+                  : 'Без нал'
+              : ' ')),
           DataCell(
             IconButton(
               onPressed: () {

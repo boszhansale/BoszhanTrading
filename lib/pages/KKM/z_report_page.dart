@@ -87,7 +87,7 @@ class _ZReportPageState extends State<ZReportPage> {
           ),
           const Divider(),
           const Text(
-            'СМЕННЫЙ X-ОТЧЕТ',
+            'СМЕННЫЙ Z-ОТЧЕТ',
             style: ProjectStyles.textStyle_10Medium,
           ),
           Row(

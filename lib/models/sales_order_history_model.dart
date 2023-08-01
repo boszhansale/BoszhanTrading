@@ -11,6 +11,8 @@ class SalesOrderHistoryModel {
   final String? printUrl;
   final String? checkNumber;
   final String? counteragentName;
+  final double? givePrice;
+  final List<dynamic> payments;
 
   SalesOrderHistoryModel({
     required this.id,
@@ -22,6 +24,8 @@ class SalesOrderHistoryModel {
     required this.printUrl,
     required this.checkNumber,
     required this.counteragentName,
+    this.givePrice,
+    required this.payments,
   });
 
   factory SalesOrderHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,8 @@ class SalesOrderHistoryModel {
       counteragentName: json['counteragent_id'] == null
           ? 'Физ лицо'
           : json['counteragent']['name'],
+      givePrice: double.tryParse(json['give_price']) ?? 0,
+      payments: json['payments'] ?? [],
     );
   }
 }
