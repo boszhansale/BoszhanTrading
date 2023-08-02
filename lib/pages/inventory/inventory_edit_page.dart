@@ -119,7 +119,8 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
                       children: [
                         Row(
                           children: [
-                            const Text("Новый документ инвентаризации",
+                            const Text(
+                                "Редактирование документа инвентаризации",
                                 style: ProjectStyles.textStyle_30Bold),
                             const Spacer(),
                             customTextButton(

@@ -94,7 +94,7 @@ class _IncomingEditPageState extends State<IncomingEditPage> {
                     children: [
                       Row(
                         children: [
-                          const Text("Изменение документа перемещения",
+                          const Text("Изменение документа поступления",
                               style: ProjectStyles.textStyle_30Bold),
                           const Spacer(),
                           customTextButton(

@@ -276,7 +276,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                         ),
                         const SizedBox(height: 10),
                         SizedBox(
-                          height: 600,
+                          height: 550,
                           child: SingleChildScrollView(
                             child: Material(
                               elevation: 3,
@@ -351,6 +351,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
   void addProductFromScanner(String barcode) async {
     var response = await MainApiService().searchProductByBarcode(barcode);
     if (response.isNotEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ProductMain product = ProductMain.fromJson(response[0]);
       bool inBasket = false;
       int index = 0;

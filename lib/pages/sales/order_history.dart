@@ -19,7 +19,10 @@ class OrderHistoryPage extends StatefulWidget {
 }
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
+  Object paymentTypeSelectedValue = 0;
+
   List<SalesOrderHistoryModel> orders = [];
+  List<SalesOrderHistoryModel> allOrders = [];
 
   String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
   String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -131,6 +134,42 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                         ],
                       ),
                       const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Тип оплаты:',
+                            style: ProjectStyles.textStyle_14Medium,
+                          ),
+                          const SizedBox(width: 10),
+                          DropdownButton(
+                            value: paymentTypeSelectedValue,
+                            items: const [
+                              DropdownMenuItem(
+                                  child: Text("Наличный"), value: 0),
+                              DropdownMenuItem(
+                                  child: Text("Безналичный"), value: 1),
+                            ],
+                            onChanged: (Object? newValue) {
+                              setState(() {
+                                paymentTypeSelectedValue = newValue!;
+                                orders = [];
+                                for (var item in allOrders) {
+                                  if (item.payments.isNotEmpty) {
+                                    if (paymentTypeSelectedValue ==
+                                        (item.payments[0]['PaymentType'] ??
+                                            '')) {
+                                      orders.add(item);
+                                    }
+                                    print(item.payments[0]['PaymentType']);
+                                  }
+                                }
+                              });
+                            },
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
                         child: SingleChildScrollView(
@@ -166,7 +205,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('Тор. точка')),
       const DataColumn(label: Text('Контрагент')),
       const DataColumn(label: Text('Дата')),
-      const DataColumn(label: Text('Колл. пр.')),
+      const DataColumn(label: Text('Кол.')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Сдача')),
       const DataColumn(label: Text('Оплата')),
@@ -179,64 +218,75 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   List<DataRow> _createRows() {
     return [
       for (int i = 0; i < orders.length; i++)
-        DataRow(cells: [
-          DataCell(Text('${i + 1}')),
-          DataCell(Text(orders[i].id.toString())),
-          DataCell(Text(orders[i].storeName ?? '')),
-          DataCell(Text(orders[i].counteragentName ?? '')),
-          DataCell(Text(orders[i].createdAt ?? '')),
-          DataCell(Text(orders[i].productsCount.toString())),
-          DataCell(Text(orders[i].totalPrice.toString())),
-          DataCell(Text(orders[i].givePrice.toString())),
-          DataCell(Text(orders[i].payments.isNotEmpty
-              ? orders[i].payments[0]['PaymentType'] == 1
-                  ? 'Нал'
-                  : 'Без нал'
-              : ' ')),
-          DataCell(
-            IconButton(
-              onPressed: () {
-                orders[i].printUrl != null
-                    ? getCheckAndPrint(orders[i].id)
-                    : showCustomSnackBar(context, 'Чек отсутствует!');
-              },
-              icon: const Icon(Icons.print),
+        DataRow(
+          cells: [
+            DataCell(Text('${i + 1}')),
+            DataCell(Text(orders[i].id.toString())),
+            DataCell(Text(orders[i].storeName ?? '')),
+            DataCell(Text(orders[i].counteragentName ?? '')),
+            DataCell(Text(orders[i].createdAt ?? '')),
+            DataCell(Text(orders[i].productsCount.toString())),
+            DataCell(Text(orders[i].totalPrice.toString())),
+            DataCell(Text(orders[i].givePrice.toString())),
+            DataCell(Text(orders[i].payments.isNotEmpty
+                ? orders[i].payments[0]['PaymentType'] == 0
+                    ? 'Нал'
+                    : 'Без нал'
+                : ' ')),
+            DataCell(
+              IconButton(
+                onPressed: () {
+                  orders[i].printUrl != null
+                      ? getCheckAndPrint(orders[i].id)
+                      : showCustomSnackBar(context, 'Чек отсутствует!');
+                },
+                icon: const Icon(Icons.print),
+              ),
             ),
-          ),
-          DataCell(
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SalesOrderHistoryProductsPage(order: orders[i])),
-                );
-              },
-              icon: const Icon(Icons.list),
+            DataCell(
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SalesOrderHistoryProductsPage(order: orders[i])),
+                  );
+                },
+                icon: const Icon(Icons.list),
+              ),
             ),
-          ),
-          // DataCell(
-          //   IconButton(
-          //     onPressed: () {
-          //       deleteOrderFromHistory(orders[i].id);
-          //     },
-          //     icon: const Icon(Icons.delete),
-          //   ),
-          // )
-        ]),
+            // DataCell(
+            //   IconButton(
+            //     onPressed: () {
+            //       deleteOrderFromHistory(orders[i].id);
+            //     },
+            //     icon: const Icon(Icons.delete),
+            //   ),
+            // )
+          ],
+        ),
     ];
   }
 
   void searchOrder() async {
     var response = await MainApiService()
         .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
-    // print(response);
 
     orders = [];
+    allOrders = [];
 
     for (var item in response) {
-      orders.add(SalesOrderHistoryModel.fromJson(item));
+      allOrders.add(SalesOrderHistoryModel.fromJson(item));
+    }
+
+    for (var item in allOrders) {
+      if (item.payments.isNotEmpty) {
+        if (paymentTypeSelectedValue ==
+            (item.payments[0]['PaymentType'] ?? '')) {
+          orders.add(item);
+        }
+      }
     }
 
     setState(() {});

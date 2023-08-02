@@ -144,6 +144,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   DataTable _createDataTable() {
     return DataTable(
+      headingRowColor:
+          MaterialStateColor.resolveWith((states) => ColorPalette.main),
       columns: _createColumns(),
       rows: [
         for (int i = 0; i < globalInventoryList.length; i++)
@@ -257,18 +259,15 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void createOrder() async {
-    for (var i in globalInventoryTextFields) {
-      if (i.text.isEmpty) {
-        showCustomSnackBar(context, 'Заполните все поля!');
-        return;
-      }
-    }
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
     for (int i = 0; i < globalInventoryList.length; i++) {
-      var tempMap = globalInventoryList[i];
-      tempMap['count'] = globalInventoryTextFields[i].text.replaceAll(',', '.');
-      sendBasketList.add(tempMap);
+      if (globalInventoryTextFields[i].text.isNotEmpty) {
+        var tempMap = globalInventoryList[i];
+        tempMap['count'] =
+            globalInventoryTextFields[i].text.replaceAll(',', '.');
+        sendBasketList.add(tempMap);
+      }
     }
 
     try {

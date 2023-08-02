@@ -31,8 +31,8 @@ class _NewMovingPageState extends State<NewMovingPage> {
   String storageName = '';
   String organizationName = '';
 
-  int sendStorageId = 0;
-  String sendStorageName = '';
+  int sendStorageId = 1;
+  String sendStorageName = 'Центральный Склад';
   int selectedOrderId = 0;
 
   dynamic selectedProduct;
