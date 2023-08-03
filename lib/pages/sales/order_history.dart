@@ -27,6 +27,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
   String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
+  double sum = 0;
+
   @override
   void initState() {
     checkLogin();
@@ -154,14 +156,15 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               setState(() {
                                 paymentTypeSelectedValue = newValue!;
                                 orders = [];
+                                sum = 0;
                                 for (var item in allOrders) {
                                   if (item.payments.isNotEmpty) {
                                     if (paymentTypeSelectedValue ==
                                         (item.payments[0]['PaymentType'] ??
                                             '')) {
                                       orders.add(item);
+                                      sum += item.totalPrice;
                                     }
-                                    print(item.payments[0]['PaymentType']);
                                   }
                                 }
                               });
@@ -171,7 +174,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       ),
                       const SizedBox(height: 20),
                       SizedBox(
-                        height: 600,
+                        height: 550,
                         child: SingleChildScrollView(
                           child: Material(
                             elevation: 3,
@@ -183,6 +186,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      Text('Сумма: $sum тг',
+                          style: ProjectStyles.textStyle_22Bold),
                     ],
                   ),
                 ),
@@ -275,6 +281,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
     orders = [];
     allOrders = [];
+    sum = 0;
 
     for (var item in response) {
       allOrders.add(SalesOrderHistoryModel.fromJson(item));
@@ -285,6 +292,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         if (paymentTypeSelectedValue ==
             (item.payments[0]['PaymentType'] ?? '')) {
           orders.add(item);
+          sum += item.totalPrice;
         }
       }
     }
