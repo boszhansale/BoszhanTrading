@@ -6,7 +6,8 @@ class InventoryProduct {
   final double count;
   final double receipt;
   final double sale;
-  final double moving;
+  final double movingFrom;
+  final double movingTo;
   final double remains;
   // final double price;
   final String measure;
@@ -21,7 +22,8 @@ class InventoryProduct {
     required this.count,
     required this.receipt,
     required this.sale,
-    required this.moving,
+    required this.movingFrom,
+    required this.movingTo,
     required this.remains,
     // required this.price,
     required this.measure,
@@ -38,7 +40,8 @@ class InventoryProduct {
       count: double.tryParse(json['count']) ?? 0,
       receipt: double.tryParse(json['receipt']) ?? 0,
       sale: double.tryParse(json['sale']) ?? 0,
-      moving: double.tryParse(json['moving']) ?? 0,
+      movingFrom: double.tryParse(json['moving_from']) ?? 0,
+      movingTo: double.tryParse(json['moving_to']) ?? 0,
       remains: double.tryParse(json['remains']) ?? 0,
       // price: double.tryParse(json['product']['price']) ?? 0,
       measure: json['product']['measure'] == 1 ? "шт" : "кг",

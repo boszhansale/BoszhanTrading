@@ -6,7 +6,7 @@ class InventoryOrderHistoryModel {
   final String? storeName;
   final int productsCount;
   final List<InventoryProduct> products;
-  final String createdAt;
+  final String? createdAt;
 
   InventoryOrderHistoryModel({
     required this.id,

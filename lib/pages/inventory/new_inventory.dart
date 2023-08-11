@@ -117,7 +117,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                         ),
                         const SizedBox(height: 10),
                         SizedBox(
-                          height: 600,
+                          // height: 600,
                           child: SingleChildScrollView(
                             child: Material(
                               elevation: 3,

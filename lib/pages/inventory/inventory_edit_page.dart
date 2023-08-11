@@ -47,6 +47,7 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
   void initState() {
     getProducts();
     checkLogin();
+    _init();
     super.initState();
   }
 
@@ -68,7 +69,8 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
         'product_id': item.id,
         'article': item.article,
         'name': item.name,
-        'moving_from': item.moving,
+        'moving_from': item.movingFrom,
+        'moving_to': item.movingTo,
         'receipt': item.receipt,
         'sale': item.sale,
         'remains': item.remains,
@@ -148,7 +150,7 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
                         ),
                         const SizedBox(height: 10),
                         SizedBox(
-                          height: 600,
+                          // height: 600,
                           child: SingleChildScrollView(
                             child: Material(
                               elevation: 3,
@@ -180,8 +182,7 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
         for (int i = 0; i < globalInventoryList.length; i++)
           DataRow(cells: [
             DataCell(Text('${i + 1}')),
-            DataCell(
-                Text(globalInventoryList[i]['product_id'].toString() ?? '')),
+            DataCell(Text(globalInventoryList[i]['product_id'].toString())),
             DataCell(Text(globalInventoryList[i]['article'] ?? '')),
             DataCell(Text(globalInventoryList[i]['name'] ?? '')),
             DataCell(Text(globalInventoryList[i]['moving_from'].toString())),
