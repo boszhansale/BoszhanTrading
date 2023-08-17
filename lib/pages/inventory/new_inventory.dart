@@ -124,7 +124,83 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                               child: Container(
                                 color: ColorPalette.white,
                                 width: double.infinity,
-                                child: _createDataTable(),
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          SizedBox(
+                                              width: 30,
+                                              child: Text(
+                                                '№',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                              width: 50,
+                                              child: Text(
+                                                'Код',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Арти.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(width: 10),
+                                          SizedBox(
+                                              width: 600,
+                                              child: Text(
+                                                'Название',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(width: 10),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Перем.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Пост.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Прод.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Оста.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                          SizedBox(
+                                            width: 80,
+                                            child: Text(
+                                              'Колл.',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              width: 80,
+                                              child: Text(
+                                                'Разн.',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    _createProductList(),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -139,6 +215,71 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           ],
         ),
       ),
+    );
+  }
+
+  ListView _createProductList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: globalInventoryList.length,
+      itemBuilder: (BuildContext context, int index) {
+        final product = globalInventoryList[index];
+
+        return Column(
+          children: [
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width: 30, child: Text((index + 1).toString())),
+                  SizedBox(
+                      width: 50,
+                      child: Text((product['product_id'] ?? '').toString())),
+                  SizedBox(width: 80, child: Text(product['article'] ?? '')),
+                  const SizedBox(width: 10),
+                  SizedBox(width: 600, child: Text(product['name'] ?? '')),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                      width: 80, child: Text(product['moving_from'] ?? '')),
+                  SizedBox(width: 80, child: Text(product['receipt'] ?? '')),
+                  SizedBox(width: 80, child: Text(product['sale'] ?? '')),
+                  SizedBox(width: 80, child: Text(product['remains'] ?? '')),
+                  SizedBox(
+                    width: 80,
+                    child: TextField(
+                      controller: globalInventoryTextFields[index],
+                      decoration: const InputDecoration(hintText: 'кл.'),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+[\,\.]?\d{0,2}')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                      width: 80,
+                      child: Text(
+                        (double.parse(
+                                    globalInventoryTextFields[index].text == ''
+                                        ? '0'
+                                        : globalInventoryTextFields[index]
+                                            .text
+                                            .replaceAll(',', '.')) -
+                                double.parse(globalInventoryList[index]
+                                        ['remains']
+                                    .toString()))
+                            .toString(),
+                      )),
+                ],
+              ),
+            ),
+            Divider(),
+          ],
+        );
+      },
     );
   }
 
