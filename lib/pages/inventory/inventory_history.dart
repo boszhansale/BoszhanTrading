@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/inventory_order_history_model.dart';
 import 'package:boszhan_trading/pages/inventory/inventory_edit_page.dart';
 import 'package:boszhan_trading/pages/inventory/inventory_order_history_products.dart';
@@ -168,6 +170,7 @@ class _InventoryHistoryPageState extends State<InventoryHistoryPage> {
       const DataColumn(label: Text('Дата')),
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Показать')),
+      const DataColumn(label: Text('Печать')),
       const DataColumn(label: Text('Изменить')),
       // const DataColumn(label: Text('Удалить')),
     ];
@@ -193,6 +196,14 @@ class _InventoryHistoryPageState extends State<InventoryHistoryPage> {
                 );
               },
               icon: const Icon(Icons.list),
+            ),
+          ),
+          DataCell(
+            IconButton(
+              onPressed: () {
+                printDocumentAction(orders[i].id);
+              },
+              icon: const Icon(Icons.print),
             ),
           ),
           DataCell(
@@ -236,6 +247,15 @@ class _InventoryHistoryPageState extends State<InventoryHistoryPage> {
     try {
       await MainApiService().deleteMovingOrderFromHistory(id);
       getHistory();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void printDocumentAction(int id) async {
+    try {
+      js.context
+          .callMethod('open', ['${AppConstants.baseUrl}inventory/html/$id']);
     } catch (e) {
       print(e);
     }

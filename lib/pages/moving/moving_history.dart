@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/moving_history_model.dart';
 import 'package:boszhan_trading/pages/moving/moving_edit_page.dart';
 import 'package:boszhan_trading/pages/moving/moving_order_history_products.dart';
@@ -170,6 +172,7 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Показать')),
+      const DataColumn(label: Text('Печать')),
       const DataColumn(label: Text('Изменить')),
       // const DataColumn(label: Text('Удалить')),
     ];
@@ -197,6 +200,14 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
                 );
               },
               icon: const Icon(Icons.list),
+            ),
+          ),
+          DataCell(
+            IconButton(
+              onPressed: () {
+                printDocumentAction(orders[i].id);
+              },
+              icon: const Icon(Icons.print),
             ),
           ),
           DataCell(
@@ -255,6 +266,14 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
     try {
       await MainApiService().deleteMovingOrderFromHistory(id);
       getHistory();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void printDocumentAction(int id) async {
+    try {
+      js.context.callMethod('open', ['${AppConstants.baseUrl}moving/html/$id']);
     } catch (e) {
       print(e);
     }

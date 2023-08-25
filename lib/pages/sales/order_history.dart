@@ -1,5 +1,4 @@
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
-import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/pages/sales/sales_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -9,7 +8,11 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdfWidgets;
+import 'package:printing/printing.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({Key? key}) : super(key: key);
@@ -312,12 +315,45 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   void getCheckAndPrint(int id) async {
     var responsePrintCheck = await MainApiService().getTicketForPrint(id);
 
+    final pdf = pdfWidgets.Document();
+    final fontData =
+        await rootBundle.load("assets/fonts/Montserrat-Regular.ttf");
+    final ttf = pdfWidgets.Font.ttf(fontData);
+
+    pdf.addPage(
+      pdfWidgets.Page(
+        build: (context) {
+          return pdfWidgets.Column(
+            crossAxisAlignment: pdfWidgets.CrossAxisAlignment.start,
+            children: [
+              for (var item in responsePrintCheck[
+                  "Lines"]) // Замените "Lines" на имя поля с линиями
+                pdfWidgets.Text(
+                  item['Value'],
+                  style: pdfWidgets.TextStyle(font: ttf),
+                ),
+            ],
+          );
+        },
+        pageFormat: PdfPageFormat.roll80,
+      ),
+    );
+
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CheckPage(
-                check: responsePrintCheck["Lines"],
-              )),
+        builder: (context) => PdfPreview(
+          build: (format) => pdf.save(),
+        ),
+      ),
     );
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CheckPage(
+    //             check: responsePrintCheck["Lines"],
+    //           )),
+    // );
   }
 }

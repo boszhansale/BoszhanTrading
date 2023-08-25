@@ -1,3 +1,4 @@
+import 'package:boszhan_trading/components/debouncer_text_field.dart';
 import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 
 List<dynamic> globalInventoryList = [];
 List<TextEditingController> globalInventoryTextFields = [];
+List<String> globalInventoryRemains = [];
 
 class NewInventoryPage extends StatefulWidget {
   const NewInventoryPage({Key? key}) : super(key: key);
@@ -247,32 +249,35 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                   SizedBox(width: 80, child: Text(product['remains'] ?? '')),
                   SizedBox(
                     width: 80,
-                    child: TextField(
+                    child: DebouncerTextField(
                       controller: globalInventoryTextFields[index],
-                      decoration: const InputDecoration(hintText: 'кл.'),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d+[\,\.]?\d{0,2}')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {});
+                      onValueChanged: (value) {
+                        setState(() {
+                          globalInventoryRemains[index] =
+                              ((double.tryParse(value.replaceAll(',', '.')) ??
+                                          0) -
+                                      (double.parse(globalInventoryList[index]
+                                              ['remains']
+                                          .toString())))
+                                  .toString();
+                        });
                       },
                     ),
                   ),
                   SizedBox(
                       width: 80,
-                      child: Text(
-                        (double.parse(
-                                    globalInventoryTextFields[index].text == ''
-                                        ? '0'
-                                        : globalInventoryTextFields[index]
-                                            .text
-                                            .replaceAll(',', '.')) -
-                                double.parse(globalInventoryList[index]
-                                        ['remains']
-                                    .toString()))
-                            .toString(),
-                      )),
+                      child: Text(globalInventoryRemains[index]
+                          // (double.parse(
+                          //             globalInventoryTextFields[index].text == ''
+                          //                 ? '0'
+                          //                 : globalInventoryTextFields[index]
+                          //                     .text
+                          //                     .replaceAll(',', '.')) -
+                          //         double.parse(globalInventoryList[index]
+                          //                 ['remains']
+                          //             .toString()))
+                          //     .toString(),
+                          )),
                 ],
               ),
             ),
@@ -283,57 +288,57 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
-  DataTable _createDataTable() {
-    return DataTable(
-      headingRowColor:
-          MaterialStateColor.resolveWith((states) => ColorPalette.main),
-      columns: _createColumns(),
-      rows: [
-        for (int i = 0; i < globalInventoryList.length; i++)
-          DataRow(cells: [
-            DataCell(Text('${i + 1}')),
-            DataCell(
-                Text(globalInventoryList[i]['product_id'].toString() ?? '')),
-            DataCell(Text(globalInventoryList[i]['article'] ?? '')),
-            DataCell(Text(globalInventoryList[i]['name'] ?? '')),
-            DataCell(Text(globalInventoryList[i]['moving_from'].toString())),
-            DataCell(Text(globalInventoryList[i]['receipt'].toString())),
-            DataCell(Text(globalInventoryList[i]['sale'].toString())),
-            DataCell(Text(globalInventoryList[i]['remains'].toString())),
-            DataCell(Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SizedBox(
-                width: 50,
-                child: TextField(
-                  controller: globalInventoryTextFields[i],
-                  decoration: const InputDecoration(hintText: 'кл.'),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+[\,\.]?\d{0,2}')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
-              ),
-            )),
-            DataCell(
-              Text(
-                (double.parse(globalInventoryTextFields[i].text == ''
-                            ? '0'
-                            : globalInventoryTextFields[i]
-                                .text
-                                .replaceAll(',', '.')) -
-                        double.parse(
-                            globalInventoryList[i]['remains'].toString()))
-                    .toString(),
-              ),
-            ),
-          ])
-      ],
-      showCheckboxColumn: false,
-    );
-  }
+  // DataTable _createDataTable() {
+  //   return DataTable(
+  //     headingRowColor:
+  //         MaterialStateColor.resolveWith((states) => ColorPalette.main),
+  //     columns: _createColumns(),
+  //     rows: [
+  //       for (int i = 0; i < globalInventoryList.length; i++)
+  //         DataRow(cells: [
+  //           DataCell(Text('${i + 1}')),
+  //           DataCell(
+  //               Text(globalInventoryList[i]['product_id'].toString() ?? '')),
+  //           DataCell(Text(globalInventoryList[i]['article'] ?? '')),
+  //           DataCell(Text(globalInventoryList[i]['name'] ?? '')),
+  //           DataCell(Text(globalInventoryList[i]['moving_from'].toString())),
+  //           DataCell(Text(globalInventoryList[i]['receipt'].toString())),
+  //           DataCell(Text(globalInventoryList[i]['sale'].toString())),
+  //           DataCell(Text(globalInventoryList[i]['remains'].toString())),
+  //           DataCell(Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 5),
+  //             child: SizedBox(
+  //               width: 50,
+  //               child: TextField(
+  //                 controller: globalInventoryTextFields[i],
+  //                 decoration: const InputDecoration(hintText: 'кл.'),
+  //                 inputFormatters: [
+  //                   FilteringTextInputFormatter.allow(
+  //                       RegExp(r'^\d+[\,\.]?\d{0,2}')),
+  //                 ],
+  //                 onChanged: (value) {
+  //                   setState(() {});
+  //                 },
+  //               ),
+  //             ),
+  //           )),
+  //           DataCell(
+  //             Text(
+  //               (double.parse(globalInventoryTextFields[i].text == ''
+  //                           ? '0'
+  //                           : globalInventoryTextFields[i]
+  //                               .text
+  //                               .replaceAll(',', '.')) -
+  //                       double.parse(
+  //                           globalInventoryList[i]['remains'].toString()))
+  //                   .toString(),
+  //             ),
+  //           ),
+  //         ])
+  //     ],
+  //     showCheckboxColumn: false,
+  //   );
+  // }
 
   // PaginatedDataTable _createDataTable() {
   //   return PaginatedDataTable(
@@ -430,9 +435,12 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       var response = await MainApiService().getInventoryProducts();
       globalInventoryList = response;
       globalInventoryTextFields = [];
+      globalInventoryRemains = [];
       setState(() {});
       for (var i in response) {
         globalInventoryTextFields.add(TextEditingController());
+        globalInventoryRemains
+            .add((0 - double.parse(i['remains'].toString())).toString());
       }
 
       if (globalInventoryTextFields.length == savedCounts.length) {

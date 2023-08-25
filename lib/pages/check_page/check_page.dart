@@ -26,27 +26,29 @@ class _CheckPageState extends State<CheckPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: 250,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/home');
-              },
-              child: SizedBox(
-                width: 80,
-                child: Image.asset('assets/images/logo.png'),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: 250,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/home');
+                },
+                child: SizedBox(
+                  width: 80,
+                  child: Image.asset('assets/images/logo.png'),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            for (var item in widget.check)
-              Text(
-                item['Value'],
-                style: ProjectStyles.textStyle_12Regular,
-              ),
-          ],
+              const SizedBox(height: 10),
+              for (var item in widget.check)
+                Text(
+                  item['Value'],
+                  style: ProjectStyles.textStyle_12Regular,
+                ),
+            ],
+          ),
         ),
       ),
     );

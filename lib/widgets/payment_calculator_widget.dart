@@ -7,6 +7,10 @@ import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdfWidgets;
+import 'package:printing/printing.dart';
 
 class PaymentCalculatorWidget extends StatefulWidget {
   const PaymentCalculatorWidget({
@@ -282,12 +286,37 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
         var responsePrintCheck =
             await MainApiService().getTicketForPrintReturn(widget.orderId);
 
+        final pdf = pdfWidgets.Document();
+        final fontData =
+            await rootBundle.load("assets/fonts/Montserrat-Regular.ttf");
+        final ttf = pdfWidgets.Font.ttf(fontData);
+
+        pdf.addPage(
+          pdfWidgets.Page(
+            build: (context) {
+              return pdfWidgets.Column(
+                crossAxisAlignment: pdfWidgets.CrossAxisAlignment.start,
+                children: [
+                  for (var item in responsePrintCheck[
+                      "Lines"]) // Замените "Lines" на имя поля с линиями
+                    pdfWidgets.Text(
+                      item['Value'],
+                      style: pdfWidgets.TextStyle(font: ttf),
+                    ),
+                ],
+              );
+            },
+            pageFormat: PdfPageFormat.roll80,
+          ),
+        );
+
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CheckPage(
-                    check: responsePrintCheck["Lines"],
-                  )),
+            builder: (context) => PdfPreview(
+              build: (format) => pdf.save(),
+            ),
+          ),
         );
       }
 
