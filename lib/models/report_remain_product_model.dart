@@ -24,13 +24,13 @@ class ReportRemainProduct {
   factory ReportRemainProduct.fromJson(Map<String, dynamic> json) {
     return ReportRemainProduct(
       id: json['product_id'],
-      id_1c: json['id_1c'],
-      article: json['article'],
+      id_1c: json['id_1c'].toString(),
+      article: json['article'].toString(),
       name: json['name'],
       measure: json['measure'] == 1 ? "шт" : "кг",
       receipt: double.tryParse(json['receipt']) ?? 0,
       sale: double.tryParse(json['sale']) ?? 0,
-      moving: double.tryParse(json['moving']) ?? 0,
+      moving: double.tryParse(json['moving_from']) ?? 0,
       remains: double.tryParse(json['remains']) ?? 0,
     );
   }

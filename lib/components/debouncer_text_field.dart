@@ -31,6 +31,7 @@ class _DebouncerTextFieldState extends State<DebouncerTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       onChanged: (text) {
         if (_debounce?.isActive ?? false) _debounce!.cancel();
         _debounce = Timer(widget.debounceTime, () {

@@ -19,8 +19,8 @@ class RemainsReportPage extends StatefulWidget {
 class RemainsReportPageState extends State<RemainsReportPage> {
   List<ReportRemainProduct> products = [];
 
-  String dateFrom = '';
-  String dateTo = '';
+  String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
@@ -191,7 +191,7 @@ class RemainsReportPageState extends State<RemainsReportPage> {
           DataCell(Text(products[i].id_1c ?? '')),
           DataCell(Text(products[i].article ?? '')),
           DataCell(Text(products[i].name ?? '')),
-          DataCell(Text(products[i].measure)),
+          DataCell(Text(products[i].measure ?? '')),
           DataCell(Text(products[i].remains.toString())),
         ]),
     ];
@@ -200,7 +200,6 @@ class RemainsReportPageState extends State<RemainsReportPage> {
   void getProducts() async {
     try {
       var response = await MainApiService().getRemainProducts(dateFrom, dateTo);
-
       for (var item in response) {
         products.add(ReportRemainProduct.fromJson(item));
       }

@@ -1,8 +1,10 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
-import 'package:boszhan_trading/pages/check_page/check_page.dart';
 import 'package:boszhan_trading/pages/sales/sales_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
+import 'package:boszhan_trading/utils/const.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -345,12 +347,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     //   ),
     // );
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CheckPage(
-                check: responsePrintCheck["Lines"],
-              )),
-    );
+    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CheckPage(
+    //             check: responsePrintCheck["Lines"],
+    //           )),
+    // );
   }
 }

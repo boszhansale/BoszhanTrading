@@ -24,8 +24,8 @@ class InventoryHistoryPage extends StatefulWidget {
 class _InventoryHistoryPageState extends State<InventoryHistoryPage> {
   List<InventoryOrderHistoryModel> orders = [];
 
-  String dateFrom = '';
-  String dateTo = '';
+  String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {

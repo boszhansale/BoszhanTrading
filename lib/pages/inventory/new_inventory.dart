@@ -114,7 +114,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                 onPressed: () {
                                   showProductDialog();
                                 },
-                                icon: const Icon(Icons.add_circle))
+                                icon: const Icon(Icons.add_circle)),
+                            IconButton(
+                                onPressed: () {
+                                  saveCountOfProduct();
+                                  getInventoryProducts();
+                                },
+                                icon: const Icon(Icons.ac_unit))
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -416,6 +422,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       }
     }
 
+    print(sendBasketList);
+
     try {
       var response =
           await MainApiService().createInventoryOrder(sendBasketList);
@@ -439,8 +447,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       setState(() {});
       for (var i in response) {
         globalInventoryTextFields.add(TextEditingController());
-        globalInventoryRemains
-            .add((0 - double.parse(i['remains'].toString())).toString());
+        // globalInventoryRemains
+        //     .add((0 - double.parse(i['remains'].toString())).toString());
       }
 
       if (globalInventoryTextFields.length == savedCounts.length) {
@@ -449,9 +457,19 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             globalInventoryTextFields[i].text = savedCounts[i].toString();
           }
         }
-
-        setState(() {});
       }
+
+      for (int i = 0; i < response.length; i++) {
+        globalInventoryRemains.add(((double.tryParse(
+                        globalInventoryTextFields[i]
+                            .text
+                            .replaceAll(',', '.')) ??
+                    0) -
+                double.parse(response[i]['remains'].toString()))
+            .toString());
+      }
+
+      setState(() {});
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);

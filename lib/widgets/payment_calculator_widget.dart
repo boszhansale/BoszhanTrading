@@ -1,6 +1,8 @@
-import 'package:boszhan_trading/pages/check_page/check_page.dart';
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/utils/calculateNDS.dart';
+import 'package:boszhan_trading/utils/const.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -262,16 +264,21 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
             double.tryParse(cashController.text) ?? 0,
             double.tryParse(cardController.text) ?? 0);
 
-        var responsePrintCheck =
-            await MainApiService().getTicketForPrint(widget.orderId);
+        // var responsePrintCheck =
+        //     await MainApiService().getTicketForPrint(widget.orderId);
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CheckPage(
-                    check: responsePrintCheck["Lines"],
-                  )),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => CheckPage(
+        //             check: responsePrintCheck["Lines"],
+        //           )),
+        // );
+
+        js.context.callMethod(
+            'open', ['${AppConstants.baseUrl}order/html/${widget.orderId}']);
+
+        Navigator.of(context).pushNamed('/home');
       } else {
         var response = await MainApiService().sendDataToCheckReturn(
             widget.orderId,
@@ -279,8 +286,8 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
             double.tryParse(cashController.text) ?? 0,
             double.tryParse(cardController.text) ?? 0);
 
-        var responsePrintCheck =
-            await MainApiService().getTicketForPrintReturn(widget.orderId);
+        // var responsePrintCheck =
+        //     await MainApiService().getTicketForPrintReturn(widget.orderId);
 
         //   final pdf = pdfWidgets.Document();
         //   final fontData =
@@ -315,13 +322,18 @@ class _PaymentCalculatorWidgetState extends State<PaymentCalculatorWidget> {
         //     ),
         //   );
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CheckPage(
-                    check: responsePrintCheck["Lines"],
-                  )),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => CheckPage(
+        //             check: responsePrintCheck["Lines"],
+        //           )),
+        // );
+
+        js.context.callMethod(
+            'open', ['${AppConstants.baseUrl}refund/html/${widget.orderId}']);
+
+        Navigator.of(context).pushNamed('/home');
       }
 
       // js.context.callMethod('open', [response['Data']['TicketPrintUrl']]);
