@@ -361,7 +361,8 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/kkm/x-report');
+                // Navigator.of(context).pushNamed('/kkm/x-report');
+                goToXReport();
               },
               child: const Text('X отчёт',
                   style: ProjectStyles.textStyle_18Medium),
@@ -391,7 +392,8 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/kkm/z-report');
+                // Navigator.of(context).pushNamed('/kkm/z-report');
+                goToZReport();
               },
               child: const Text('Да', style: ProjectStyles.textStyle_18Medium),
             ),
@@ -405,6 +407,22 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  void goToXReport() async {
+    int? id = await AuthRepository().getUserId();
+    if (id != null) {
+      js.context.callMethod(
+          'open', ['${AppConstants.baseUrl}webkassa/x-report/print/$id']);
+    }
+  }
+
+  void goToZReport() async {
+    int? id = await AuthRepository().getUserId();
+    if (id != null) {
+      js.context.callMethod(
+          'open', ['${AppConstants.baseUrl}webkassa/z-report/print/$id']);
+    }
   }
 
   Future<void> _showSimpleDialogForMoving(BuildContext context) async {

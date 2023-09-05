@@ -24,6 +24,11 @@ class AuthRepository {
     await _sessionDataProvider.setUserId(userId);
   }
 
+  Future<int?> getUserId() async {
+    final int? id = await _sessionDataProvider.getUserId();
+    return id;
+  }
+
   Future<void> setUserToken(String token) async {
     await _sessionDataProvider.setUserToken(token);
   }
