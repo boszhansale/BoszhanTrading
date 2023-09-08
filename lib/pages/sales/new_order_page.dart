@@ -149,7 +149,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                       children: [
                         Row(
                           children: [
-                            const Text("Новый заказ",
+                            const Text("Новая продажа",
                                 style: ProjectStyles.textStyle_30Bold),
                             const Spacer(),
                             customTextButton(

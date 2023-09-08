@@ -6,20 +6,20 @@ Widget buildNDSWidget(double price1) {
     children: [
       const Spacer(),
       Text(
-        'Сумма без НДС: $price1 тг',
-        style: ProjectStyles.textStyle_26Bold,
+        'Сумма к оплате: $price1 тг',
+        style: ProjectStyles.textStyle_32Bold,
       ),
       const Spacer(),
-      Text(
-        'НДС: ${(price1 * 0.12).toInt()} тг',
-        style: ProjectStyles.textStyle_26Bold,
-      ),
-      const Spacer(),
-      Text(
-        'Сумма с НДС: ${(price1 * 0.12).toInt() + price1} тг',
-        style: ProjectStyles.textStyle_26Bold,
-      ),
-      const Spacer(),
+      // Text(
+      //   'НДС: ${(price1 * 0.12).toInt()} тг',
+      //   style: ProjectStyles.textStyle_26Bold,
+      // ),
+      // const Spacer(),
+      // Text(
+      //   'Сумма с НДС: ${(price1 * 0.12).toInt() + price1} тг',
+      //   style: ProjectStyles.textStyle_26Bold,
+      // ),
+      // const Spacer(),
     ],
   );
 }

@@ -81,12 +81,12 @@ class _HomePageState extends State<HomePage> {
                   },
                   title: 'Продажи',
                 ),
-                customTextButton(
-                  () {
-                    _showSimpleDialogForIncoming(context);
-                  },
-                  title: 'Поступление товара',
-                ),
+                // customTextButton(
+                //   () {
+                //     _showSimpleDialogForIncoming(context);
+                //   },
+                //   title: 'Поступление товара',
+                // ),
                 customTextButton(
                   () {
                     _showSimpleDialogForReturn(context);

@@ -93,6 +93,16 @@ class ProjectStyles {
     fontSize: 30,
     color: ColorPalette.black,
   );
+  static const TextStyle textStyle_32Regular = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 32,
+    color: ColorPalette.black,
+  );
+  static const TextStyle textStyle_32Bold = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 32,
+    color: ColorPalette.black,
+  );
   static BoxDecoration containerDecoration = BoxDecoration(
     color: ColorPalette.background,
     borderRadius: const BorderRadius.all(Radius.circular(8)),
