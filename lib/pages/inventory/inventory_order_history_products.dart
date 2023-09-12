@@ -1,9 +1,12 @@
 import 'package:boszhan_trading/models/inventory_order_history_model.dart';
+import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
 import 'package:boszhan_trading/widgets/custom_app_bar.dart';
+import 'package:boszhan_trading/widgets/custom_text_button.dart';
+import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 
 class InventoryOrderHistoryProductsPage extends StatefulWidget {
@@ -19,6 +22,8 @@ class InventoryOrderHistoryProductsPage extends StatefulWidget {
 
 class MovingrOrderHistoryProductsPageState
     extends State<InventoryOrderHistoryProductsPage> {
+  bool isButtonActive = true;
+
   @override
   void initState() {
     checkLogin();
@@ -73,6 +78,18 @@ class MovingrOrderHistoryProductsPageState
                           style: ProjectStyles.textStyle_14Medium),
                       Text("Торговая точка: ${widget.order.storeName}",
                           style: ProjectStyles.textStyle_14Medium),
+                      const SizedBox(height: 20),
+                      widget.order.status == 1
+                          ? customTextButton(
+                              () {
+                                if (isButtonActive) {
+                                  activeDocument();
+                                }
+                              },
+                              title: 'Провести док.',
+                              width: 200,
+                            )
+                          : const SizedBox.shrink(),
                       const SizedBox(height: 20),
                       SizedBox(
                         height: 600,
@@ -134,5 +151,22 @@ class MovingrOrderHistoryProductsPageState
           DataCell(Text(widget.order.products[i].shortagePrice.toString())),
         ]),
     ];
+  }
+
+  void activeDocument() async {
+    isButtonActive = false;
+
+    try {
+      var response =
+          await MainApiService().activateInventoryOrder(widget.order.id);
+      print(response);
+      showCustomSnackBar(context, 'Документ проведен!');
+      Future.delayed(const Duration(seconds: 2))
+          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+    } catch (e) {
+      isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
   }
 }

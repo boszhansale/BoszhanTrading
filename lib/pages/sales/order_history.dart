@@ -153,6 +153,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                   child: Text("Наличный"), value: 0),
                               DropdownMenuItem(
                                   child: Text("Безналичный"), value: 1),
+                              // DropdownMenuItem(
+                              //     child: Text("Смешанный"), value: 2),
                             ],
                             onChanged: (Object? newValue) {
                               setState(() {
@@ -236,11 +238,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             DataCell(Text(orders[i].productsCount.toString())),
             DataCell(Text(orders[i].totalPrice.toString())),
             DataCell(Text(orders[i].givePrice.toString())),
-            DataCell(Text(orders[i].payments.isNotEmpty
+            DataCell(Text(orders[i].payments.length == 1
                 ? orders[i].payments[0]['PaymentType'] == 0
                     ? 'Нал'
                     : 'Без нал'
-                : ' ')),
+                : 'Смеш')),
             DataCell(
               IconButton(
                 onPressed: () {

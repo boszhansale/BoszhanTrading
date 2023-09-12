@@ -115,12 +115,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                   showProductDialog();
                                 },
                                 icon: const Icon(Icons.add_circle)),
-                            IconButton(
-                                onPressed: () {
-                                  saveCountOfProduct();
-                                  getInventoryProducts();
-                                },
-                                icon: const Icon(Icons.ac_unit))
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -189,6 +183,18 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                                 'Оста.',
                                                 textAlign: TextAlign.center,
                                               )),
+                                          // SizedBox(
+                                          //     width: 80,
+                                          //     child: Text(
+                                          //       'Изли.',
+                                          //       textAlign: TextAlign.center,
+                                          //     )),
+                                          // SizedBox(
+                                          //     width: 80,
+                                          //     child: Text(
+                                          //       'Недос.',
+                                          //       textAlign: TextAlign.center,
+                                          //     )),
                                           SizedBox(
                                             width: 80,
                                             child: Text(
@@ -253,6 +259,8 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                   SizedBox(width: 80, child: Text(product['receipt'] ?? '')),
                   SizedBox(width: 80, child: Text(product['sale'] ?? '')),
                   SizedBox(width: 80, child: Text(product['remains'] ?? '')),
+                  // SizedBox(width: 80, child: Text(product['overage'] ?? '')),
+                  // SizedBox(width: 80, child: Text(product['overage'] ?? '')),
                   SizedBox(
                     width: 80,
                     child: DebouncerTextField(
@@ -366,7 +374,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       const DataColumn(label: Text('Перемещение')),
       const DataColumn(label: Text('Поступление')),
       const DataColumn(label: Text('Продажа')),
-      const DataColumn(label: Text('Остаток')),
+      // const DataColumn(label: Text('Остаток')),
+      // const DataColumn(label: Text('Излишки')),
+      const DataColumn(label: Text('Недостачи')),
       const DataColumn(label: Text('Колличество')),
       const DataColumn(label: Text('Разница')),
       // const DataColumn(label: Text('Сумма')),
@@ -446,16 +456,14 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       globalInventoryRemains = [];
       setState(() {});
       for (var i in response) {
-        globalInventoryTextFields.add(TextEditingController());
+        globalInventoryTextFields.add(TextEditingController(text: '0'));
         // globalInventoryRemains
         //     .add((0 - double.parse(i['remains'].toString())).toString());
       }
 
       if (globalInventoryTextFields.length == savedCounts.length) {
         for (int i = 0; i < globalInventoryTextFields.length; i++) {
-          if (savedCounts[i] != 0) {
-            globalInventoryTextFields[i].text = savedCounts[i].toString();
-          }
+          globalInventoryTextFields[i].text = savedCounts[i].toString();
         }
       }
 

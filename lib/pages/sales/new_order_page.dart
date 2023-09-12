@@ -103,6 +103,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
     if (basketString != '[]') {
       basket = jsonDecode(basketString);
+      calcSum();
     }
   }
 
@@ -316,6 +317,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       const DataColumn(label: Text('Название')),
       const DataColumn(label: Text('Ед.')),
       const DataColumn(label: Text('Цена')),
+      const DataColumn(label: Text('Скидка')),
       const DataColumn(label: Text('Колличество')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Удалить')),
@@ -325,27 +327,54 @@ class _NewOrderPageState extends State<NewOrderPage> {
   List<DataRow> _createRows() {
     return [
       for (int i = 0; i < basket.length; i++)
-        DataRow(cells: [
-          DataCell(Text('${i + 1}')),
-          DataCell(Text(basket[i]['id_1c'])),
-          DataCell(Text(basket[i]['article'])),
-          DataCell(Text(basket[i]['name'])),
-          DataCell(Text(basket[i]['measure'])),
-          DataCell(Text('${basket[i]['price']} тг')),
-          DataCell(Text(basket[i]['count'].toString())),
-          DataCell(Text('${basket[i]['price'] * basket[i]['count']} тг')),
-          DataCell(
-            IconButton(
-              onPressed: () {
-                basket.remove(basket[i]);
-                saveBasket();
-                setState(() {});
-              },
-              icon: const Icon(Icons.delete),
-            ),
-          )
-        ]),
+        DataRow(
+            color: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+              if (basket[i]['discount_price'] == 0 ||
+                  basket[i]['discount_price'] == null) {
+                return Colors.white;
+              }
+              return Colors.yellow[100]!;
+            }),
+            cells: [
+              DataCell(Text('${i + 1}')),
+              DataCell(Text(basket[i]['id_1c'])),
+              DataCell(Text(basket[i]['article'])),
+              DataCell(Text(basket[i]['name'])),
+              DataCell(Text(basket[i]['measure'])),
+              DataCell(Text('${basket[i]['price']} тг')),
+              DataCell(Text(basket[i]['discount_price'] == 0 ||
+                      basket[i]['discount_price'] == null
+                  ? 'Нет'
+                  : '${basket[i]['discount_price']} тг')),
+              DataCell(Text(basket[i]['count'].toString())),
+              DataCell(Text(
+                  '${(basket[i]['discount_price'] != 0 || basket[i]['discount_price'] != null ? (basket[i]['price'] - basket[i]['discount_price']) : basket[i]['price']) * basket[i]['count']} тг')),
+              DataCell(
+                IconButton(
+                  onPressed: () {
+                    basket.remove(basket[i]);
+
+                    calcSum();
+                    saveBasket();
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+              )
+            ]),
     ];
+  }
+
+  void calcSum() async {
+    sum = 0;
+    for (var item in basket) {
+      if (item['discount_price'] != 0 || item['discount_price'] != null) {
+        sum += item['count'] * (item['price'] - item['discount_price']);
+      } else {
+        sum += item['count'] * item['price'];
+      }
+    }
   }
 
   void addProductFromScanner(String barcode) async {
@@ -386,10 +415,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       showCustomSnackBar(context, 'Данный продукт не найден...');
     }
 
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
-    }
+    calcSum();
     saveBasket();
     setState(() {});
   }
@@ -428,10 +454,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       basket.add(product);
     }
 
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
-    }
+    calcSum();
 
     saveBasket();
     if (mounted) {

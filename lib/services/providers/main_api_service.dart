@@ -751,6 +751,25 @@ class MainApiService {
     }
   }
 
+  Future<Map<String, dynamic>> activateInventoryOrder(int id) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/inventory/active/$id'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   // TODO: Counteragents
 
   Future<dynamic> getCounteragents() async {

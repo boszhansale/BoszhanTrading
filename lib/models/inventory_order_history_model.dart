@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 class InventoryOrderHistoryModel {
   final int id;
+  final int? status;
   final String? storeName;
   final int productsCount;
   final List<InventoryProduct> products;
@@ -10,6 +11,7 @@ class InventoryOrderHistoryModel {
 
   InventoryOrderHistoryModel({
     required this.id,
+    required this.status,
     this.storeName,
     required this.productsCount,
     required this.products,
@@ -19,6 +21,7 @@ class InventoryOrderHistoryModel {
   factory InventoryOrderHistoryModel.fromJson(Map<String, dynamic> json) {
     return InventoryOrderHistoryModel(
       id: json['id'],
+      status: json['status'],
       storeName: json['store'] != null ? json['store']['name'] ?? '' : '',
       productsCount: json['products'].length ?? 0,
       products: (json['products'] as List<dynamic>)

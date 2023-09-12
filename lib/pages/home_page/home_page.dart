@@ -639,6 +639,7 @@ class _HomePageState extends State<HomePage> {
                   'id_1c': responseProducts[k]['id_1c'],
                   'article': responseProducts[k]['article'],
                   'price': responseProducts[k]['price'],
+                  'discount': responseProducts[k]['discount'],
                   'measure': responseProducts[k]['measure'] == 1 ? 'шт' : 'кг',
                 });
               }
