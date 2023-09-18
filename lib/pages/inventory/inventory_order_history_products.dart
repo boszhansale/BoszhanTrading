@@ -146,9 +146,9 @@ class MovingrOrderHistoryProductsPageState
           DataCell(Text(widget.order.products[i].measure)),
           DataCell(Text(widget.order.products[i].count.toString())),
           DataCell(Text(widget.order.products[i].remains.toString())),
-          DataCell(Text(widget.order.products[i].sale.toString())),
           DataCell(Text(widget.order.products[i].shortage.toString())),
-          DataCell(Text(widget.order.products[i].shortagePrice.toString())),
+          DataCell(Text(widget.order.products[i].overage.toString())),
+          DataCell(Text(widget.order.products[i].overagePrice.toString())),
         ]),
     ];
   }

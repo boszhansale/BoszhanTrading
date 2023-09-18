@@ -12,7 +12,9 @@ class InventoryProduct {
   // final double price;
   final String measure;
   final double shortage;
+  final double overage;
   final double shortagePrice;
+  final double overagePrice;
 
   InventoryProduct({
     required this.id,
@@ -28,7 +30,9 @@ class InventoryProduct {
     // required this.price,
     required this.measure,
     required this.shortage,
+    required this.overage,
     required this.shortagePrice,
+    required this.overagePrice,
   });
 
   factory InventoryProduct.fromJson(Map<String, dynamic> json) {
@@ -46,7 +50,9 @@ class InventoryProduct {
       // price: double.tryParse(json['product']['price']) ?? 0,
       measure: json['product']['measure'] == 1 ? "шт" : "кг",
       shortage: double.tryParse(json['shortage']) ?? 0,
+      overage: double.tryParse(json['overage']) ?? 0,
       shortagePrice: double.tryParse(json['shortage_price']) ?? 0,
+      overagePrice: double.tryParse(json['overage_price']) ?? 0,
     );
   }
 }
