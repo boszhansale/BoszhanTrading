@@ -1,3 +1,4 @@
+import 'package:boszhan_trading/components/debouncer_text_field.dart';
 import 'package:boszhan_trading/models/inventory_order_history_model.dart';
 import 'package:boszhan_trading/models/product_main.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
@@ -74,9 +75,11 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
         'receipt': item.receipt,
         'sale': item.sale,
         'remains': item.remains,
+        'count': item.count,
       });
 
-      globalInventoryTextFields.add(TextEditingController());
+      globalInventoryTextFields
+          .add(TextEditingController(text: item.count.toString()));
     }
 
     if (globalInventoryTextFields.length == savedCounts.length) {
@@ -193,14 +196,9 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: SizedBox(
                 width: 50,
-                child: TextField(
+                child: DebouncerTextField(
                   controller: globalInventoryTextFields[i],
-                  decoration: const InputDecoration(hintText: 'кл.'),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+[\,\.]?\d{0,2}')),
-                  ],
-                  onChanged: (value) {
+                  onValueChanged: (value) {
                     setState(() {});
                   },
                 ),
