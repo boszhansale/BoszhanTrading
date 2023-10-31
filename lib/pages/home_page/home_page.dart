@@ -93,18 +93,18 @@ class _HomePageState extends State<HomePage> {
                   },
                   title: 'Возврат товара от покупателя',
                 ),
-                customTextButton(
-                  () {
-                    _showSimpleDialogForWriteOff(context);
-                  },
-                  title: 'Списание товара',
-                ),
-                customTextButton(
-                  () {
-                    _showSimpleDialogForReturnProducer(context);
-                  },
-                  title: 'Возврат товара поставщику',
-                ),
+                // customTextButton(
+                //   () {
+                //     _showSimpleDialogForWriteOff(context);
+                //   },
+                //   title: 'Списание товара',
+                // ),
+                // customTextButton(
+                //   () {
+                //     _showSimpleDialogForReturnProducer(context);
+                //   },
+                //   title: 'Возврат товара поставщику',
+                // ),
                 customTextButton(
                   () {
                     js.context
