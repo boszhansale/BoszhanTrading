@@ -404,6 +404,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
           "id_1c": product.id_1c,
           "article": product.article,
           "price": product.price,
+          "discount_price": product.discountPrice,
           "measure": product.measure,
           "count": 1
         });

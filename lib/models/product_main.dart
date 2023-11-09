@@ -4,6 +4,7 @@ class ProductMain {
   final String? article;
   final String? name;
   final double price;
+  final double? discountPrice;
   final String measure;
   final String? barcode;
 
@@ -13,6 +14,7 @@ class ProductMain {
     this.article,
     this.name,
     required this.price,
+    this.discountPrice,
     required this.measure,
     this.barcode,
   });
@@ -24,6 +26,7 @@ class ProductMain {
       article: json['article'],
       name: json['name'],
       price: double.tryParse(json['price'].toString()) ?? 0,
+      discountPrice: double.tryParse(json['discount_price'].toString()) ?? 0,
       measure: json['measure'] == 1 ? "шт" : "кг",
       barcode: json['barcode'],
     );
