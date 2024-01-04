@@ -611,7 +611,7 @@ class _HomePageState extends State<HomePage> {
     if (products == null) {
       var responseBrands = await MainApiService().getBrands();
       var responseCategories = await MainApiService().getCategories();
-      var responseProducts = await MainApiService().getProducts();
+      var responseProducts = await MainApiService().getProducts(true);
 
       List<Map<String, dynamic>> thisProducts = [];
 

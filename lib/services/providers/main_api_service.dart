@@ -46,9 +46,9 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getProducts() async {
+  Future<dynamic> getProducts(bool remainder) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/product'),
+      Uri.parse('$baseUrl/product?remainder=$remainder'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",

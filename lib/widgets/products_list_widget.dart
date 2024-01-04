@@ -4,10 +4,12 @@ import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class ProductsListWidget extends StatefulWidget {
-  const ProductsListWidget({Key? key, required this.addToBasket})
+  const ProductsListWidget(
+      {Key? key, required this.addToBasket, this.isMoving = false})
       : super(key: key);
 
   final Function(dynamic) addToBasket;
+  final bool isMoving;
 
   @override
   State<ProductsListWidget> createState() => _ProductsListWidgetState();
@@ -33,7 +35,8 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
 
     var responseBrands = await MainApiService().getBrands();
     var responseCategories = await MainApiService().getCategories();
-    var responseProducts = await MainApiService().getProducts();
+    var responseProducts = await MainApiService()
+        .getProducts(widget.isMoving == true ? false : true);
 
     List<Map<String, dynamic>> thisProducts = [];
 

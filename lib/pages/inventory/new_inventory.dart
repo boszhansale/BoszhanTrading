@@ -486,7 +486,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   void getProducts() async {
     try {
-      var responseProducts = await MainApiService().getProducts();
+      var responseProducts = await MainApiService().getProducts(true);
 
       for (var i in responseProducts) {
         products.add(ProductMain.fromJson(i));

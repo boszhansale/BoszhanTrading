@@ -310,6 +310,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
           title: const Text('Добавление продукта'),
           content: ProductsListWidget(
             addToBasket: addToBasket,
+            isMoving: true,
           ),
         );
       },
