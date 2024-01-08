@@ -20,7 +20,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewOrderPage extends StatefulWidget {
-  const NewOrderPage({Key? key}) : super(key: key);
+  const NewOrderPage({Key? key, required this.unfinishedBasket})
+      : super(key: key);
+
+  final List<dynamic> unfinishedBasket;
 
   @override
   State<NewOrderPage> createState() => _NewOrderPageState();
@@ -54,6 +57,12 @@ class _NewOrderPageState extends State<NewOrderPage> {
     checkLogin();
     getInventoryProducts();
     super.initState();
+
+    if (widget.unfinishedBasket != []) {
+      for (var item in widget.unfinishedBasket) {
+        basket.add(item);
+      }
+    }
   }
 
   @override
@@ -153,6 +162,16 @@ class _NewOrderPageState extends State<NewOrderPage> {
                             const Text("Новая продажа",
                                 style: ProjectStyles.textStyle_30Bold),
                             const Spacer(),
+                            customTextButton(
+                              () {
+                                if (basket.isNotEmpty) {
+                                  saveUnfinished();
+                                }
+                              },
+                              title: 'Сохранить черновик',
+                              width: 280,
+                            ),
+                            const SizedBox(width: 20),
                             customTextButton(
                               () {
                                 if (basket.isNotEmpty && isButtonActive) {
@@ -544,5 +563,26 @@ class _NewOrderPageState extends State<NewOrderPage> {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
+  }
+
+  void saveUnfinished() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<dynamic> list = [];
+
+    Map<String, dynamic> thisMap = {
+      'createdAt': DateTime.now().toString(),
+      'basket': basket,
+    };
+
+    if (prefs.containsKey('UnfinishedOrders')) {
+      list = json.decode(prefs.getString('UnfinishedOrders') ?? '[]');
+      list.add(thisMap);
+    } else {
+      list.add(thisMap);
+    }
+
+    prefs.setString('UnfinishedOrders', json.encode(list));
+
+    Navigator.of(context).pushNamed('/home');
   }
 }

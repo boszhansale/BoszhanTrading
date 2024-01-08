@@ -82,7 +82,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
 
     dataList = thisProducts;
 
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -114,7 +114,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                       }
                     }
 
-                    setState(() {});
+                    if (mounted) setState(() {});
                   }
                 },
               )),

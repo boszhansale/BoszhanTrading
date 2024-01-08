@@ -164,6 +164,14 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/sales/unfinished');
+              },
+              child: const Text('Журнал не проведённых продаж',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.of(context).pushNamed('/sales/history');
               },
               child: const Text('Журнал продаж',
