@@ -46,6 +46,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
   bool isButtonActive = true;
 
   List<dynamic> basket = [];
+  List<TextEditingController> countControllers = [];
 
   String scannedBarcode = '';
 
@@ -61,6 +62,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
     if (widget.unfinishedBasket != []) {
       for (var item in widget.unfinishedBasket) {
         basket.add(item);
+        countControllers
+            .add(TextEditingController(text: item['count'].toString()));
       }
     }
   }
@@ -112,6 +115,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
     if (basketString != '[]') {
       basket = jsonDecode(basketString);
+      for (var item in basket) {
+        countControllers
+            .add(TextEditingController(text: item['count'].toString()));
+      }
       calcSum();
     }
   }
@@ -366,9 +373,26 @@ class _NewOrderPageState extends State<NewOrderPage> {
                       basket[i]['discount_price'] == null
                   ? 'Нет'
                   : '${basket[i]['discount_price']} тг')),
-              DataCell(Text(basket[i]['count'].toString())),
+              DataCell(
+                SizedBox(
+                  width: 60,
+                  child: TextField(
+                    controller: countControllers[i],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        basket[i]['measure'] == 'шт'
+                            ? RegExp(r'^\d+')
+                            : RegExp(r'^\d+[\.]?\d{0,2}'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ),
+              ),
               DataCell(Text(
-                  '${(basket[i]['discount_price'] != 0 || basket[i]['discount_price'] != null ? (basket[i]['price'] - basket[i]['discount_price']) : basket[i]['price']) * basket[i]['count']} тг')),
+                  '${(basket[i]['discount_price'] != 0 || basket[i]['discount_price'] != null ? (basket[i]['price'] - basket[i]['discount_price']) : basket[i]['price']) * (double.tryParse(countControllers[i].text) ?? 0)} тг')),
               DataCell(
                 IconButton(
                   onPressed: () {
@@ -412,6 +436,8 @@ class _NewOrderPageState extends State<NewOrderPage> {
       if (inBasket) {
         // if (productsPermission[product.id]! > basket[index]['count']) {
         basket[index]['count'] = basket[index]['count'] + 1;
+        countControllers[index].text =
+            (double.parse(countControllers[index].text) + 1).toString();
         // } else {
         //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
         // }
@@ -427,6 +453,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
           "measure": product.measure,
           "count": 1
         });
+        countControllers.add(TextEditingController(text: '1'));
         // } else {
         //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
         // }
@@ -467,11 +494,16 @@ class _NewOrderPageState extends State<NewOrderPage> {
     if (inBasket) {
       // if (productsPermission[product.id]! > basket[index]['count']) {
       basket[index]['count'] = basket[index]['count'] + product['count'];
+      countControllers[index].text =
+          (double.parse(countControllers[index].text) + product['count'])
+              .toString();
       // } else {
       //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
       // }
     } else {
       basket.add(product);
+      countControllers
+          .add(TextEditingController(text: product['count'].toString()));
     }
 
     calcSum();
@@ -510,8 +542,9 @@ class _NewOrderPageState extends State<NewOrderPage> {
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
-    for (var item in basket) {
-      sendBasketList.add({'product_id': item['id'], 'count': item['count']});
+    for (int i = 0; i < basket.length; i++) {
+      sendBasketList.add(
+          {'product_id': basket[i]['id'], 'count': countControllers[i].text});
     }
 
     try {
