@@ -231,8 +231,14 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                           double? count = double.tryParse(
                               countController.text.replaceAll(',', '.'));
                           if (count != null && count != 0) {
-                            selectedProduct['count'] =
-                                (count * 100).ceil() / 100;
+                            if (selectedProduct['measure'] == 'шт') {
+                              selectedProduct['count'] =
+                                  (count * 100).ceil() ~/ 100;
+                            } else {
+                              selectedProduct['count'] =
+                                  (count * 100).ceil() / 100;
+                            }
+
                             Navigator.of(context).pop();
                             widget.addToBasket(selectedProduct);
                           }
