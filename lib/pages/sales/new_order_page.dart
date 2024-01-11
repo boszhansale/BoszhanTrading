@@ -386,7 +386,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
                       ),
                     ],
                     onChanged: (value) {
-                      if (mounted) setState(() {});
+                      if (mounted) {
+                        setState(() {});
+                        calcSum();
+                      }
                     },
                   ),
                 ),
@@ -411,11 +414,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
   void calcSum() async {
     sum = 0;
-    for (var item in basket) {
-      if (item['discount_price'] != 0 || item['discount_price'] != null) {
-        sum += item['count'] * (item['price'] - item['discount_price']);
+    for (int i = 0; i < basket.length; i++) {
+      if (basket[i]['discount_price'] != 0 ||
+          basket[i]['discount_price'] != null) {
+        sum += (double.tryParse(countControllers[i].text) ?? 0) *
+            (basket[i]['price'] - basket[i]['discount_price']);
       } else {
-        sum += item['count'] * item['price'];
+        sum += (double.tryParse(countControllers[i].text) ?? 0) *
+            basket[i]['price'];
       }
     }
   }

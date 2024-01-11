@@ -2,6 +2,7 @@ import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProductsListWidget extends StatefulWidget {
   const ProductsListWidget(
@@ -213,6 +214,13 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                   controller: countController,
                   decoration: const InputDecoration(hintText: 'Колличество'),
                   autofocus: true,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(selectedProduct['measure'] == 'шт'
+                          ? r'^\d+'
+                          : r'^\d+[\.]?\d{0,2}'),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 30,
@@ -228,15 +236,12 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                     ),
                     TextButton(
                         onPressed: () {
-                          double? count = double.tryParse(
-                              countController.text.replaceAll(',', '.'));
+                          double? count = double.tryParse(countController.text);
                           if (count != null && count != 0) {
                             if (selectedProduct['measure'] == 'шт') {
-                              selectedProduct['count'] =
-                                  (count * 100).ceil() ~/ 100;
+                              selectedProduct['count'] = count.toInt();
                             } else {
-                              selectedProduct['count'] =
-                                  (count * 100).ceil() / 100;
+                              selectedProduct['count'] = count;
                             }
 
                             Navigator.of(context).pop();
