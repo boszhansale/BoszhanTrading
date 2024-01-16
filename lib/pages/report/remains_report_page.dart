@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:boszhan_trading/models/report_remain_product_model.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
@@ -8,6 +10,10 @@ import 'package:boszhan_trading/widgets/custom_app_bar.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../models/user.dart';
+import '../../utils/const.dart';
+import '../../widgets/custom_text_button.dart';
 
 class RemainsReportPage extends StatefulWidget {
   const RemainsReportPage({Key? key}) : super(key: key);
@@ -68,6 +74,14 @@ class RemainsReportPageState extends State<RemainsReportPage> {
                           ),
                           const Text("Остатки товаров",
                               style: ProjectStyles.textStyle_30Bold),
+                          const Spacer(),
+                          customTextButton(
+                            () {
+                              printReport();
+                            },
+                            title: 'Печать',
+                            width: 220,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -206,6 +220,19 @@ class RemainsReportPageState extends State<RemainsReportPage> {
       setState(() {});
     } catch (error) {
       showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  void printReport() async {
+    User? user = await AuthRepository().getUserFromCache();
+    int id = user?.storeId ?? 0;
+    if (id != 0) {
+      js.context.callMethod('open', [
+        '${AppConstants.baseUrl}report/remains/print?date_to=$dateTo&store_id=$id'
+      ]);
+    } else {
+      showCustomSnackBar(context,
+          'Ошибка распечатки, пожалуйста войдите используя логин и пароль заново.');
     }
   }
 }

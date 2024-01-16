@@ -4,6 +4,7 @@ class User {
   final String login;
   String? phone;
   String? storeName;
+  int? storeId;
   String? storageName;
   String? organizationName;
   String? bank;
@@ -14,6 +15,7 @@ class User {
     required this.login,
     this.phone,
     this.storeName,
+    this.storeId,
     this.storageName,
     this.organizationName,
     this.bank,
@@ -26,6 +28,7 @@ class User {
       login: json['login'],
       phone: json['phone'] ?? '',
       storeName: json['store']?['name'] ?? '',
+      storeId: json['store']?['id'] ?? 0,
       storageName: json['storage']?['name'] ?? '',
       organizationName: json['organization']?['name'] ?? '',
       bank: json['bank'] ?? '',
@@ -40,6 +43,7 @@ class User {
     data['login'] = login;
     data['store'] = {};
     data['store']['name'] = storeName;
+    data['store']['id'] = storeId;
     data['storage'] = {};
     data['storage']['name'] = storageName;
     data['organization'] = {};
