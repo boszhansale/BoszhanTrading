@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String userName = '';
+  String storeName = '';
 
   @override
   void initState() {
@@ -71,7 +72,12 @@ class _HomePageState extends State<HomePage> {
                   child: Image.asset('assets/images/logo.png'),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text('Торговая точка: $storeName',
+                      style: ProjectStyles.textStyle_14Regular),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: Text('Пользователь: $userName',
                       style: ProjectStyles.textStyle_14Regular),
                 ),
@@ -609,6 +615,7 @@ class _HomePageState extends State<HomePage> {
     User? user = await AuthRepository().getUserFromCache();
     if (user != null) {
       userName = user.name;
+      storeName = user.storeName ?? '';
       setState(() {});
     }
   }
