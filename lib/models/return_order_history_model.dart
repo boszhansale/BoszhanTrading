@@ -1,5 +1,4 @@
 import 'package:boszhan_trading/models/product.dart';
-import 'package:intl/intl.dart';
 
 class ReturnOrderHistoryModel {
   final int id;
@@ -34,8 +33,7 @@ class ReturnOrderHistoryModel {
       products: (json['products'] as List<dynamic>)
           .map((e) => Product.fromJson(e))
           .toList(),
-      createdAt: DateFormat('yyyy-MM-dd HH:mm')
-          .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
+      createdAt: json['created_at'] ?? '',
       printUrl: json['ticket_print_url'],
       checkNumber: json['check_number'],
     );

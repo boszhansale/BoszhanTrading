@@ -1,5 +1,4 @@
 import 'package:boszhan_trading/models/inventory_product.dart';
-import 'package:intl/intl.dart';
 
 class InventoryOrderHistoryModel {
   final int id;
@@ -27,8 +26,7 @@ class InventoryOrderHistoryModel {
       products: (json['products'] as List<dynamic>)
           .map((e) => InventoryProduct.fromJson(e))
           .toList(),
-      createdAt: DateFormat('yyyy-MM-dd HH:mm')
-          .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
+      createdAt: json['created_at'] ?? '',
     );
   }
 }

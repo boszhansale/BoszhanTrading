@@ -1,5 +1,4 @@
 import 'package:boszhan_trading/models/product.dart';
-import 'package:intl/intl.dart';
 
 class MovingOrderHistoryModel {
   final int id;
@@ -29,8 +28,7 @@ class MovingOrderHistoryModel {
       products: (json['products'] as List<dynamic>)
           .map((e) => Product.fromJson(e))
           .toList(),
-      createdAt: DateFormat('yyyy-MM-dd HH:mm')
-          .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
+      createdAt: json['created_at'] ?? '',
       operation: json['operation'],
     );
   }

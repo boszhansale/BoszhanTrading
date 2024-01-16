@@ -1,5 +1,4 @@
 import 'package:boszhan_trading/models/product.dart';
-import 'package:intl/intl.dart';
 
 class OnlineSaleOrderModel {
   final int id;
@@ -29,8 +28,7 @@ class OnlineSaleOrderModel {
       products: (json['products'] as List<dynamic>)
           .map((e) => Product.fromJson(e))
           .toList(),
-      createdAt: DateFormat('yyyy-MM-dd HH:mm')
-          .format(DateTime.tryParse(json['created_at']) ?? DateTime.now()),
+      createdAt: json['created_at'] ?? '',
       discountCashback: (json['discount_cashback'] ?? 0).toString(),
     );
   }
