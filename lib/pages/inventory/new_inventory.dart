@@ -35,7 +35,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   bool isButtonActive = true;
 
-  List<double> savedCounts = [];
+  Map<int, dynamic> savedCounts = {};
 
   List<ProductMain> products = [];
   String scannedBarcode = '';
@@ -432,7 +432,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       }
     }
 
-    print(sendBasketList);
+    // print(sendBasketList);
 
     try {
       var response =
@@ -455,15 +455,12 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       globalInventoryTextFields = [];
       globalInventoryRemains = [];
       setState(() {});
-      for (var i in response) {
-        globalInventoryTextFields.add(TextEditingController(text: '0'));
-        // globalInventoryRemains
-        //     .add((0 - double.parse(i['remains'].toString())).toString());
-      }
-
-      if (globalInventoryTextFields.length == savedCounts.length) {
-        for (int i = 0; i < globalInventoryTextFields.length; i++) {
-          globalInventoryTextFields[i].text = savedCounts[i].toString();
+      for (int i = 0; i < response.length; i++) {
+        if (savedCounts.containsKey(response[i]['product_id'])) {
+          globalInventoryTextFields.add(TextEditingController(
+              text: savedCounts[response[i]['product_id']].toString()));
+        } else {
+          globalInventoryTextFields.add(TextEditingController(text: '0'));
         }
       }
 
@@ -535,12 +532,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void saveCountOfProduct() {
-    savedCounts = [];
-    for (var i in globalInventoryTextFields) {
-      if (double.tryParse(i.text.replaceAll(',', '.')) != null) {
-        savedCounts.add(double.parse(i.text.replaceAll(',', '.')));
+    savedCounts = {};
+    for (int i = 0; i < globalInventoryTextFields.length; i++) {
+      if (globalInventoryTextFields[i].text != '') {
+        savedCounts[globalInventoryList[i]['product_id']] =
+            double.parse(globalInventoryTextFields[i].text);
       } else {
-        savedCounts.add(0);
+        savedCounts[globalInventoryList[i]['product_id']] = 0;
       }
     }
   }

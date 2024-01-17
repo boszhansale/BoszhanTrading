@@ -39,7 +39,7 @@ class _DebouncerTextFieldState extends State<DebouncerTextField> {
         });
       },
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^\d+[\,\.]?\d{0,2}')),
+        FilteringTextInputFormatter.allow(RegExp(r'^\d+[\.]?\d{0,2}')),
       ],
       decoration: const InputDecoration(hintText: 'кл.'),
     );
