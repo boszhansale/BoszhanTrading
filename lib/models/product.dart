@@ -29,9 +29,9 @@ class Product {
       id_1c: json['product']['id_1c'],
       article: json['product']['article'],
       name: json['product']['name'],
-      allPrice: json['all_price'],
+      allPrice: json['all_price'].toString(),
       count: double.tryParse(json['count']) ?? 0,
-      price: double.tryParse(json['price']) ?? 0,
+      price: double.tryParse(json['price'].toString()) ?? 0,
       measure: json['measure'] == 1 ? "шт" : "кг",
       returnReasonTitle:
           json['reason_refund'] != null ? json['reason_refund']['title'] : null,
