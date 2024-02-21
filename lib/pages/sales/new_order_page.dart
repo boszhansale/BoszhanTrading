@@ -586,7 +586,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
   void getInventoryProducts() async {
     try {
-      var response = await MainApiService().getInventoryProducts();
+      DateTime now = DateTime.now();
+      var date = DateFormat('yyyy-MM-dd').format(now);
+      var time = DateFormat('HH:mm:ss').format(now);
+      var response = await MainApiService().getInventoryProducts(date, time);
 
       for (var i in response) {
         double? remains = double.tryParse(i['remains']);

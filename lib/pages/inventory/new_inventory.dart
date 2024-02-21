@@ -11,6 +11,7 @@ import 'package:boszhan_trading/widgets/products_list_widget.dart';
 import 'package:boszhan_trading/widgets/show_custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 List<dynamic> globalInventoryList = [];
 List<TextEditingController> globalInventoryTextFields = [];
@@ -42,9 +43,15 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   bool dialogIsActive = false;
 
+  var date = '';
+  var time = '';
+
   @override
   void initState() {
-    getInventoryProducts();
+    DateTime now = DateTime.now();
+    date = DateFormat('yyyy-MM-dd').format(now);
+    time = DateFormat('HH:mm:ss').format(now);
+    getInventoryProducts(date, time);
     getProducts();
     checkLogin();
     super.initState();
@@ -115,6 +122,48 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                   showProductDialog();
                                 },
                                 icon: const Icon(Icons.add_circle)),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () async {
+                                await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime.now(),
+                                ).then((pickedDate) {
+                                  if (pickedDate == null) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    date = DateFormat('yyyy-MM-dd')
+                                        .format(pickedDate);
+                                  });
+                                });
+
+                                await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now(),
+                                        initialEntryMode:
+                                            TimePickerEntryMode.dial)
+                                    .then((value) {
+                                  if (value != null) {
+                                    time =
+                                        '${value.hour.toString()}:${value.minute.toString()}:00';
+                                    print(time);
+                                    setState(() {});
+                                  }
+                                });
+
+                                if (date != '' && time != '') {
+                                  getInventoryProducts(date, time);
+                                }
+                              },
+                              child: Text(
+                                  date == '' ? 'выбрать' : '$date $time',
+                                  style: ProjectStyles.textStyle_22Bold
+                                      .copyWith(color: ColorPalette.main)),
+                            ),
+                            SizedBox(width: 20),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -412,7 +461,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       var response =
           await MainApiService().addProductToInventoryOrder(productId, count);
 
-      getInventoryProducts();
+      DateTime now = DateTime.now();
+      date = DateFormat('yyyy-MM-dd').format(now);
+      time = DateFormat('HH:mm:ss').format(now);
+
+      getInventoryProducts(date, time);
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());
@@ -435,8 +488,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     // print(sendBasketList);
 
     try {
-      var response =
-          await MainApiService().createInventoryOrder(sendBasketList);
+      DateTime now = DateTime.now();
+      var sendDate = DateFormat('yyyy-MM-dd').format(now);
+      var sendTime = DateFormat('HH:mm:ss').format(now);
+      var response = await MainApiService()
+          .createInventoryOrder(sendBasketList, sendDate, sendTime);
       print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');
       Future.delayed(const Duration(seconds: 2))
@@ -448,9 +504,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     }
   }
 
-  void getInventoryProducts() async {
+  void getInventoryProducts(String date, String time) async {
     try {
-      var response = await MainApiService().getInventoryProducts();
+      var response = await MainApiService().getInventoryProducts(date, time);
       globalInventoryList = response;
       globalInventoryTextFields = [];
       globalInventoryRemains = [];

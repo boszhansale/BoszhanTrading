@@ -631,9 +631,9 @@ class MainApiService {
 
   // TODO: Inventory
 
-  Future<dynamic> getInventoryProducts() async {
+  Future<dynamic> getInventoryProducts(String date, String time) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/inventory'),
+      Uri.parse('$baseUrl/inventory?date=$date&time=$time'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
@@ -651,8 +651,10 @@ class MainApiService {
   }
 
   Future<Map<String, dynamic>> createInventoryOrder(
-      List<dynamic> products) async {
+      List<dynamic> products, String date, String time) async {
     Map<String, dynamic> body = {
+      "date": date,
+      "time": time,
       "products": products,
     };
 
