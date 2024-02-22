@@ -148,7 +148,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                     .then((value) {
                                   if (value != null) {
                                     time =
-                                        '${value.hour < 10 ? '0${value.hour}' : value.hour}:${value.minute.toString()}:00';
+                                        '${value.hour < 10 ? '0${value.hour}' : value.hour}:${value.minute < 10 ? '0${value.minute}' : value.minute}:00';
                                     setState(() {});
                                   }
                                 });
