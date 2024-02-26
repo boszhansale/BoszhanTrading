@@ -1048,9 +1048,9 @@ class MainApiService {
     }
   }
 
-  Future<dynamic> getProductsReport(String dateFrom, String dateTo) async {
+  Future<dynamic> getProductsReport(String dateFrom, String time) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/report/product?date_from=$dateFrom&date_to=$dateTo'),
+      Uri.parse('$baseUrl/report/product?date=$dateFrom&time=$time'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",

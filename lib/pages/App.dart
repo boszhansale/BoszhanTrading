@@ -36,6 +36,9 @@ class App extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Montserrat',
       ),
+      builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container()),
       routes: {
         '/': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),

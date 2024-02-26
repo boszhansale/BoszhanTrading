@@ -20,7 +20,8 @@ class ProductReportPageState extends State<ProductReportPage> {
   List<ProductReportModel> products = [];
 
   String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String time = DateFormat('HH:mm').format(DateTime.now());
+  // String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
   void initState() {
@@ -80,11 +81,11 @@ class ProductReportPageState extends State<ProductReportPage> {
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Row(
                               children: [
-                                const Text('с ',
-                                    style: ProjectStyles.textStyle_14Bold),
+                                // const Text('с ',
+                                //     style: ProjectStyles.textStyle_14Bold),
                                 GestureDetector(
-                                  onTap: () {
-                                    showDatePicker(
+                                  onTap: () async {
+                                    await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
                                             firstDate: DateTime(2020),
@@ -93,53 +94,68 @@ class ProductReportPageState extends State<ProductReportPage> {
                                       if (pickedDate == null) {
                                         return;
                                       }
-                                      setState(() {
-                                        dateFrom = DateFormat('yyyy-MM-dd')
-                                            .format(pickedDate);
-                                      });
-                                      if (dateFrom != '' && dateTo != '') {
-                                        getProducts();
+                                      dateFrom = DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                    });
+
+                                    await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                      initialEntryMode:
+                                          TimePickerEntryMode.dial,
+                                    ).then((value) {
+                                      if (value != null) {
+                                        time =
+                                            '${value.hour < 10 ? '0${value.hour}' : value.hour}:${value.minute < 10 ? '0${value.minute}' : value.minute}:00';
                                       }
                                     });
+
+                                    setState(() {});
+
+                                    if (dateFrom != '' && time != '') {
+                                      getProducts();
+                                    }
                                   },
                                   child: Text(
-                                      dateFrom == '' ? 'выбрать' : dateFrom,
+                                      dateFrom == ''
+                                          ? 'выбрать'
+                                          : '$dateFrom $time',
                                       style: ProjectStyles.textStyle_14Bold
                                           .copyWith(color: ColorPalette.main)),
                                 ),
                               ],
                             ),
                           ),
-                          Row(
-                            children: [
-                              const Text(' по ',
-                                  style: ProjectStyles.textStyle_14Bold),
-                              GestureDetector(
-                                onTap: () {
-                                  showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2020),
-                                          lastDate: DateTime.now())
-                                      .then((pickedDate) {
-                                    if (pickedDate == null) {
-                                      return;
-                                    }
-                                    setState(() {
-                                      dateTo = DateFormat('yyyy-MM-dd')
-                                          .format(pickedDate);
-                                    });
-                                    if (dateFrom != '' && dateTo != '') {
-                                      getProducts();
-                                    }
-                                  });
-                                },
-                                child: Text(dateTo == '' ? 'выбрать' : dateTo,
-                                    style: ProjectStyles.textStyle_14Bold
-                                        .copyWith(color: ColorPalette.main)),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     const Text(' по ',
+                          //         style: ProjectStyles.textStyle_14Bold),
+                          //     GestureDetector(
+                          //       onTap: () {
+                          //         showDatePicker(
+                          //                 context: context,
+                          //                 initialDate: DateTime.now(),
+                          //                 firstDate: DateTime(2020),
+                          //                 lastDate: DateTime.now())
+                          //             .then((pickedDate) {
+                          //           if (pickedDate == null) {
+                          //             return;
+                          //           }
+                          //           setState(() {
+                          //             dateTo = DateFormat('yyyy-MM-dd')
+                          //                 .format(pickedDate);
+                          //           });
+                          //           if (dateFrom != '' && dateTo != '') {
+                          //             getProducts();
+                          //           }
+                          //         });
+                          //       },
+                          //       child: Text(dateTo == '' ? 'выбрать' : dateTo,
+                          //           style: ProjectStyles.textStyle_14Bold
+                          //               .copyWith(color: ColorPalette.main)),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -232,7 +248,7 @@ class ProductReportPageState extends State<ProductReportPage> {
 
   void getProducts() async {
     try {
-      var response = await MainApiService().getProductsReport(dateFrom, dateTo);
+      var response = await MainApiService().getProductsReport(dateFrom, time);
 
       for (var item in response) {
         products.add(ProductReportModel.fromJson(item));

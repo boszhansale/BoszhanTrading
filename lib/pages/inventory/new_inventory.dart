@@ -141,11 +141,10 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                                 });
 
                                 await showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now(),
-                                        initialEntryMode:
-                                            TimePickerEntryMode.dial)
-                                    .then((value) {
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                  initialEntryMode: TimePickerEntryMode.dial,
+                                ).then((value) {
                                   if (value != null) {
                                     time =
                                         '${value.hour < 10 ? '0${value.hour}' : value.hour}:${value.minute < 10 ? '0${value.minute}' : value.minute}:00';
