@@ -20,7 +20,7 @@ class ProductReportPageState extends State<ProductReportPage> {
   List<ProductReportModel> products = [];
 
   String dateFrom = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  String time = DateFormat('HH:mm').format(DateTime.now());
+  String time = '${DateFormat('HH:mm').format(DateTime.now())}:00';
   // String dateTo = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   @override
@@ -248,6 +248,7 @@ class ProductReportPageState extends State<ProductReportPage> {
 
   void getProducts() async {
     try {
+      print(dateFrom + ' ' + time);
       var response = await MainApiService().getProductsReport(dateFrom, time);
 
       for (var item in response) {
