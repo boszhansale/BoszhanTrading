@@ -30,6 +30,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
   String storeName = '';
   String storageName = '';
   String organizationName = '';
+  TextEditingController commentController = TextEditingController();
 
   int sendStorageId = 1;
   String sendStorageName = 'Центральный Склад';
@@ -128,6 +129,15 @@ class _NewMovingPageState extends State<NewMovingPage> {
                               Text(
                                 'Организация: $organizationName',
                                 style: ProjectStyles.textStyle_14Medium,
+                              ),
+                              const SizedBox(height: 10),
+                              SizedBox(
+                                width: 250,
+                                child: TextField(
+                                  controller: commentController,
+                                  decoration: const InputDecoration(
+                                      hintText: 'Коммент.'),
+                                ),
                               ),
                             ],
                           ),
@@ -365,6 +375,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
         sendBasketList,
         sendStorageId,
         selectedOrderId,
+        commentController.text,
       );
       // print(response);
       showCustomSnackBar(context, 'Заказ успешно создан!');

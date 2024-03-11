@@ -144,11 +144,11 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
                           children: [
                             const Text("Товары:",
                                 style: ProjectStyles.textStyle_22Bold),
-                            // IconButton(
-                            //     onPressed: () {
-                            //       showProductDialog();
-                            //     },
-                            //     icon: const Icon(Icons.add_circle))
+                            IconButton(
+                                onPressed: () {
+                                  showProductDialog();
+                                },
+                                icon: const Icon(Icons.add_circle))
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -274,8 +274,9 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
 
   void addProduct(int productId, double count) async {
     try {
-      var response =
-          await MainApiService().addProductToInventoryOrder(productId, count);
+      var response = await MainApiService()
+          .addProductToInventoryCreatedOrder(productId, widget.order.id);
+      saveCountOfProduct();
 
       _init();
     } catch (e) {

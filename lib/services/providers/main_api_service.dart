@@ -527,13 +527,18 @@ class MainApiService {
 
   // TODO: Moving
 
-  Future<Map<String, dynamic>> createMovingOrder(int operation,
-      List<dynamic> products, int storageId, int selectedOrderId) async {
+  Future<Map<String, dynamic>> createMovingOrder(
+      int operation,
+      List<dynamic> products,
+      int storageId,
+      int selectedOrderId,
+      String comment) async {
     Map<String, dynamic> body = {
       "payment_type": 1,
       "operation": operation,
       "products": products,
       "storage_id": storageId,
+      "comment": comment,
     };
 
     if (selectedOrderId != 0) {
@@ -736,6 +741,32 @@ class MainApiService {
 
     final response = await http.post(
       Uri.parse('$baseUrl/inventory/add-receipt'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode(body),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<Map<String, dynamic>> addProductToInventoryCreatedOrder(
+      int productId, int inventoryId) async {
+    Map<String, dynamic> body = {
+      "product_id": productId,
+      "inventory_id": inventoryId,
+    };
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/inventory/add-product'),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json; charset=UTF-8",
