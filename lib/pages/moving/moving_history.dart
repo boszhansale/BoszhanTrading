@@ -172,7 +172,7 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
       const DataColumn(label: Text('Колл. продуктов')),
       const DataColumn(label: Text('Сумма')),
       const DataColumn(label: Text('Показать')),
-      const DataColumn(label: Text('Акт')),
+      // const DataColumn(label: Text('Акт')),
       const DataColumn(label: Text('Печать')),
       const DataColumn(label: Text('Изменить')),
       // const DataColumn(label: Text('Удалить')),
@@ -213,14 +213,14 @@ class _MovingHistoryPageState extends State<MovingHistoryPage> {
                     icon: const Icon(Icons.print),
                   ),
           ),
-          DataCell(
-            IconButton(
-              onPressed: () {
-                printDocumentAction(orders[i].id);
-              },
-              icon: const Icon(Icons.print),
-            ),
-          ),
+          // DataCell(
+          //   IconButton(
+          //     onPressed: () {
+          //       printDocumentAction(orders[i].id);
+          //     },
+          //     icon: const Icon(Icons.print),
+          //   ),
+          // ),
           DataCell(
             IconButton(
               onPressed: () {
