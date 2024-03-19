@@ -488,41 +488,40 @@ class _NewOrderPageState extends State<NewOrderPage> {
   }
 
   void addToBasket(dynamic product) async {
-    // if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-    bool inBasket = false;
-    int index = 0;
-    for (int j = 0; j < basket.length; j++) {
-      if (basket[j]['id'] == product['id']) {
-        inBasket = true;
-        index = j;
+    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+      bool inBasket = false;
+      int index = 0;
+      for (int j = 0; j < basket.length; j++) {
+        if (basket[j]['id'] == product['id']) {
+          inBasket = true;
+          index = j;
+        }
       }
-    }
-    if (inBasket) {
-      // if (productsPermission[product.id]! > basket[index]['count']) {
-      basket[index]['count'] = basket[index]['count'] + product['count'];
-      countControllers[index].text =
-          (double.parse(countControllers[index].text) + product['count'])
-              .toString();
-      // } else {
-      //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-      // }
+      if (inBasket) {
+        // if (productsPermission[product.id]! > basket[index]['count']) {
+        basket[index]['count'] = basket[index]['count'] + product['count'];
+        countControllers[index].text =
+            (double.parse(countControllers[index].text) + product['count'])
+                .toString();
+        // } else {
+        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        // }
+      } else {
+        basket.add(product);
+        countControllers
+            .add(TextEditingController(text: product['count'].toString()));
+      }
+
+      calcSum();
+
+      saveBasket();
+      if (mounted) {
+        setState(() {});
+      }
     } else {
-      basket.add(product);
-      countControllers
-          .add(TextEditingController(text: product['count'].toString()));
+      showCustomSnackBar(context,
+          'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
     }
-
-    calcSum();
-
-    saveBasket();
-    if (mounted) {
-      setState(() {});
-    }
-
-    // } else {
-    //   showCustomSnackBar(context,
-    //       'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
-    // }
   }
 
   void showCounteragentDialog() async {
