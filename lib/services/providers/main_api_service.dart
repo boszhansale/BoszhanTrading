@@ -1137,4 +1137,45 @@ class MainApiService {
       throw Exception(responseJson['message']);
     }
   }
+
+  // TODO: Get and set my stores
+
+  Future<dynamic> getMyStores() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/store'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> setStore(int id) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/store'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode({'store_id': id}),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
 }

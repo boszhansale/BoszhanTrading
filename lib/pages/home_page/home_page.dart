@@ -23,6 +23,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String userName = '';
   String storeName = '';
+  Object storeSelectedValue = 0;
+  List<dynamic> storeList = [];
+  User? user;
 
   @override
   void initState() {
@@ -30,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     checkLogin();
     getProductData();
     super.initState();
+    getStoreList();
   }
 
   void checkLogin() async {
@@ -73,11 +77,47 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 5),
-                  child: Text('Торговая точка: $storeName',
-                      style: ProjectStyles.textStyle_14Regular),
+                  child: Text('Активная торговая точка: $storeName',
+                      style: ProjectStyles.textStyle_14Bold),
                 ),
+                storeList.isNotEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text('Выбрать другой:',
+                            style: ProjectStyles.textStyle_14Regular),
+                      )
+                    : const SizedBox.shrink(),
+                storeList.isNotEmpty
+                    ? DropdownButton(
+                        value: storeSelectedValue,
+                        alignment: AlignmentDirectional.center,
+                        items: [
+                          for (int i = 0; i < storeList.length; i++)
+                            DropdownMenuItem(
+                              value: i,
+                              alignment: AlignmentDirectional.center,
+                              child: Text(
+                                storeList[i]['name'],
+                              ),
+                            ),
+                        ],
+                        onChanged: (Object? newValue) async {
+                          storeSelectedValue = newValue!;
+                          setStore(storeList[
+                              int.parse(storeSelectedValue.toString())]['id']);
+                          storeName = storeList[
+                              int.parse(storeSelectedValue.toString())]['name'];
+                          user?.storeName = storeName;
+                          if (user != null) {
+                            await AuthRepository().setUserToCache(user!);
+                          }
+
+                          setState(() {});
+                        },
+                      )
+                    : const SizedBox.shrink(),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 20, top: 10),
                   child: Text('Пользователь: $userName',
                       style: ProjectStyles.textStyle_14Regular),
                 ),
@@ -612,10 +652,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getUser() async {
-    User? user = await AuthRepository().getUserFromCache();
+    user = await AuthRepository().getUserFromCache();
     if (user != null) {
-      userName = user.name;
-      storeName = user.storeName ?? '';
+      userName = user!.name;
+      storeName = user!.storeName ?? '';
       setState(() {});
     }
   }
@@ -672,5 +712,24 @@ class _HomePageState extends State<HomePage> {
 
       SessionDataProvider().setProductsToCache(thisProducts);
     }
+  }
+
+  void getStoreList() async {
+    try {
+      var response = await MainApiService().getMyStores();
+
+      for (var i in response) {
+        storeList.add(i);
+      }
+
+      setState(() {});
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  void setStore(int id) async {
+    var response = await MainApiService().setStore(id);
+    // print(response);
   }
 }
