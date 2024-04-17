@@ -1,3 +1,5 @@
+import 'package:boszhan_trading/models/user.dart';
+import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -18,6 +20,8 @@ class _AuthPageState extends State<AuthPage> {
   TextEditingController passwordController = TextEditingController();
 
   final repository = AuthRepository();
+
+  List<dynamic> storeList = [];
 
   @override
   void initState() {
@@ -84,13 +88,63 @@ class _AuthPageState extends State<AuthPage> {
       await repository.setUserToken(loginResponse.accessToken);
       await repository.setUserToCache(loginResponse.user);
 
-      if (mounted) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home', ModalRoute.withName('/'));
-      }
+      await getStoreList().whenComplete(() {
+        _showStoreSet(context);
+      });
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
+  }
+
+  Future<void> _showStoreSet(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите магазин',
+              style: ProjectStyles.textStyle_18Bold),
+          children: <Widget>[
+            for (var i in storeList)
+              SimpleDialogOption(
+                onPressed: () async {
+                  User? user = await repository.getUserFromCache();
+                  user?.storeName = i['name'];
+                  if (user != null) {
+                    await AuthRepository().setUserToCache(user);
+                  }
+                  await setStore(i['id']).whenComplete(() {
+                    if (mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', ModalRoute.withName('/'));
+                    }
+                  });
+                },
+                child: Text(i['name'] ?? '',
+                    style: ProjectStyles.textStyle_18Medium),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> getStoreList() async {
+    try {
+      var response = await MainApiService().getMyStores();
+
+      for (var i in response) {
+        storeList.add(i);
+      }
+
+      setState(() {});
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  Future<void> setStore(int id) async {
+    var response = await MainApiService().setStore(id);
+    // print(response);
   }
 }
