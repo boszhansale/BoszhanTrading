@@ -1,6 +1,7 @@
 import 'package:boszhan_trading/pages/KKM/deposits_or_withdrawals_page.dart';
 import 'package:boszhan_trading/pages/KKM/x_report_page.dart';
 import 'package:boszhan_trading/pages/KKM/z_report_page.dart';
+import 'package:boszhan_trading/pages/KKM/z_reports.dart';
 import 'package:boszhan_trading/pages/auth/auth_page.dart';
 import 'package:boszhan_trading/pages/home_page/home_page.dart';
 import 'package:boszhan_trading/pages/incoming/incoming_history.dart';
@@ -60,6 +61,7 @@ class App extends StatelessWidget {
         '/kkm/money': (context) => const DepositsOrWithdrawalsPage(),
         '/kkm/x-report': (context) => const XReportPage(),
         '/kkm/z-report': (context) => const ZReportPage(),
+        '/kkm/z-reports': (context) => const ZReportsPage(),
         '/moving/new': (context) => const NewMovingPage(),
         '/moving/history': (context) => const MovingHistoryPage(),
         '/inventory/new': (context) => const NewInventoryPage(),

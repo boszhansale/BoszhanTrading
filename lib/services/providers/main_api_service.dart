@@ -996,6 +996,31 @@ class MainApiService {
     }
   }
 
+  Future<dynamic> getZReports(String dateFrom, String dateTo) async {
+    String url = '$baseUrl/report/z';
+
+    if (dateFrom != '' && dateTo != '') {
+      url += '?date_from=$dateFrom&date_to=$dateTo';
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
   // TODO: Report
 
   Future<dynamic> getRemainProducts(String dateFrom, String dateTo) async {

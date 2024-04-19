@@ -423,6 +423,14 @@ class _HomePageState extends State<HomePage> {
             SimpleDialogOption(
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/kkm/z-reports');
+              },
+              child: const Text('Журнал Z отчётов',
+                  style: ProjectStyles.textStyle_18Medium),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
                 _showAlertOnKKM(context);
               },
               child: const Text('Z отчёт',
