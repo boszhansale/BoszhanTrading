@@ -487,6 +487,26 @@ class _NewOrderPageState extends State<NewOrderPage> {
     );
   }
 
+  void showCounteragentDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите контрагента:'),
+          content: CounteragentSelectionWidget(
+            selectCounteragent: selectCounteragent,
+          ),
+        );
+      },
+    );
+  }
+
+  void selectCounteragent(int id, String name) async {
+    counteragentId = id;
+    counteragentName = name;
+    setState(() {});
+  }
+
   void addToBasket(dynamic product) async {
     if ((productsPermission[product['id']] ?? 0) >= product['count']) {
       bool inBasket = false;
@@ -522,26 +542,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
       showCustomSnackBar(context,
           'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
     }
-  }
-
-  void showCounteragentDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Выберите контрагента:'),
-          content: CounteragentSelectionWidget(
-            selectCounteragent: selectCounteragent,
-          ),
-        );
-      },
-    );
-  }
-
-  void selectCounteragent(int id, String name) async {
-    counteragentId = id;
-    counteragentName = name;
-    setState(() {});
   }
 
   void createOrder() async {
