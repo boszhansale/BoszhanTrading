@@ -544,12 +544,42 @@ class _NewOrderPageState extends State<NewOrderPage> {
     }
   }
 
+  void getInventoryProducts() async {
+    try {
+      DateTime now = DateTime.now();
+      var date = DateFormat('yyyy-MM-dd').format(now);
+      var time = DateFormat('HH:mm:ss').format(now);
+      var response = await MainApiService().getInventoryProducts(date, time);
+
+      for (var i in response) {
+        double? remains = double.tryParse(i['remains']);
+        if (remains != null) {
+          productsPermission[i['product_id']] = remains;
+        } else {
+          productsPermission[i['product_id']] = 0;
+        }
+      }
+
+      setState(() {});
+    } catch (e) {
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
+  }
+
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
     for (int i = 0; i < basket.length; i++) {
-      sendBasketList.add(
-          {'product_id': basket[i]['id'], 'count': countControllers[i].text});
+      if ((productsPermission[basket[i]['id']] ?? 0) >=
+          double.parse(countControllers[i].text)) {
+        sendBasketList.add(
+            {'product_id': basket[i]['id'], 'count': countControllers[i].text});
+      } else {
+        showCustomSnackBar(context,
+            'Вы не можете продавать больше чем у вас есть. Продукт: ${basket[i]["name"]}.');
+        return;
+      }
     }
 
     try {
@@ -578,29 +608,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
               ));
     } catch (e) {
       isButtonActive = true;
-      showCustomSnackBar(context, e.toString());
-      print(e);
-    }
-  }
-
-  void getInventoryProducts() async {
-    try {
-      DateTime now = DateTime.now();
-      var date = DateFormat('yyyy-MM-dd').format(now);
-      var time = DateFormat('HH:mm:ss').format(now);
-      var response = await MainApiService().getInventoryProducts(date, time);
-
-      for (var i in response) {
-        double? remains = double.tryParse(i['remains']);
-        if (remains != null) {
-          productsPermission[i['product_id']] = remains;
-        } else {
-          productsPermission[i['product_id']] = 0;
-        }
-      }
-
-      setState(() {});
-    } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
