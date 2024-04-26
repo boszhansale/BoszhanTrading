@@ -412,20 +412,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     ];
   }
 
-  void calcSum() async {
-    sum = 0;
-    for (int i = 0; i < basket.length; i++) {
-      if (basket[i]['discount_price'] != 0 ||
-          basket[i]['discount_price'] != null) {
-        sum += (double.tryParse(countControllers[i].text) ?? 0) *
-            (basket[i]['price'] - basket[i]['discount_price']);
-      } else {
-        sum += (double.tryParse(countControllers[i].text) ?? 0) *
-            basket[i]['price'];
-      }
-    }
-  }
-
   void addProductFromScanner(String barcode) async {
     var response = await MainApiService().searchProductByBarcode(barcode);
     if (response.isNotEmpty) {
@@ -471,6 +457,20 @@ class _NewOrderPageState extends State<NewOrderPage> {
     calcSum();
     saveBasket();
     setState(() {});
+  }
+
+  void calcSum() async {
+    sum = 0;
+    for (int i = 0; i < basket.length; i++) {
+      if (basket[i]['discount_price'] != 0 ||
+          basket[i]['discount_price'] != null) {
+        sum += (double.tryParse(countControllers[i].text) ?? 0) *
+            (basket[i]['price'] - basket[i]['discount_price']);
+      } else {
+        sum += (double.tryParse(countControllers[i].text) ?? 0) *
+            basket[i]['price'];
+      }
+    }
   }
 
   void showProductDialog() async {
@@ -578,6 +578,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       } else {
         showCustomSnackBar(context,
             'Вы не можете продавать больше чем у вас есть. Продукт: ${basket[i]["name"]}.');
+        isButtonActive = true;
         return;
       }
     }
