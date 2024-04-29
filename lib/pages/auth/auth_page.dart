@@ -97,6 +97,25 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
+  Future<void> getStoreList() async {
+    try {
+      storeList = [];
+      var response = await MainApiService().getMyStores();
+
+      for (var i in response) {
+        storeList.add(i);
+      }
+
+      setState(() {});
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
+  Future<void> setStore(int id) async {
+    var response = await MainApiService().setStore(id);
+  }
+
   Future<void> _showStoreSet(BuildContext context) async {
     await showDialog<void>(
       context: context,
@@ -127,24 +146,5 @@ class _AuthPageState extends State<AuthPage> {
         );
       },
     );
-  }
-
-  Future<void> getStoreList() async {
-    try {
-      var response = await MainApiService().getMyStores();
-
-      for (var i in response) {
-        storeList.add(i);
-      }
-
-      setState(() {});
-    } catch (error) {
-      showCustomSnackBar(context, error.toString());
-    }
-  }
-
-  Future<void> setStore(int id) async {
-    var response = await MainApiService().setStore(id);
-    // print(response);
   }
 }

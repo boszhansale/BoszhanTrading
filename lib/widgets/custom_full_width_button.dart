@@ -11,7 +11,7 @@ Widget customFullWidthButton(
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: ColorPalette.main,
-        minimumSize: const Size.fromHeight(60), // NEW
+        minimumSize: const Size.fromHeight(60),
       ),
       onPressed: onTap,
       child: Text(
