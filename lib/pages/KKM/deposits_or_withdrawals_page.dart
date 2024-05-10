@@ -137,19 +137,23 @@ class _DepositsOrWithdrawalsPageState extends State<DepositsOrWithdrawalsPage> {
   void sendData() async {
     isButtonActive = false;
     try {
-      if (double.tryParse(sumController.text) == null) {
-        showCustomSnackBar(context, 'Введите корректное вначение!');
-        isButtonActive = true;
+      if (selectedOperation != 0) {
+        if (double.tryParse(sumController.text) == null) {
+          showCustomSnackBar(context, 'Введите корректное вначение!');
+          isButtonActive = true;
+        } else {
+          await MainApiService().sendMoneyOperationRequest(
+            double.tryParse(sumController.text) ?? 0,
+            selectedOperation,
+          );
+
+          showCustomSnackBar(context, 'Операция успешно выполнена!');
+
+          Future.delayed(const Duration(seconds: 2))
+              .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+        }
       } else {
-        await MainApiService().sendMoneyOperationRequest(
-          double.tryParse(sumController.text) ?? 0,
-          selectedOperation,
-        );
-
-        showCustomSnackBar(context, 'Операция успешно выполнена!');
-
-        Future.delayed(const Duration(seconds: 2))
-            .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+        showCustomSnackBar(context, 'Доступ закрыт!');
       }
     } catch (e) {
       isButtonActive = true;
