@@ -204,6 +204,79 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     );
   }
 
+  void searchOrder() async {
+    var response = await MainApiService()
+        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
+
+    orders = [];
+    allOrders = [];
+    sum = 0;
+
+    for (var item in response) {
+      allOrders.add(SalesOrderHistoryModel.fromJson(item));
+    }
+
+    for (var item in allOrders) {
+      if (item.payments.isNotEmpty) {
+        if (paymentTypeSelectedValue ==
+            (item.payments[0]['PaymentType'] ?? '')) {
+          orders.add(item);
+          sum += item.totalPrice;
+        }
+      }
+    }
+
+    setState(() {});
+  }
+
+  void deleteOrderFromHistory(int id) async {
+    try {
+      await MainApiService().deleteSalesOrderFromHistory(id);
+      searchOrder();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
+
+    // final pdf = pdfWidgets.Document();
+    // final fontData =
+    //     await rootBundle.load("assets/fonts/Montserrat-Regular.ttf");
+    // final ttf = pdfWidgets.Font.ttf(fontData);
+    //
+    // pdf.addPage(
+    //   pdfWidgets.Page(
+    //     build: (context) {
+    //       return pdfWidgets.Column(
+    //         crossAxisAlignment: pdfWidgets.CrossAxisAlignment.start,
+    //         children: [
+    //           for (var item in responsePrintCheck[
+    //               "Lines"]) // Замените "Lines" на имя поля с линиями
+    //             pdfWidgets.Text(
+    //               item['Value'],
+    //               style: pdfWidgets.TextStyle(font: ttf),
+    //             ),
+    //         ],
+    //       );
+    //     },
+    //     pageFormat: PdfPageFormat.roll80,
+    //   ),
+    // );
+    //
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => PdfPreview(
+    //       build: (format) => pdf.save(),
+    //     ),
+    //   ),
+    // );
+
+    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
+  }
+
   DataTable _createDataTable() {
     return DataTable(columns: _createColumns(), rows: _createRows());
   }
@@ -277,86 +350,5 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           ],
         ),
     ];
-  }
-
-  void searchOrder() async {
-    var response = await MainApiService()
-        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
-
-    orders = [];
-    allOrders = [];
-    sum = 0;
-
-    for (var item in response) {
-      allOrders.add(SalesOrderHistoryModel.fromJson(item));
-    }
-
-    for (var item in allOrders) {
-      if (item.payments.isNotEmpty) {
-        if (paymentTypeSelectedValue ==
-            (item.payments[0]['PaymentType'] ?? '')) {
-          orders.add(item);
-          sum += item.totalPrice;
-        }
-      }
-    }
-
-    setState(() {});
-  }
-
-  void deleteOrderFromHistory(int id) async {
-    try {
-      await MainApiService().deleteSalesOrderFromHistory(id);
-      searchOrder();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void getCheckAndPrint(int id) async {
-    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
-
-    // final pdf = pdfWidgets.Document();
-    // final fontData =
-    //     await rootBundle.load("assets/fonts/Montserrat-Regular.ttf");
-    // final ttf = pdfWidgets.Font.ttf(fontData);
-    //
-    // pdf.addPage(
-    //   pdfWidgets.Page(
-    //     build: (context) {
-    //       return pdfWidgets.Column(
-    //         crossAxisAlignment: pdfWidgets.CrossAxisAlignment.start,
-    //         children: [
-    //           for (var item in responsePrintCheck[
-    //               "Lines"]) // Замените "Lines" на имя поля с линиями
-    //             pdfWidgets.Text(
-    //               item['Value'],
-    //               style: pdfWidgets.TextStyle(font: ttf),
-    //             ),
-    //         ],
-    //       );
-    //     },
-    //     pageFormat: PdfPageFormat.roll80,
-    //   ),
-    // );
-    //
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => PdfPreview(
-    //       build: (format) => pdf.save(),
-    //     ),
-    //   ),
-    // );
-
-    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => CheckPage(
-    //             check: responsePrintCheck["Lines"],
-    //           )),
-    // );
   }
 }
