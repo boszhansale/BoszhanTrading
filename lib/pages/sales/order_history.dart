@@ -204,45 +204,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     );
   }
 
-  void searchOrder() async {
-    var response = await MainApiService()
-        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
-
-    orders = [];
-    allOrders = [];
-    sum = 0;
-
-    for (var item in response) {
-      allOrders.add(SalesOrderHistoryModel.fromJson(item));
-    }
-
-    for (var item in allOrders) {
-      if (item.payments.isNotEmpty) {
-        if (paymentTypeSelectedValue ==
-            (item.payments[0]['PaymentType'] ?? '')) {
-          orders.add(item);
-          sum += item.totalPrice;
-        }
-      }
-    }
-
-    setState(() {});
-  }
-
-  void deleteOrderFromHistory(int id) async {
-    try {
-      await MainApiService().deleteSalesOrderFromHistory(id);
-      searchOrder();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void getCheckAndPrint(int id) async {
-    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
-    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
-  }
-
   DataTable _createDataTable() {
     return DataTable(columns: _createColumns(), rows: _createRows());
   }
@@ -260,7 +221,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       const DataColumn(label: Text('Оплата')),
       const DataColumn(label: Text('Чек')),
       const DataColumn(label: Text('Показать')),
-      // const DataColumn(label: Text('Удалить')),
     ];
   }
 
@@ -305,16 +265,47 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 icon: const Icon(Icons.list),
               ),
             ),
-            // DataCell(
-            //   IconButton(
-            //     onPressed: () {
-            //       deleteOrderFromHistory(orders[i].id);
-            //     },
-            //     icon: const Icon(Icons.delete),
-            //   ),
-            // )
           ],
         ),
     ];
+  }
+
+  void searchOrder() async {
+    var response = await MainApiService()
+        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
+
+    orders = [];
+    allOrders = [];
+    sum = 0;
+
+    for (var item in response) {
+      allOrders.add(SalesOrderHistoryModel.fromJson(item));
+    }
+
+    for (var item in allOrders) {
+      if (item.payments.isNotEmpty) {
+        if (paymentTypeSelectedValue ==
+            (item.payments[0]['PaymentType'] ?? '')) {
+          orders.add(item);
+          sum += item.totalPrice;
+        }
+      }
+    }
+
+    setState(() {});
+  }
+
+  void deleteOrderFromHistory(int id) async {
+    try {
+      await MainApiService().deleteSalesOrderFromHistory(id);
+      searchOrder();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
+    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
   }
 }
