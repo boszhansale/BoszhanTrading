@@ -1,10 +1,7 @@
-import 'dart:js' as js;
-
 import 'package:boszhan_trading/models/sales_order_history_model.dart';
 import 'package:boszhan_trading/pages/sales/sales_order_history_products.dart';
 import 'package:boszhan_trading/services/providers/main_api_service.dart';
 import 'package:boszhan_trading/services/repositories/auth_repository.dart';
-import 'package:boszhan_trading/utils/const.dart';
 import 'package:boszhan_trading/utils/styles/color_palette.dart';
 import 'package:boszhan_trading/utils/styles/styles.dart';
 import 'package:boszhan_trading/widgets/background__image_widget.dart';
@@ -204,6 +201,36 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     );
   }
 
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
+    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
+  }
+
+  void searchOrder() async {
+    var response = await MainApiService()
+        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
+
+    orders = [];
+    allOrders = [];
+    sum = 0;
+
+    for (var item in response) {
+      allOrders.add(SalesOrderHistoryModel.fromJson(item));
+    }
+
+    for (var item in allOrders) {
+      if (item.payments.isNotEmpty) {
+        if (paymentTypeSelectedValue ==
+            (item.payments[0]['PaymentType'] ?? '')) {
+          orders.add(item);
+          sum += item.totalPrice;
+        }
+      }
+    }
+
+    setState(() {});
+  }
+
   DataTable _createDataTable() {
     return DataTable(columns: _createColumns(), rows: _createRows());
   }
@@ -277,35 +304,5 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     } catch (e) {
       print(e);
     }
-  }
-
-  void getCheckAndPrint(int id) async {
-    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
-    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
-  }
-
-  void searchOrder() async {
-    var response = await MainApiService()
-        .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
-
-    orders = [];
-    allOrders = [];
-    sum = 0;
-
-    for (var item in response) {
-      allOrders.add(SalesOrderHistoryModel.fromJson(item));
-    }
-
-    for (var item in allOrders) {
-      if (item.payments.isNotEmpty) {
-        if (paymentTypeSelectedValue ==
-            (item.payments[0]['PaymentType'] ?? '')) {
-          orders.add(item);
-          sum += item.totalPrice;
-        }
-      }
-    }
-
-    setState(() {});
   }
 }
