@@ -181,6 +181,14 @@ class _HomePageState extends State<HomePage> {
                   },
                   title: 'Отчеты',
                 ),
+                userName == 'moderator'
+                    ? customTextButton(
+                        () {
+                          Navigator.of(context).pushNamed('/stores/change');
+                        },
+                        title: 'Назначить магазин',
+                      )
+                    : const SizedBox.shrink(),
                 const SizedBox(height: 20),
               ],
             ),

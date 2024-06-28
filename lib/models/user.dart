@@ -1,3 +1,5 @@
+import 'package:boszhan_trading/models/store.dart'; // Ensure the correct import path for Store model
+
 class User {
   final int id;
   final String name;
@@ -8,6 +10,7 @@ class User {
   String? storageName;
   String? organizationName;
   String? bank;
+  List<Store> stores;
 
   User({
     required this.id,
@@ -19,9 +22,17 @@ class User {
     this.storageName,
     this.organizationName,
     this.bank,
+    this.stores = const [],
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    List<Store> userStores = [];
+    if (json['stores'] != null) {
+      json['stores'].forEach((storeJson) {
+        userStores.add(Store.fromJson(storeJson));
+      });
+    }
+
     return User(
       id: json['id'],
       name: json['name'],
@@ -32,23 +43,32 @@ class User {
       storageName: json['storage']?['name'] ?? '',
       organizationName: json['organization']?['name'] ?? '',
       bank: json['bank'] ?? '',
+      stores: userStores,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['phone'] = phone;
-    data['login'] = login;
-    data['store'] = {};
-    data['store']['name'] = storeName;
-    data['store']['id'] = storeId;
-    data['storage'] = {};
-    data['storage']['name'] = storageName;
-    data['organization'] = {};
-    data['organization']['name'] = organizationName;
-    data['bank'] = bank;
+    final Map<String, dynamic> data = {
+      'id': id,
+      'name': name,
+      'login': login,
+      'phone': phone ?? '',
+      'store': {
+        'name': storeName ?? '',
+        'id': storeId ?? 0,
+      },
+      'storage': {
+        'name': storageName ?? '',
+      },
+      'organization': {
+        'name': organizationName ?? '',
+      },
+      'bank': bank ?? '',
+    };
+
+    if (stores != null) {
+      data['stores'] = stores!.map((store) => store.toJson()).toList();
+    }
 
     return data;
   }

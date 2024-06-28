@@ -22,6 +22,7 @@ import 'package:boszhan_trading/pages/sales/new_order_page.dart';
 import 'package:boszhan_trading/pages/sales/order_history.dart';
 import 'package:boszhan_trading/pages/sales/unfinished_orders.dart';
 import 'package:boszhan_trading/pages/splash_screen/SplashScreen.dart';
+import 'package:boszhan_trading/pages/stores/change_user_store_screen.dart';
 import 'package:boszhan_trading/pages/write-off/new_write_off.dart';
 import 'package:boszhan_trading/pages/write-off/write_off_history.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,7 @@ class App extends StatelessWidget {
         '/report/discount-card': (context) => const DiscountCardReportPage(),
         '/report/online-sale': (context) => const OnlineSaleReportReportPage(),
         '/report/product': (context) => const ProductReportPage(),
+        '/stores/change': (context) => const ChangeUserStoreScreen(),
       },
     );
   }

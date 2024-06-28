@@ -1203,4 +1203,49 @@ class MainApiService {
       throw Exception(responseJson['message']);
     }
   }
+
+  // TODO: Moderator
+
+  Future<List<dynamic>> getCashierList() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/cashiers'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+    );
+    var responseJson = jsonDecode(response.body);
+
+    // print(responseJson);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson['message']);
+    }
+  }
+
+  Future<dynamic> setStoreForCashier(int userId, int storeId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/change-store'),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${await AuthRepository().getUserToken()}",
+      },
+      body: jsonEncode({'user_id': userId, 'store_id': storeId}),
+    );
+    var responseJson = jsonDecode(response.body);
+
+    print(responseJson);
+
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception(responseJson);
+    }
+  }
 }

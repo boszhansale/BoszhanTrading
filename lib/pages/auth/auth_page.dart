@@ -88,9 +88,12 @@ class _AuthPageState extends State<AuthPage> {
       await repository.setUserToken(loginResponse.accessToken);
       await repository.setUserToCache(loginResponse.user);
 
-      await getStoreList().whenComplete(() {
-        _showStoreSet(context);
-      });
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/home', ModalRoute.withName('/'));
+
+      // await getStoreList().whenComplete(() {
+      //   _showStoreSet(context);
+      // });
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
