@@ -122,6 +122,20 @@ class _ChangeUserStoreScreenState extends State<ChangeUserStoreScreen> {
     setState(() {});
   }
 
+  Future<void> setStore(int userId, int storeId) async {
+    try {
+      await MainApiService().setStoreForCashier(userId, storeId);
+
+      if (mounted) {
+        AuthRepository().logout();
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/auth', ModalRoute.withName('/'));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> _showStoreSet(BuildContext context, int index) async {
     await showDialog<void>(
       context: context,
@@ -142,19 +156,5 @@ class _ChangeUserStoreScreenState extends State<ChangeUserStoreScreen> {
         );
       },
     );
-  }
-
-  Future<void> setStore(int userId, int storeId) async {
-    try {
-      await MainApiService().setStoreForCashier(userId, storeId);
-
-      if (mounted) {
-        AuthRepository().logout();
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/auth', ModalRoute.withName('/'));
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 }
