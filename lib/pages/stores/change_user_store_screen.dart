@@ -110,18 +110,6 @@ class _ChangeUserStoreScreenState extends State<ChangeUserStoreScreen> {
     ];
   }
 
-  void getCashierList() async {
-    var response = await MainApiService().getCashierList();
-
-    users = [];
-
-    for (var item in response) {
-      users.add(User.fromJson(item));
-    }
-
-    setState(() {});
-  }
-
   Future<void> _showStoreSet(BuildContext context, int index) async {
     await showDialog<void>(
       context: context,
@@ -142,6 +130,18 @@ class _ChangeUserStoreScreenState extends State<ChangeUserStoreScreen> {
         );
       },
     );
+  }
+
+  void getCashierList() async {
+    var response = await MainApiService().getCashierList();
+
+    users = [];
+
+    for (var item in response) {
+      users.add(User.fromJson(item));
+    }
+
+    setState(() {});
   }
 
   Future<void> setStore(int userId, int storeId) async {
