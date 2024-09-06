@@ -98,7 +98,12 @@ class _NewMovingPageState extends State<NewMovingPage> {
                               if (basket.isNotEmpty &&
                                   isButtonActive &&
                                   sendStorageId != 0) {
-                                createOrder();
+                                if (commentController.text.isNotEmpty) {
+                                  createOrder();
+                                } else {
+                                  showCustomSnackBar(
+                                      context, 'Заполните комментарий.');
+                                }
                               } else {
                                 showCustomSnackBar(context,
                                     'Список товаров пуст или не выбран склад.');
