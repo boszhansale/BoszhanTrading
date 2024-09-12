@@ -253,10 +253,6 @@ class _NewMovingPageState extends State<NewMovingPage> {
     );
   }
 
-  DataTable _createDataTable() {
-    return DataTable(columns: _createColumns(), rows: _createRows());
-  }
-
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('№')),
@@ -294,6 +290,10 @@ class _NewMovingPageState extends State<NewMovingPage> {
           )
         ]),
     ];
+  }
+
+  DataTable _createDataTable() {
+    return DataTable(columns: _createColumns(), rows: _createRows());
   }
 
   void showOrderSelectionDialog() async {
