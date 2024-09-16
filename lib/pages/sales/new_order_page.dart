@@ -540,7 +540,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
       }
     } else {
       showCustomSnackBar(context,
-          'Вы не можете продавать данный товар. Продукт отсутствует в вашем магазине.');
+          'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
     }
   }
 

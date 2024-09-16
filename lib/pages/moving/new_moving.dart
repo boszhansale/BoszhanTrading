@@ -44,6 +44,8 @@ class _NewMovingPageState extends State<NewMovingPage> {
 
   List<dynamic> basket = [];
 
+  Map<dynamic, double> productsPermission = {};
+
   @override
   void initState() {
     _init();
@@ -68,6 +70,8 @@ class _NewMovingPageState extends State<NewMovingPage> {
     storeName = user?.storeName ?? '';
     storageName = user?.storageName ?? '';
     organizationName = user?.organizationName ?? '';
+
+    getInventoryProducts();
 
     setState(() {});
   }
@@ -332,15 +336,32 @@ class _NewMovingPageState extends State<NewMovingPage> {
     );
   }
 
-  void addToBasket(dynamic product) async {
-    selectedProduct = product;
+  // void addToBasket(dynamic product) async {
+  //   selectedProduct = product;
+  //
+  //   basket.add(selectedProduct);
+  //   sum = 0;
+  //   for (var item in basket) {
+  //     sum += item['count'] * item['price'];
+  //   }
+  //   setState(() {});
+  // }
 
-    basket.add(selectedProduct);
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
+  void addToBasket(dynamic product) async {
+    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+      basket.add(product);
+      sum = 0;
+      for (var item in basket) {
+        sum += item['count'] * item['price'];
+      }
+
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      showCustomSnackBar(context,
+          'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
     }
-    setState(() {});
   }
 
   void showStorageDialog() async {
@@ -388,6 +409,29 @@ class _NewMovingPageState extends State<NewMovingPage> {
           .whenComplete(() => Navigator.of(context).pushNamed('/home'));
     } catch (e) {
       isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
+  }
+
+  void getInventoryProducts() async {
+    try {
+      DateTime now = DateTime.now();
+      var date = DateFormat('yyyy-MM-dd').format(now);
+      var time = DateFormat('HH:mm:ss').format(now);
+      var response = await MainApiService().getInventoryProducts(date, time);
+
+      for (var i in response) {
+        double? remains = double.tryParse(i['remains']);
+        if (remains != null) {
+          productsPermission[i['product_id']] = remains;
+        } else {
+          productsPermission[i['product_id']] = 0;
+        }
+      }
+
+      setState(() {});
+    } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
