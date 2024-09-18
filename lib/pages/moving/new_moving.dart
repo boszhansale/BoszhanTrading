@@ -53,6 +53,16 @@ class _NewMovingPageState extends State<NewMovingPage> {
     super.initState();
   }
 
+  void checkLogin() async {
+    final bool isAuth = await AuthRepository().isAuth();
+    if (!isAuth) {
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/auth', ModalRoute.withName('/'));
+      }
+    }
+  }
+
   _init() async {
     createdTime = DateFormat('dd.MM.yy HH:mm').format(DateTime.now());
     User? user = await AuthRepository().getUserFromCache();
@@ -64,16 +74,6 @@ class _NewMovingPageState extends State<NewMovingPage> {
     getInventoryProducts();
 
     setState(() {});
-  }
-
-  void checkLogin() async {
-    final bool isAuth = await AuthRepository().isAuth();
-    if (!isAuth) {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/auth', ModalRoute.withName('/'));
-      }
-    }
   }
 
   @override
