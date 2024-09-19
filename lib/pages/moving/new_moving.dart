@@ -336,33 +336,33 @@ class _NewMovingPageState extends State<NewMovingPage> {
     );
   }
 
-  // void addToBasket(dynamic product) async {
-  //   selectedProduct = product;
-  //
-  //   basket.add(selectedProduct);
-  //   sum = 0;
-  //   for (var item in basket) {
-  //     sum += item['count'] * item['price'];
-  //   }
-  //   setState(() {});
-  // }
-
   void addToBasket(dynamic product) async {
-    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-      basket.add(product);
-      sum = 0;
-      for (var item in basket) {
-        sum += item['count'] * item['price'];
-      }
+    selectedProduct = product;
 
-      if (mounted) {
-        setState(() {});
-      }
-    } else {
-      showCustomSnackBar(context,
-          'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
+    basket.add(selectedProduct);
+    sum = 0;
+    for (var item in basket) {
+      sum += item['count'] * item['price'];
     }
+    setState(() {});
   }
+
+  // void addToBasket(dynamic product) async {
+  //   if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+  //     basket.add(product);
+  //     sum = 0;
+  //     for (var item in basket) {
+  //       sum += item['count'] * item['price'];
+  //     }
+  //
+  //     if (mounted) {
+  //       setState(() {});
+  //     }
+  //   } else {
+  //     showCustomSnackBar(context,
+  //         'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
+  //   }
+  // }
 
   void showStorageDialog() async {
     showDialog(
