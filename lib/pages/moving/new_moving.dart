@@ -73,7 +73,9 @@ class _NewMovingPageState extends State<NewMovingPage> {
 
     getInventoryProducts();
 
-    setState(() {});
+    if (mounted) setState(() {});
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => showOperationDialog());
   }
 
   @override
@@ -179,22 +181,28 @@ class _NewMovingPageState extends State<NewMovingPage> {
                                     style: ProjectStyles.textStyle_14Medium,
                                   ),
                                   const SizedBox(width: 10),
-                                  DropdownButton(
-                                    value: operationSelectedValue,
-                                    items: const [
-                                      DropdownMenuItem(
-                                          child: Text("Поступление со склада"),
-                                          value: 1),
-                                      DropdownMenuItem(
-                                          child: Text("Возврат на склад"),
-                                          value: 2),
-                                    ],
-                                    onChanged: (Object? newValue) {
-                                      setState(() {
-                                        operationSelectedValue = newValue!;
-                                      });
-                                    },
-                                  )
+                                  Text(
+                                    operationSelectedValue == 1
+                                        ? "Поступление со склада"
+                                        : "Возврат на склад",
+                                    style: ProjectStyles.textStyle_14Medium,
+                                  ),
+                                  // DropdownButton(
+                                  //   value: operationSelectedValue,
+                                  //   items: const [
+                                  //     DropdownMenuItem(
+                                  //         child: Text("Поступление со склада"),
+                                  //         value: 1),
+                                  //     DropdownMenuItem(
+                                  //         child: Text("Возврат на склад"),
+                                  //         value: 2),
+                                  //   ],
+                                  //   onChanged: (Object? newValue) {
+                                  //     setState(() {
+                                  //       operationSelectedValue = newValue!;
+                                  //     });
+                                  //   },
+                                  // )
                                 ],
                               ),
                               const SizedBox(height: 10),
@@ -287,7 +295,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
             IconButton(
               onPressed: () {
                 basket.remove(basket[i]);
-                setState(() {});
+                if (mounted) setState(() {});
               },
               icon: const Icon(Icons.delete),
             ),
@@ -318,7 +326,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
   void selectOrder(int index, List<Product> products) async {
     selectedOrderId = index;
     // selectedOrderProducts = products;
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void showProductDialog() async {
@@ -336,33 +344,45 @@ class _NewMovingPageState extends State<NewMovingPage> {
     );
   }
 
-  void addToBasket(dynamic product) async {
-    selectedProduct = product;
-
-    basket.add(selectedProduct);
-    sum = 0;
-    for (var item in basket) {
-      sum += item['count'] * item['price'];
-    }
-    setState(() {});
-  }
-
   // void addToBasket(dynamic product) async {
-  //   if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-  //     basket.add(product);
-  //     sum = 0;
-  //     for (var item in basket) {
-  //       sum += item['count'] * item['price'];
-  //     }
+  //   selectedProduct = product;
   //
-  //     if (mounted) {
-  //       setState(() {});
-  //     }
-  //   } else {
-  //     showCustomSnackBar(context,
-  //         'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
+  //   basket.add(selectedProduct);
+  //   sum = 0;
+  //   for (var item in basket) {
+  //     sum += item['count'] * item['price'];
   //   }
+  //   setState(() {});
   // }
+
+  void addToBasket(dynamic product) async {
+    if (operationSelectedValue == 2) {
+      if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+        basket.add(product);
+        sum = 0;
+        for (var item in basket) {
+          sum += item['count'] * item['price'];
+        }
+
+        if (mounted) {
+          setState(() {});
+        }
+      } else {
+        showCustomSnackBar(context,
+            'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
+      }
+    } else {
+      basket.add(product);
+      sum = 0;
+      for (var item in basket) {
+        sum += item['count'] * item['price'];
+      }
+
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
 
   void showStorageDialog() async {
     showDialog(
@@ -381,7 +401,42 @@ class _NewMovingPageState extends State<NewMovingPage> {
   void selectStorage(int id, String name) async {
     sendStorageId = id;
     sendStorageName = name;
-    setState(() {});
+    if (mounted) setState(() {});
+  }
+
+  void showOperationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // User must tap button to close dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите операцию'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text('Поступление со склада'),
+                onTap: () {
+                  setState(() {
+                    operationSelectedValue = 1;
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Возврат на склад'),
+                onTap: () {
+                  setState(() {
+                    operationSelectedValue = 2;
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void createOrder() async {
@@ -430,7 +485,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
         }
       }
 
-      setState(() {});
+      if (mounted) setState(() {});
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
