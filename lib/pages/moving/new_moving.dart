@@ -404,40 +404,7 @@ class _NewMovingPageState extends State<NewMovingPage> {
     if (mounted) setState(() {});
   }
 
-  void showOperationDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // User must tap button to close dialog
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Выберите операцию'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                title: const Text('Поступление со склада'),
-                onTap: () {
-                  setState(() {
-                    operationSelectedValue = 1;
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: const Text('Возврат на склад'),
-                onTap: () {
-                  setState(() {
-                    operationSelectedValue = 2;
-                  });
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+
 
   void createOrder() async {
     isButtonActive = false;
@@ -490,5 +457,40 @@ class _NewMovingPageState extends State<NewMovingPage> {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
+  }
+
+  void showOperationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // User must tap button to close dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Выберите операцию'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text('Поступление со склада'),
+                onTap: () {
+                  setState(() {
+                    operationSelectedValue = 1;
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Возврат на склад'),
+                onTap: () {
+                  setState(() {
+                    operationSelectedValue = 2;
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
