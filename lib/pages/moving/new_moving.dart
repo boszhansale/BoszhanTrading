@@ -384,6 +384,12 @@ class _NewMovingPageState extends State<NewMovingPage> {
     }
   }
 
+  void selectStorage(int id, String name) async {
+    sendStorageId = id;
+    sendStorageName = name;
+    if (mounted) setState(() {});
+  }
+
   void showStorageDialog() async {
     showDialog(
       context: context,
@@ -396,12 +402,6 @@ class _NewMovingPageState extends State<NewMovingPage> {
         );
       },
     );
-  }
-
-  void selectStorage(int id, String name) async {
-    sendStorageId = id;
-    sendStorageName = name;
-    if (mounted) setState(() {});
   }
 
   void showOperationDialog() {
