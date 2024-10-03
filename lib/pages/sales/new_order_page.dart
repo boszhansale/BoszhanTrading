@@ -544,28 +544,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
     }
   }
 
-  void getInventoryProducts() async {
-    try {
-      DateTime now = DateTime.now();
-      var date = DateFormat('yyyy-MM-dd').format(now);
-      var time = DateFormat('HH:mm:ss').format(now);
-      var response = await MainApiService().getInventoryProducts(date, time);
 
-      for (var i in response) {
-        double? remains = double.tryParse(i['remains']);
-        if (remains != null) {
-          productsPermission[i['product_id']] = remains;
-        } else {
-          productsPermission[i['product_id']] = 0;
-        }
-      }
-
-      setState(() {});
-    } catch (e) {
-      showCustomSnackBar(context, e.toString());
-      print(e);
-    }
-  }
 
   void createOrder() async {
     isButtonActive = false;
@@ -609,6 +588,29 @@ class _NewOrderPageState extends State<NewOrderPage> {
               ));
     } catch (e) {
       isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
+  }
+
+  void getInventoryProducts() async {
+    try {
+      DateTime now = DateTime.now();
+      var date = DateFormat('yyyy-MM-dd').format(now);
+      var time = DateFormat('HH:mm:ss').format(now);
+      var response = await MainApiService().getInventoryProducts(date, time);
+
+      for (var i in response) {
+        double? remains = double.tryParse(i['remains']);
+        if (remains != null) {
+          productsPermission[i['product_id']] = remains;
+        } else {
+          productsPermission[i['product_id']] = 0;
+        }
+      }
+
+      setState(() {});
+    } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
