@@ -270,6 +270,20 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     ];
   }
 
+  void deleteOrderFromHistory(int id) async {
+    try {
+      await MainApiService().deleteSalesOrderFromHistory(id);
+      searchOrder();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getCheckAndPrint(int id) async {
+    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
+    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
+  }
+
   void searchOrder() async {
     var response = await MainApiService()
         .getSalesOrderHistoryForReturnWithSearch('', dateFrom, dateTo);
@@ -293,19 +307,5 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     }
 
     setState(() {});
-  }
-
-  void deleteOrderFromHistory(int id) async {
-    try {
-      await MainApiService().deleteSalesOrderFromHistory(id);
-      searchOrder();
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void getCheckAndPrint(int id) async {
-    var responsePrintCheck = await MainApiService().getTicketForPrint(id);
-    js.context.callMethod('open', ['${AppConstants.baseUrl}order/html/$id']);
   }
 }
