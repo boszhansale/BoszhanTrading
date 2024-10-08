@@ -349,67 +349,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
-  // DataTable _createDataTable() {
-  //   return DataTable(
-  //     headingRowColor:
-  //         MaterialStateColor.resolveWith((states) => ColorPalette.main),
-  //     columns: _createColumns(),
-  //     rows: [
-  //       for (int i = 0; i < globalInventoryList.length; i++)
-  //         DataRow(cells: [
-  //           DataCell(Text('${i + 1}')),
-  //           DataCell(
-  //               Text(globalInventoryList[i]['product_id'].toString() ?? '')),
-  //           DataCell(Text(globalInventoryList[i]['article'] ?? '')),
-  //           DataCell(Text(globalInventoryList[i]['name'] ?? '')),
-  //           DataCell(Text(globalInventoryList[i]['moving_from'].toString())),
-  //           DataCell(Text(globalInventoryList[i]['receipt'].toString())),
-  //           DataCell(Text(globalInventoryList[i]['sale'].toString())),
-  //           DataCell(Text(globalInventoryList[i]['remains'].toString())),
-  //           DataCell(Padding(
-  //             padding: const EdgeInsets.symmetric(vertical: 5),
-  //             child: SizedBox(
-  //               width: 50,
-  //               child: TextField(
-  //                 controller: globalInventoryTextFields[i],
-  //                 decoration: const InputDecoration(hintText: 'кл.'),
-  //                 inputFormatters: [
-  //                   FilteringTextInputFormatter.allow(
-  //                       RegExp(r'^\d+[\,\.]?\d{0,2}')),
-  //                 ],
-  //                 onChanged: (value) {
-  //                   setState(() {});
-  //                 },
-  //               ),
-  //             ),
-  //           )),
-  //           DataCell(
-  //             Text(
-  //               (double.parse(globalInventoryTextFields[i].text == ''
-  //                           ? '0'
-  //                           : globalInventoryTextFields[i]
-  //                               .text
-  //                               .replaceAll(',', '.')) -
-  //                       double.parse(
-  //                           globalInventoryList[i]['remains'].toString()))
-  //                   .toString(),
-  //             ),
-  //           ),
-  //         ])
-  //     ],
-  //     showCheckboxColumn: false,
-  //   );
-  // }
-
-  // PaginatedDataTable _createDataTable() {
-  //   return PaginatedDataTable(
-  //     source: MyData(context, refresh),
-  //     columns: _createColumns(),
-  //     rowsPerPage: 10,
-  //     showCheckboxColumn: false,
-  //   );
-  // }
-
   List<DataColumn> _createColumns() {
     return [
       const DataColumn(label: Text('№')),
