@@ -370,22 +370,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     ];
   }
 
-  void showProductDialog() async {
-    dialogIsActive = true;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Добавление продукта'),
-          content: ProductsListWidget(
-            addToBasket: addToBasket,
-          ),
-        );
-      },
-    ).whenComplete(() => dialogIsActive = false);
-  }
-
   void addToBasket(dynamic product) async {
     selectedProduct = product;
 
@@ -408,6 +392,22 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
+  }
+
+  void showProductDialog() async {
+    dialogIsActive = true;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Добавление продукта'),
+          content: ProductsListWidget(
+            addToBasket: addToBasket,
+          ),
+        );
+      },
+    ).whenComplete(() => dialogIsActive = false);
   }
 
   void createOrder() async {
