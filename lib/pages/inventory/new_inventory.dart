@@ -441,6 +441,18 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     }
   }
 
+  void getProducts() async {
+    try {
+      var responseProducts = await MainApiService().getProducts(true);
+
+      for (var i in responseProducts) {
+        products.add(ProductMain.fromJson(i));
+      }
+    } catch (error) {
+      showCustomSnackBar(context, error.toString());
+    }
+  }
+
   void getInventoryProducts(String date, String time) async {
     try {
       var response = await MainApiService().getInventoryProducts(date, time);
@@ -471,18 +483,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     } catch (e) {
       showCustomSnackBar(context, e.toString());
       print(e);
-    }
-  }
-
-  void getProducts() async {
-    try {
-      var responseProducts = await MainApiService().getProducts(true);
-
-      for (var i in responseProducts) {
-        products.add(ProductMain.fromJson(i));
-      }
-    } catch (error) {
-      showCustomSnackBar(context, error.toString());
     }
   }
 
