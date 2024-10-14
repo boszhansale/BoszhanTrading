@@ -486,6 +486,22 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     }
   }
 
+  refresh() {
+    setState(() {});
+  }
+
+  void saveCountOfProduct() {
+    savedCounts = {};
+    for (int i = 0; i < globalInventoryTextFields.length; i++) {
+      if (globalInventoryTextFields[i].text != '') {
+        savedCounts[globalInventoryList[i]['product_id']] =
+            double.parse(globalInventoryTextFields[i].text);
+      } else {
+        savedCounts[globalInventoryList[i]['product_id']] = 0;
+      }
+    }
+  }
+
   void addProductFromScanner(String barcode) async {
     var response = await MainApiService().searchProductByBarcode(barcode);
     if (response.isNotEmpty) {
@@ -517,22 +533,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       }
     } else {
       showCustomSnackBar(context, 'Данный продукт не найден...');
-    }
-  }
-
-  refresh() {
-    setState(() {});
-  }
-
-  void saveCountOfProduct() {
-    savedCounts = {};
-    for (int i = 0; i < globalInventoryTextFields.length; i++) {
-      if (globalInventoryTextFields[i].text != '') {
-        savedCounts[globalInventoryList[i]['product_id']] =
-            double.parse(globalInventoryTextFields[i].text);
-      } else {
-        savedCounts[globalInventoryList[i]['product_id']] = 0;
-      }
     }
   }
 }
