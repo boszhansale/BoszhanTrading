@@ -52,16 +52,6 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
     super.initState();
   }
 
-  void checkLogin() async {
-    final bool isAuth = await AuthRepository().isAuth();
-    if (!isAuth) {
-      if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/auth', ModalRoute.withName('/'));
-      }
-    }
-  }
-
   void _init() async {
     globalInventoryList = [];
     globalInventoryTextFields = [];
@@ -90,6 +80,16 @@ class _InventoryEditPageState extends State<InventoryEditPage> {
       }
 
       setState(() {});
+    }
+  }
+
+  void checkLogin() async {
+    final bool isAuth = await AuthRepository().isAuth();
+    if (!isAuth) {
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/auth', ModalRoute.withName('/'));
+      }
     }
   }
 
