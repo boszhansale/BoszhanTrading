@@ -400,6 +400,7 @@ class _NewOrderPageState extends State<NewOrderPage> {
                 IconButton(
                   onPressed: () {
                     basket.remove(basket[i]);
+                    countControllers.remove(countControllers[i]);
 
                     calcSum();
                     saveBasket();
@@ -543,8 +544,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
           'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
     }
   }
-
-
 
   void createOrder() async {
     isButtonActive = false;
