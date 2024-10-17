@@ -236,6 +236,20 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
     );
   }
 
+  void showProductDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Добавление продукта'),
+          content: ProductsListWidget(
+            addToBasket: addToBasket,
+          ),
+        );
+      },
+    );
+  }
+
   DataTable _createDataTable() {
     return DataTable(columns: _createColumns(), rows: _createRows());
   }
@@ -284,20 +298,6 @@ class _NewIncomingPageState extends State<NewIncomingPage> {
           )
         ]),
     ];
-  }
-
-  void showProductDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Добавление продукта'),
-          content: ProductsListWidget(
-            addToBasket: addToBasket,
-          ),
-        );
-      },
-    );
   }
 
   void addToBasket(dynamic product) async {
