@@ -413,53 +413,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     ];
   }
 
-  void addProductFromScanner(String barcode) async {
-    var response = await MainApiService().searchProductByBarcode(barcode);
-    if (response.isNotEmpty) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ProductMain product = ProductMain.fromJson(response[0]);
-      bool inBasket = false;
-      int index = 0;
-      for (int j = 0; j < basket.length; j++) {
-        if (basket[j]['id'] == product.id) {
-          inBasket = true;
-          index = j;
-        }
-      }
-      if (inBasket) {
-        // if (productsPermission[product.id]! > basket[index]['count']) {
-        basket[index]['count'] = basket[index]['count'] + 1;
-        countControllers[index].text =
-            (double.parse(countControllers[index].text) + 1).toString();
-        // } else {
-        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-        // }
-      } else {
-        // if (productsPermission[product.id]! > 0) {
-        basket.add({
-          "id": product.id,
-          "name": product.name,
-          "id_1c": product.id_1c,
-          "article": product.article,
-          "price": product.price,
-          "discount_price": product.discountPrice,
-          "measure": product.measure,
-          "count": 1
-        });
-        countControllers.add(TextEditingController(text: '1'));
-        // } else {
-        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-        // }
-      }
-    } else {
-      showCustomSnackBar(context, 'Данный продукт не найден...');
-    }
-
-    calcSum();
-    saveBasket();
-    setState(() {});
-  }
-
   void calcSum() async {
     sum = 0;
     for (int i = 0; i < basket.length; i++) {
@@ -505,6 +458,53 @@ class _NewOrderPageState extends State<NewOrderPage> {
   void selectCounteragent(int id, String name) async {
     counteragentId = id;
     counteragentName = name;
+    setState(() {});
+  }
+
+  void addProductFromScanner(String barcode) async {
+    var response = await MainApiService().searchProductByBarcode(barcode);
+    if (response.isNotEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ProductMain product = ProductMain.fromJson(response[0]);
+      bool inBasket = false;
+      int index = 0;
+      for (int j = 0; j < basket.length; j++) {
+        if (basket[j]['id'] == product.id) {
+          inBasket = true;
+          index = j;
+        }
+      }
+      if (inBasket) {
+        // if (productsPermission[product.id]! > basket[index]['count']) {
+        basket[index]['count'] = basket[index]['count'] + 1;
+        countControllers[index].text =
+            (double.parse(countControllers[index].text) + 1).toString();
+        // } else {
+        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        // }
+      } else {
+        // if (productsPermission[product.id]! > 0) {
+        basket.add({
+          "id": product.id,
+          "name": product.name,
+          "id_1c": product.id_1c,
+          "article": product.article,
+          "price": product.price,
+          "discount_price": product.discountPrice,
+          "measure": product.measure,
+          "count": 1
+        });
+        countControllers.add(TextEditingController(text: '1'));
+        // } else {
+        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
+        // }
+      }
+    } else {
+      showCustomSnackBar(context, 'Данный продукт не найден...');
+    }
+
+    calcSum();
+    saveBasket();
     setState(() {});
   }
 
