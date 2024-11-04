@@ -592,6 +592,27 @@ class _NewOrderPageState extends State<NewOrderPage> {
     }
   }
 
+  void saveUnfinished() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<dynamic> list = [];
+
+    Map<String, dynamic> thisMap = {
+      'createdAt': DateTime.now().toString(),
+      'basket': basket,
+    };
+
+    if (prefs.containsKey('UnfinishedOrders')) {
+      list = json.decode(prefs.getString('UnfinishedOrders') ?? '[]');
+      list.add(thisMap);
+    } else {
+      list.add(thisMap);
+    }
+
+    prefs.setString('UnfinishedOrders', json.encode(list));
+
+    Navigator.of(context).pushNamed('/home');
+  }
+
   void getInventoryProducts() async {
     try {
       DateTime now = DateTime.now();
@@ -613,26 +634,5 @@ class _NewOrderPageState extends State<NewOrderPage> {
       showCustomSnackBar(context, e.toString());
       print(e);
     }
-  }
-
-  void saveUnfinished() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<dynamic> list = [];
-
-    Map<String, dynamic> thisMap = {
-      'createdAt': DateTime.now().toString(),
-      'basket': basket,
-    };
-
-    if (prefs.containsKey('UnfinishedOrders')) {
-      list = json.decode(prefs.getString('UnfinishedOrders') ?? '[]');
-      list.add(thisMap);
-    } else {
-      list.add(thisMap);
-    }
-
-    prefs.setString('UnfinishedOrders', json.encode(list));
-
-    Navigator.of(context).pushNamed('/home');
   }
 }
