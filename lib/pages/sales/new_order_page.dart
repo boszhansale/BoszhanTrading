@@ -519,14 +519,10 @@ class _NewOrderPageState extends State<NewOrderPage> {
         }
       }
       if (inBasket) {
-        // if (productsPermission[product.id]! > basket[index]['count']) {
         basket[index]['count'] = basket[index]['count'] + product['count'];
         countControllers[index].text =
             (double.parse(countControllers[index].text) + product['count'])
                 .toString();
-        // } else {
-        //   showCustomSnackBar(context, 'Вы не можете продавать данный товар');
-        // }
       } else {
         basket.add(product);
         countControllers
@@ -542,53 +538,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     } else {
       showCustomSnackBar(context,
           'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
-    }
-  }
-
-  void createOrder() async {
-    isButtonActive = false;
-    List<dynamic> sendBasketList = [];
-    for (int i = 0; i < basket.length; i++) {
-      if ((productsPermission[basket[i]['id']] ?? 0) >=
-          double.parse(countControllers[i].text)) {
-        sendBasketList.add(
-            {'product_id': basket[i]['id'], 'count': countControllers[i].text});
-      } else {
-        showCustomSnackBar(context,
-            'Вы не можете продавать больше чем у вас есть. Продукт: ${basket[i]["name"]}.');
-        isButtonActive = true;
-        return;
-      }
-    }
-
-    try {
-      var response = await MainApiService().createSalesOrder(
-          isOnlineSale ? 1 : 0,
-          1,
-          sendBasketList,
-          counteragentId,
-          phoneController.text);
-      print(response);
-      showCustomSnackBar(context, 'Заказ успешно создан!');
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('SalesBasket', '[]');
-
-      Future.delayed(const Duration(seconds: 2))
-          .whenComplete(() => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PaymentCalculatorWidget(
-                          orderId: int.parse(response['id'].toString()),
-                          totalPrice:
-                              double.parse(response['total_price'].toString()),
-                          isSale: true,
-                        )),
-              ));
-    } catch (e) {
-      isButtonActive = true;
-      showCustomSnackBar(context, e.toString());
-      print(e);
     }
   }
 
@@ -611,6 +560,53 @@ class _NewOrderPageState extends State<NewOrderPage> {
     prefs.setString('UnfinishedOrders', json.encode(list));
 
     Navigator.of(context).pushNamed('/home');
+  }
+
+  void createOrder() async {
+    isButtonActive = false;
+    List<dynamic> sendBasketList = [];
+    for (int i = 0; i < basket.length; i++) {
+      if ((productsPermission[basket[i]['id']] ?? 0) >=
+          double.parse(countControllers[i].text)) {
+        sendBasketList.add(
+            {'product_id': basket[i]['id'], 'count': countControllers[i].text});
+      } else {
+        showCustomSnackBar(context,
+            'Вы не можете продавать больше чем у вас есть. Продукт: ${basket[i]["name"]}.');
+        isButtonActive = true;
+        return;
+      }
+    }
+
+    try {
+      var response = await MainApiService().createSalesOrder(
+        isOnlineSale ? 1 : 0,
+        1,
+        sendBasketList,
+        counteragentId,
+        phoneController.text,
+      );
+      showCustomSnackBar(context, 'Заказ успешно создан!');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('SalesBasket', '[]');
+
+      Future.delayed(const Duration(seconds: 2))
+          .whenComplete(() => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PaymentCalculatorWidget(
+                          orderId: int.parse(response['id'].toString()),
+                          totalPrice:
+                              double.parse(response['total_price'].toString()),
+                          isSale: true,
+                        )),
+              ));
+    } catch (e) {
+      isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
   }
 
   void getInventoryProducts() async {
