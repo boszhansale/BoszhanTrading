@@ -529,39 +529,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     Navigator.of(context).pushNamed('/home');
   }
 
-  void addToBasket(dynamic product) async {
-    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
-      bool inBasket = false;
-      int index = 0;
-      for (int j = 0; j < basket.length; j++) {
-        if (basket[j]['id'] == product['id']) {
-          inBasket = true;
-          index = j;
-        }
-      }
-      if (inBasket) {
-        basket[index]['count'] = basket[index]['count'] + product['count'];
-        countControllers[index].text =
-            (double.parse(countControllers[index].text) + product['count'])
-                .toString();
-      } else {
-        basket.add(product);
-        countControllers
-            .add(TextEditingController(text: product['count'].toString()));
-      }
-
-      calcSum();
-
-      saveBasket();
-      if (mounted) {
-        setState(() {});
-      }
-    } else {
-      showCustomSnackBar(context,
-          'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
-    }
-  }
-
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
@@ -606,6 +573,39 @@ class _NewOrderPageState extends State<NewOrderPage> {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());
       print(e);
+    }
+  }
+
+  void addToBasket(dynamic product) async {
+    if ((productsPermission[product['id']] ?? 0) >= product['count']) {
+      bool inBasket = false;
+      int index = 0;
+      for (int j = 0; j < basket.length; j++) {
+        if (basket[j]['id'] == product['id']) {
+          inBasket = true;
+          index = j;
+        }
+      }
+      if (inBasket) {
+        basket[index]['count'] = basket[index]['count'] + product['count'];
+        countControllers[index].text =
+            (double.parse(countControllers[index].text) + product['count'])
+                .toString();
+      } else {
+        basket.add(product);
+        countControllers
+            .add(TextEditingController(text: product['count'].toString()));
+      }
+
+      calcSum();
+
+      saveBasket();
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      showCustomSnackBar(context,
+          'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
     }
   }
 
