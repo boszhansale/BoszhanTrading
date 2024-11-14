@@ -404,6 +404,36 @@ class _NewMovingPageState extends State<NewMovingPage> {
     );
   }
 
+  void createOrder() async {
+    isButtonActive = false;
+    List<dynamic> sendBasketList = [];
+    for (var item in basket) {
+      sendBasketList.add({
+        'product_id': item['id'],
+        'count': item['count'],
+        'price': item['price'],
+      });
+    }
+
+    try {
+      var response = await MainApiService().createMovingOrder(
+        int.parse(operationSelectedValue.toString()),
+        sendBasketList,
+        sendStorageId,
+        selectedOrderId,
+        commentController.text,
+      );
+      // print(response);
+      showCustomSnackBar(context, 'Заказ успешно создан!');
+      Future.delayed(const Duration(seconds: 2))
+          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
+    } catch (e) {
+      isButtonActive = true;
+      showCustomSnackBar(context, e.toString());
+      print(e);
+    }
+  }
+
   void showOperationDialog() {
     showDialog(
       context: context,
@@ -437,36 +467,6 @@ class _NewMovingPageState extends State<NewMovingPage> {
         );
       },
     );
-  }
-
-  void createOrder() async {
-    isButtonActive = false;
-    List<dynamic> sendBasketList = [];
-    for (var item in basket) {
-      sendBasketList.add({
-        'product_id': item['id'],
-        'count': item['count'],
-        'price': item['price'],
-      });
-    }
-
-    try {
-      var response = await MainApiService().createMovingOrder(
-        int.parse(operationSelectedValue.toString()),
-        sendBasketList,
-        sendStorageId,
-        selectedOrderId,
-        commentController.text,
-      );
-      // print(response);
-      showCustomSnackBar(context, 'Заказ успешно создан!');
-      Future.delayed(const Duration(seconds: 2))
-          .whenComplete(() => Navigator.of(context).pushNamed('/home'));
-    } catch (e) {
-      isButtonActive = true;
-      showCustomSnackBar(context, e.toString());
-      print(e);
-    }
   }
 
   void getInventoryProducts() async {
