@@ -508,29 +508,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     setState(() {});
   }
 
-  void saveUnfinished() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<dynamic> list = [];
-
-    Map<String, dynamic> thisMap = {
-      'createdAt': DateTime.now().toString(),
-      'basket': basket,
-    };
-
-    if (prefs.containsKey('UnfinishedOrders')) {
-      list = json.decode(prefs.getString('UnfinishedOrders') ?? '[]');
-      list.add(thisMap);
-    } else {
-      list.add(thisMap);
-    }
-
-    prefs.setString('UnfinishedOrders', json.encode(list));
-
-    Navigator.of(context).pushNamed('/home');
-  }
-
-
-
   void addToBasket(dynamic product) async {
     if ((productsPermission[product['id']] ?? 0) >= product['count']) {
       bool inBasket = false;
@@ -564,6 +541,27 @@ class _NewOrderPageState extends State<NewOrderPage> {
     }
   }
 
+  void saveUnfinished() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<dynamic> list = [];
+
+    Map<String, dynamic> thisMap = {
+      'createdAt': DateTime.now().toString(),
+      'basket': basket,
+    };
+
+    if (prefs.containsKey('UnfinishedOrders')) {
+      list = json.decode(prefs.getString('UnfinishedOrders') ?? '[]');
+      list.add(thisMap);
+    } else {
+      list.add(thisMap);
+    }
+
+    prefs.setString('UnfinishedOrders', json.encode(list));
+
+    Navigator.of(context).pushNamed('/home');
+  }
+
   void createOrder() async {
     isButtonActive = false;
     List<dynamic> sendBasketList = [];
@@ -595,15 +593,15 @@ class _NewOrderPageState extends State<NewOrderPage> {
 
       Future.delayed(const Duration(seconds: 2))
           .whenComplete(() => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PaymentCalculatorWidget(
-              orderId: int.parse(response['id'].toString()),
-              totalPrice:
-              double.parse(response['total_price'].toString()),
-              isSale: true,
-            )),
-      ));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PaymentCalculatorWidget(
+                          orderId: int.parse(response['id'].toString()),
+                          totalPrice:
+                              double.parse(response['total_price'].toString()),
+                          isSale: true,
+                        )),
+              ));
     } catch (e) {
       isButtonActive = true;
       showCustomSnackBar(context, e.toString());
