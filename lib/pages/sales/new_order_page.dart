@@ -455,12 +455,6 @@ class _NewOrderPageState extends State<NewOrderPage> {
     );
   }
 
-  void selectCounteragent(int id, String name) async {
-    counteragentId = id;
-    counteragentName = name;
-    setState(() {});
-  }
-
   void addToBasket(dynamic product) async {
     if ((productsPermission[product['id']] ?? 0) >= product['count']) {
       bool inBasket = false;
@@ -493,6 +487,14 @@ class _NewOrderPageState extends State<NewOrderPage> {
           'Вы не можете добавить данный товар. Продукт отсутствует в вашем магазине.');
     }
   }
+
+  void selectCounteragent(int id, String name) async {
+    counteragentId = id;
+    counteragentName = name;
+    setState(() {});
+  }
+
+
 
 
 
